@@ -751,10 +751,11 @@
   langButtons.forEach(function (b) { b.addEventListener('click', function () { setLanguage(b.getAttribute('data-lang')); }); });
 
   function renderCrumbs() {
+    // Same navigation everywhere: top-left shows "← parent › here", the
+    // outward destinations live in the bottom chip row.
     var wasCompact = compact;
-    compact = narrow;
+    compact = true;
     buildCrumbs();
-    if (!compact && !crumbsFit()) { compact = true; buildCrumbs(); }
     if (compact !== wasCompact && mode !== 'transition') showChipsFor(currentView);
     layoutTopBar();
   }
