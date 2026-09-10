@@ -483,7 +483,8 @@
     cardText.textContent = text;
     var deck = c.kind === 'fact' || c.kind === 'dwarf';
     nextBtn.hidden = !deck; prevBtn.hidden = !deck;
-    nextBtn.textContent = t('next'); prevBtn.textContent = t('prev');
+    nextBtn.title = t('next'); prevBtn.title = t('prev');
+    nextBtn.setAttribute('aria-label', t('next')); prevBtn.setAttribute('aria-label', t('prev'));
     linkBtn.hidden = !link;
     if (link) { linkBtn.textContent = link.linkLabel[lang]; linkBtn.onclick = function () { switchView(link.link); }; }
     currentSpeech = (question ? question + ' ' : '') + text;
