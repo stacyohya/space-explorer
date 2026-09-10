@@ -25,6 +25,7 @@
       loadingProgress: 'Loading textures... {a} / {b}',
       funFacts: '✨ Fun Facts',
       next: 'Next ▶',
+      prev: '◀ Previous',
       factKicker: 'Did you know?',
       moonKicker: 'Moon of {name}',
       sub: '— {name}, {subtitle}'
@@ -44,6 +45,7 @@
       loadingProgress: '載入貼圖中… {a} / {b}',
       funFacts: '✨ 有趣知識',
       next: '下一個 ▶',
+      prev: '◀ 上一個',
       factKicker: '你知道嗎？',
       moonKicker: '{name}的衛星',
       sub: '— {name}，{subtitle}'
@@ -148,6 +150,7 @@
   var speakBtn = document.getElementById('speak-btn');
   var speakLabel = document.getElementById('speak-label');
   var nextBtn = document.getElementById('next-btn');
+  var prevBtn = document.getElementById('prev-btn');
   var linkBtn = document.getElementById('link-btn');
   var cardClose = document.getElementById('card-close');
   var factsBtn = document.getElementById('facts-btn');
@@ -478,8 +481,9 @@
     cardQuestion.textContent = question;
     cardQuestion.style.display = question ? 'block' : 'none';
     cardText.textContent = text;
-    nextBtn.hidden = !(c.kind === 'fact' || c.kind === 'dwarf');
-    nextBtn.textContent = t('next');
+    var deck = c.kind === 'fact' || c.kind === 'dwarf';
+    nextBtn.hidden = !deck; prevBtn.hidden = !deck;
+    nextBtn.textContent = t('next'); prevBtn.textContent = t('prev');
     linkBtn.hidden = !link;
     if (link) { linkBtn.textContent = link.linkLabel[lang]; linkBtn.onclick = function () { switchView(link.link); }; }
     currentSpeech = (question ? question + ' ' : '') + text;
@@ -512,12 +516,19 @@
 
   cardClose.addEventListener('click', closeCard);
   speakBtn.addEventListener('click', function () { if (currentSpeech) speak(currentSpeech); });
-  nextBtn.addEventListener('click', function () {
+  function stepDeck(dir) {
     if (!currentCard) return;
-    if (currentCard.kind === 'dwarf') { openCard('dwarf', null, (currentCard.index + 1) % OVERVIEW.dwarfs.length); return; }
-    factIndex = (factIndex + 1) % activeBody().detail.facts.length;
+    if (currentCard.kind === 'dwarf') {
+      var n = OVERVIEW.dwarfs.length;
+      openCard('dwarf', null, (currentCard.index + dir + n) % n);
+      return;
+    }
+    var total = activeBody().detail.facts.length;
+    factIndex = (factIndex + dir + total) % total;
     openCard('fact', null, factIndex);
-  });
+  }
+  nextBtn.addEventListener('click', function () { stepDeck(1); });
+  prevBtn.addEventListener('click', function () { stepDeck(-1); });
   factsBtn.addEventListener('click', function () { openCard('fact', null, factIndex); });
 
   // Small 2D animations drawn inside the knowledge card. Each returns a stop().

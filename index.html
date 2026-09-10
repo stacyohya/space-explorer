@@ -195,12 +195,12 @@
   #speak-btn:hover{filter:brightness(1.15);}
   #speak-btn.speaking{background:linear-gradient(135deg,#fbbf24,#f59e0b); border-color:#fbbf24; color:#1a1300;}
   #card-panel .actions{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
-  #next-btn{
+  #prev-btn, #next-btn{
     background:transparent; border:1px solid rgba(251,191,36,.5); color:var(--amber);
     padding:9px 16px; border-radius:999px; font-size:13px; cursor:pointer; font-family:inherit; transition:all .15s ease;
   }
-  #next-btn:hover{background:rgba(251,191,36,.12);}
-  #next-btn[hidden]{display:none;}
+  #prev-btn:hover, #next-btn:hover{background:rgba(251,191,36,.12);}
+  #prev-btn[hidden], #next-btn[hidden]{display:none;}
   #link-btn{
     background:linear-gradient(135deg,rgba(120,80,255,.35),rgba(60,30,140,.35)); border:1px solid rgba(201,184,255,.6); color:#e6dcff;
     padding:9px 16px; border-radius:999px; font-size:13px; cursor:pointer; font-family:inherit; transition:all .15s ease;
@@ -228,7 +228,7 @@
     #facts-btn{font-size:15px; padding:13px 26px;}
     #crumbs button{font-size:14px; padding:9px 14px;}
     #lang-toggle button{font-size:14px; padding:9px 16px;}
-    #speak-btn, #next-btn, #link-btn{font-size:15px; padding:12px 20px;}
+    #speak-btn, #prev-btn, #next-btn, #link-btn{font-size:15px; padding:12px 20px;}
     #card-panel .close{font-size:24px; padding:8px;}
     .planet-label .name{font-size:13px; padding:4px 11px;}
     #hint{display:none;}
@@ -300,6 +300,7 @@
     <p class="body" id="card-text"></p>
     <div class="actions">
       <button id="speak-btn">🔊 <span id="speak-label">Listen</span></button>
+      <button id="prev-btn" hidden>◀ Previous</button>
       <button id="next-btn" hidden>Next ▶</button>
       <button id="link-btn" hidden></button>
     </div>
