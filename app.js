@@ -789,7 +789,13 @@
       var b = document.createElement('button');
       b.type = 'button';
       if (s.cur) { b.className = 'current'; b.textContent = s.cur; }
-      else if (s.link) { b.className = 'link'; b.textContent = (i === 0 ? '← ' : '') + s.link.text; b.addEventListener('click', function () { switchView(s.link.view); }); }
+      else if (s.link) {
+        b.className = 'link';
+        // Phones: the parent link shrinks to "← emoji" so the trail always fits on one line.
+        b.textContent = (i === 0 ? '← ' : '') + (narrow ? s.link.text.split(' ')[0] : s.link.text);
+        b.title = s.link.text;
+        b.addEventListener('click', function () { switchView(s.link.view); });
+      }
       else { b.className = 'next'; b.textContent = s.next; b.addEventListener('click', function () { switchView(s.view); }); }
       crumbsEl.appendChild(b);
     });
