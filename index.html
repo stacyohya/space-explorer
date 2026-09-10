@@ -67,7 +67,7 @@
     position:fixed; top:18px; left:18px; z-index:20; display:flex; align-items:center; gap:2px;
     background:var(--panel); border:1px solid var(--border); border-radius:999px; padding:4px 8px 4px 4px;
     backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 4px 24px rgba(0,0,0,.35);
-    font-size:13px; max-width:min(46vw, 640px); flex-wrap:wrap;
+    font-size:13px; max-width:calc(100vw - 270px); flex-wrap:nowrap; overflow:hidden;
   }
   #crumbs .sep{color:var(--muted); padding:0 4px; font-size:12px;}
   #crumbs{width:fit-content; width:-moz-fit-content; justify-content:center;}

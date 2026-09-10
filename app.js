@@ -168,7 +168,8 @@
     return el;
   }
   var featureChips = [];        // { item, el, nav? }
-  var compact = false;          // narrow (phone) layout
+  var compact = false;          // compact navigation (parent › here + bottom chips)
+  var narrow = false;           // phone-width layout
   var toastTimer = null;
 
   // ------------------------------------------------------------------
@@ -739,6 +740,21 @@
   langButtons.forEach(function (b) { b.addEventListener('click', function () { setLanguage(b.getAttribute('data-lang')); }); });
 
   function renderCrumbs() {
+    var wasCompact = compact;
+    compact = narrow;
+    buildCrumbs();
+    if (!compact && !crumbsFit()) { compact = true; buildCrumbs(); }
+    if (compact !== wasCompact && mode !== 'transition') showChipsFor(currentView);
+    layoutTopBar();
+  }
+
+  function crumbsFit() {
+    var r = crumbsEl.getBoundingClientRect();
+    var lt = document.getElementById('lang-toggle').getBoundingClientRect();
+    return crumbsEl.scrollWidth <= crumbsEl.clientWidth + 1 && r.height < 56 && r.right < lt.left - 12;
+  }
+
+  function buildCrumbs() {
     crumbsEl.innerHTML = '';
     var solar = { text: t('crumbSolar'), view: 'overview' };
     var galaxyLink = { text: GALAXY.crumb[lang], view: 'galaxy' };
@@ -764,7 +780,6 @@
       else { b.className = 'next'; b.textContent = s.next; b.addEventListener('click', function () { switchView(s.view); }); }
       crumbsEl.appendChild(b);
     });
-    layoutTopBar();
   }
 
   // Keep the centered title clear of the breadcrumbs: drop it a row when they would collide.
@@ -839,14 +854,13 @@
     renderer.setSize(w, h, false);
     applyAspect(overviewCamera, 50, w / h);
     applyAspect(detailCamera, 45, w / h);
-    var wasCompact = compact;
-    compact = w < 700;
-    if (compact !== wasCompact && mode !== 'transition') { showChipsFor(currentView); renderCrumbs(); }
+    var wasNarrow = narrow;
+    narrow = w < 700;
     langButtons.forEach(function (b) {
       var zh = b.getAttribute('data-lang') === 'zh';
-      b.textContent = compact ? (zh ? '中文' : 'EN') : (zh ? '繁體中文' : 'English');
+      b.textContent = narrow ? (zh ? '中文' : 'EN') : (zh ? '繁體中文' : 'English');
     });
-    layoutTopBar();
+    if (mode !== 'transition' && (narrow !== wasNarrow || force)) renderCrumbs(); else layoutTopBar();
   }
 
   // ------------------------------------------------------------------
