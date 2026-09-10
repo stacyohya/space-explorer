@@ -234,6 +234,30 @@
     #hint{display:none;}
   }
 
+  /* ---------- Small screens: one scrollable chip row, compact top bar ---------- */
+  @media (max-width: 900px){
+    #feature-bar{
+      flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch;
+      width:100vw; max-width:100vw; justify-content:flex-start; padding:4px 12px 6px;
+      scrollbar-width:none; left:0; transform:none;
+    }
+    #feature-bar::-webkit-scrollbar{display:none;}
+    #feature-bar button{flex:0 0 auto;}
+    #feature-bar button:first-child{margin-left:auto;}
+    #feature-bar button:last-child{margin-right:auto;}
+  }
+  @media (max-width: 700px){
+    #title-bar{display:none !important;}
+    #crumbs{max-width:calc(100vw - 150px); font-size:12px; padding:3px 6px 3px 3px;}
+    #crumbs button{padding:6px 9px !important; font-size:12px !important;}
+    #lang-toggle{padding:2px;}
+    #lang-toggle button{padding:7px 10px !important; font-size:12px !important;}
+    .planet-label .cta{display:none;}
+    .planet-label .name{font-size:11px !important; padding:2px 8px !important;}
+    #facts-btn{font-size:13px !important; padding:10px 18px !important;}
+    #feature-bar button{font-size:12px !important; padding:8px 12px !important;}
+  }
+
   /* ---------- Fade transition ---------- */
   #fade{position:fixed; inset:0; background:#000; z-index:90; opacity:0; pointer-events:none; transition:opacity .45s ease;}
   #fade.show{opacity:1;}

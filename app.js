@@ -773,7 +773,7 @@
   function init() {
     renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, logarithmicDepthBuffer: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(canvas.clientWidth || window.innerWidth, canvas.clientHeight || window.innerHeight, false);
     if (renderer.outputEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
 
     overviewScene = new THREE.Scene();
@@ -802,6 +802,9 @@
     applyLanguage();
 
     window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', function () { setTimeout(onResize, 300); });
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', onResize);
+    syncSize(true);
     canvas.addEventListener('pointerdown', onPointerDown);
     canvas.addEventListener('pointermove', onPointerMove);
     window.addEventListener('pointerup', onPointerUp);
@@ -811,12 +814,29 @@
     requestAnimationFrame(animate);
   }
 
-  function onResize() {
+  var lastW = 0, lastH = 0;
+  function onResize() { syncSize(true); }
+
+  // Portrait screens get a wider field of view so the whole scene still fits.
+  function applyAspect(cam, baseFov, aspect) {
+    cam.aspect = aspect;
+    cam.fov = aspect < 1 ? Math.min(95, baseFov * Math.min(1.9, 1.15 / aspect)) : baseFov;
+    cam.updateProjectionMatrix();
+  }
+
+  function syncSize(force) {
+    var w = canvas.clientWidth || window.innerWidth, h = canvas.clientHeight || window.innerHeight;
+    if (!force && w === lastW && h === lastH) return;
+    lastW = w; lastH = h;
+    renderer.setSize(w, h, false);
+    applyAspect(overviewCamera, 50, w / h);
+    applyAspect(detailCamera, 45, w / h);
+    var compact = w < 700;
+    langButtons.forEach(function (b) {
+      var zh = b.getAttribute('data-lang') === 'zh';
+      b.textContent = compact ? (zh ? '中文' : 'EN') : (zh ? '繁體中文' : 'English');
+    });
     layoutTopBar();
-    var w = window.innerWidth, h = window.innerHeight;
-    overviewCamera.aspect = w / h; overviewCamera.updateProjectionMatrix();
-    detailCamera.aspect = w / h; detailCamera.updateProjectionMatrix();
-    renderer.setSize(w, h);
   }
 
   // ------------------------------------------------------------------
@@ -1490,7 +1510,7 @@
   // Labels + animation loop
   // ------------------------------------------------------------------
   function updateLabelList(list, camera) {
-    var w = window.innerWidth, h = window.innerHeight;
+    var w = canvas.clientWidth || window.innerWidth, h = canvas.clientHeight || window.innerHeight;
     var worldPos = new THREE.Vector3();
     list.forEach(function (p) {
       p.obj.getWorldPosition(worldPos);
@@ -1510,6 +1530,7 @@
 
   function animate() {
     requestAnimationFrame(animate);
+    syncSize(false);
     var delta = Math.min(clock.getDelta(), 0.05);
     var tm = clock.getElapsedTime();
     var idle = !drag.down && tm - lastDragTime > 1.6;
