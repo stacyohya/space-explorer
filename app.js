@@ -167,7 +167,8 @@
     document.body.appendChild(el);
     return el;
   }
-  var featureChips = [];        // { item, el }
+  var featureChips = [];        // { item, el, nav? }
+  var compact = false;          // narrow (phone) layout
   var toastTimer = null;
 
   // ------------------------------------------------------------------
@@ -742,7 +743,14 @@
     var solar = { text: t('crumbSolar'), view: 'overview' };
     var galaxyLink = { text: GALAXY.crumb[lang], view: 'galaxy' };
     var segs;
-    if (currentView === 'overview') segs = [{ cur: solar.text }, { next: GALAXY.crumb[lang], view: 'galaxy' }];
+    if (compact) {
+      // Phones: only "← parent › [here]"; the outward links live in the bottom chip row.
+      if (currentView === 'overview') segs = [{ cur: solar.text }];
+      else if (currentView === 'detail') segs = [{ link: solar }, { cur: currentPlanet.name[lang] }];
+      else if (currentView === 'galaxy') segs = [{ link: solar }, { cur: GALAXY.name[lang] }];
+      else if (currentView === 'beyond') segs = [{ link: galaxyLink }, { cur: BEYOND.subtitle[lang] }];
+      else segs = [{ link: galaxyLink }, { cur: GALAXIES.name[lang] }];
+    } else if (currentView === 'overview') segs = [{ cur: solar.text }, { next: GALAXY.crumb[lang], view: 'galaxy' }];
     else if (currentView === 'detail') segs = [{ link: solar }, { cur: currentPlanet.name[lang] }];
     else if (currentView === 'galaxy') segs = [{ link: solar }, { cur: GALAXY.name[lang] }, { next: BEYOND.crumb[lang], view: 'beyond' }, { next: GALAXIES.crumb[lang], view: 'galaxies' }];
     else if (currentView === 'beyond') segs = [{ link: solar }, { link: galaxyLink }, { cur: BEYOND.subtitle[lang] }];
@@ -831,7 +839,9 @@
     renderer.setSize(w, h, false);
     applyAspect(overviewCamera, 50, w / h);
     applyAspect(detailCamera, 45, w / h);
-    var compact = w < 700;
+    var wasCompact = compact;
+    compact = w < 700;
+    if (compact !== wasCompact && mode !== 'transition') { showChipsFor(currentView); renderCrumbs(); }
     langButtons.forEach(function (b) {
       var zh = b.getAttribute('data-lang') === 'zh';
       b.textContent = compact ? (zh ? '中文' : 'EN') : (zh ? '繁體中文' : 'English');
@@ -1153,11 +1163,20 @@
       featureChips.push({ item: h, el: gb });
     });
     featureChips.forEach(function (fc) { if (!fc.el.dataset.view) fc.el.dataset.view = 'overview'; });
+    // Outward navigation as chips (phones only — the breadcrumbs shrink to parent › here there)
+    [{ view: 'overview', to: 'galaxy', item: GALAXY }, { view: 'galaxy', to: 'beyond', item: BEYOND }, { view: 'galaxy', to: 'galaxies', item: GALAXIES }]
+      .reverse().forEach(function (n) {
+        var nb = document.createElement('button');
+        nb.type = 'button'; nb.className = 'beyond'; nb.dataset.view = n.view;
+        nb.addEventListener('click', function () { switchView(n.to); });
+        featureBar.insertBefore(nb, featureBar.firstChild);
+        featureChips.push({ item: { chip: n.item.crumb }, el: nb, nav: true });
+      });
   }
 
   function showChipsFor(view) {
     var any = false;
-    featureChips.forEach(function (fc) { var on = fc.el.dataset.view === view; fc.el.hidden = !on; if (on) any = true; });
+    featureChips.forEach(function (fc) { var on = fc.el.dataset.view === view && (!fc.nav || compact); fc.el.hidden = !on; if (on) any = true; });
     featureBar.hidden = !any;
   }
 
