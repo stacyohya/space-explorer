@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Solar System" />
 <link rel="apple-touch-icon" href="icon-180.png" />
 <link rel="icon" href="icon-180.png" />
-<link rel="manifest" href="manifest.json?v=202609102252" />
+<link rel="manifest" href="manifest.json?v=202609111112" />
 <title>Solar System Explorer</title>
 <style>
   :root{
@@ -44,6 +44,7 @@
   #loading .emoji{font-size:52px; animation:float 2.4s ease-in-out infinite;}
   @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
   #loading h1{font-size:18px; letter-spacing:.08em; text-transform:uppercase; color:var(--cyan); margin:0;}
+  #loading h1 .ver{font-size:11px; color:var(--muted); letter-spacing:.05em; vertical-align:middle; margin-left:6px;}
   #loading p{color:var(--muted); font-size:13px; margin:0;}
   #loading .bar{width:220px; height:4px; background:#141b2b; border-radius:4px; overflow:hidden; margin-top:6px;}
   #loading .bar-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--cyan),var(--amber)); transition:width .25s ease;}
@@ -271,7 +272,7 @@
 
   <div id="loading">
     <div class="emoji">🪐</div>
-    <h1>Solar System Explorer</h1>
+    <h1>Solar System Explorer <span class="ver">v1.0</span></h1>
     <p id="loading-text">Loading textures from deep space...</p>
     <div class="bar"><div class="bar-fill" id="loading-bar"></div></div>
   </div>
@@ -317,8 +318,8 @@
   <script src="https://unpkg.com/three@0.144.0/build/three.min.js"></script>
   <script src="https://unpkg.com/three@0.144.0/examples/js/controls/OrbitControls.js"></script>
   <script>if (location.protocol === 'file:') document.write('<script src="textures-data.js"><\/script>');</script>
-  <script src="content.js?v=202609102252"></script>
-  <script src="audio/manifest.js?v=202609102252"></script>
-  <script src="app.js?v=202609102252"></script>
+  <script src="content.js?v=202609111112"></script>
+  <script src="audio/manifest.js?v=202609111112"></script>
+  <script src="app.js?v=202609111112"></script>
 </body>
 </html>
