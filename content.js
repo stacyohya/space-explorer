@@ -4260,7 +4260,7 @@ var GALAXIES_CONTENT = {
 var FAMILY_CONTENT = {
   "name": {
     "en": "The Cosmic Family",
-    "zh": "宇宙的家族"
+    "zh": "宇宙家族"
   },
   "subtitle": {
     "en": "What Is What in Space",
@@ -4268,7 +4268,7 @@ var FAMILY_CONTENT = {
   },
   "chip": {
     "en": "🔭 Cosmic family",
-    "zh": "🔭 宇宙的家族"
+    "zh": "🔭 宇宙家族"
   },
   "ui": {
     "start": {

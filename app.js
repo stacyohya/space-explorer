@@ -112,7 +112,7 @@
     beyond:   { dist: 16, y: 0.22, min: 9,  max: 30 },
     galaxy:   { dist: 62, y: 0.55, min: 24, max: 110 },
     galaxies: { dist: 54, y: 0.35, min: 26, max: 95 },
-    family:   { dist: 30, y: 0.12, min: 16, max: 60 }
+    family:   { dist: 30, y: 0.12, min: 16, max: 60, fit: 40 }   // fit: world width that must be visible (7 models + margins)
   };
   var DWARF_BODIES = {
     haumea:   { dist: 46,   tilt: 0.50, speed: 0.007,  size: 0.30, color: 0xdedede, egg: true, ring: true, phase: 4.0 },
@@ -2060,6 +2060,11 @@
       } else {
         var vc = VIEW_CAM[view];
         camDist = vc.dist; camDistMin = vc.min; camDistMax = vc.max;
+        if (vc.fit) {
+          var halfFov = detailCamera.fov / 2 * Math.PI / 180;
+          camDist = Math.max(vc.dist, (vc.fit / 2) / (Math.tan(halfFov) * detailCamera.aspect));
+          camDistMax = Math.max(camDistMax, camDist * 1.4);
+        }
         if (labelLayers[view]) labelLayers[view].el.style.display = 'block';
         var g = { beyond: beyondGroup, galaxy: galaxyGroup, galaxies: galaxiesGroup, family: familyGroup }[view];
         if (g) { g.rotation.set(0, 0, 0); if (view === 'family') g.position.x = 0; }
