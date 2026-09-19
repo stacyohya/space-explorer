@@ -194,8 +194,8 @@ var PLANET_CONTENT = {
       {
         "icon": "🚀",
         "en": {
-          "title": "A space robot touched it",
-          "text": "A space robot flew right next to the Sun. It is the fastest thing people have ever built!"
+          "title": "A spacecraft touched it",
+          "text": "A spacecraft flew right next to the Sun. It is the fastest thing people have ever built!"
         },
         "zh": {
           "title": "有太空船碰過它",
@@ -366,8 +366,8 @@ var PLANET_CONTENT = {
       {
         "icon": "🚀",
         "en": {
-          "title": "Robot visitors",
-          "text": "Only two space robots have visited Mercury. A new one is flying there right now!"
+          "title": "Spacecraft visitors",
+          "text": "Only two spacecraft have visited Mercury. A new one is flying there right now!"
         },
         "zh": {
           "title": "機器人訪客",
@@ -1011,7 +1011,7 @@ var PLANET_CONTENT = {
           "kicker": "Rings",
           "title": "Jupiter's Hidden Rings",
           "question": "Does Jupiter have rings?",
-          "text": "Yes! Jupiter has thin rings made of dust. They are very hard to see. Nobody knew about them until a space robot flew by!"
+          "text": "Yes! Jupiter has thin rings made of dust. They are very hard to see. Nobody knew about them until a spacecraft flew by!"
         },
         "zh": {
           "kicker": "微弱的環",
@@ -1183,8 +1183,8 @@ var PLANET_CONTENT = {
       {
         "icon": "🚀",
         "en": {
-          "title": "A robot visitor",
-          "text": "A space robot named Juno is flying around Jupiter right now. It takes amazing pictures."
+          "title": "A spacecraft visitor",
+          "text": "A spacecraft named Juno is flying around Jupiter right now. It takes amazing pictures."
         },
         "zh": {
           "title": "機器人訪客",
@@ -1398,8 +1398,8 @@ var PLANET_CONTENT = {
       {
         "icon": "🛰️",
         "en": {
-          "title": "A robot explorer",
-          "text": "A space robot named Cassini flew around Saturn for thirteen years. It took beautiful pictures."
+          "title": "A spacecraft explorer",
+          "text": "A spacecraft named Cassini flew around Saturn for thirteen years. It took beautiful pictures."
         },
         "zh": {
           "title": "探險家卡西尼號",
@@ -1601,7 +1601,7 @@ var PLANET_CONTENT = {
         "icon": "🛰️",
         "en": {
           "title": "Only one visitor",
-          "text": "Only one space robot has ever flown past Uranus. It was a long time ago."
+          "text": "Only one spacecraft has ever flown past Uranus. It was a long time ago."
         },
         "zh": {
           "title": "只有一位訪客",
@@ -1748,7 +1748,7 @@ var PLANET_CONTENT = {
         "icon": "🛰️",
         "en": {
           "title": "One quick visit",
-          "text": "Only one space robot has visited Neptune. It took twelve years to fly there!"
+          "text": "Only one spacecraft has visited Neptune. It took twelve years to fly there!"
         },
         "zh": {
           "title": "短短的一次拜訪",
@@ -1907,7 +1907,7 @@ var OVERVIEW_CONTENT = {
       "en": {
         "kicker": "Voyager 1",
         "title": "The Farthest Traveler",
-        "question": "What is that tiny spaceship?",
+        "question": "What is that tiny spacecraft?",
         "text": "This is Voyager 1. It left Earth a long time ago. Now it is the farthest thing people have ever sent into space! It carries a golden record with music and hello in many languages."
       },
       "zh": {
@@ -2045,7 +2045,7 @@ var OVERVIEW_CONTENT = {
       "en": {
         "name": "Ceres",
         "subtitle": "The dwarf planet in the asteroid belt",
-        "text": "Ceres is the biggest rock in the asteroid belt. It has ice under its skin and bright white spots. A space robot flew around it!"
+        "text": "Ceres is the biggest rock in the asteroid belt. It has ice under its skin and bright white spots. A spacecraft flew around it!"
       },
       "zh": {
         "name": "穀神星",
@@ -2063,7 +2063,7 @@ var OVERVIEW_CONTENT = {
       "en": {
         "name": "Pluto",
         "subtitle": "The famous one",
-        "text": "Pluto is small and far away. It has a big heart shape on it! It has five moons of its own. A space robot flew past it and took pictures."
+        "text": "Pluto is small and far away. It has a big heart shape on it! It has five moons of its own. A spacecraft flew past it and took pictures."
       },
       "zh": {
         "name": "冥王星",
@@ -2574,7 +2574,7 @@ var GALAXY_CONTENT = {
       "icon": "🚫",
       "en": {
         "title": "No photo from outside",
-        "text": "Every picture of the whole Milky Way is a drawing. No spaceship can fly far enough to take a real photo!"
+        "text": "Every picture of the whole Milky Way is a drawing. No spacecraft can fly far enough to take a real photo!"
       },
       "zh": {
         "title": "沒有從外面拍的照片",
