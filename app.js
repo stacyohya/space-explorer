@@ -475,6 +475,9 @@
     var illo = ((c.kind === 'feature' || c.kind === 'hotspot') && c.item.illustration) ? c.item.illustration : null;
     cardCanvas.hidden = !illo;
     cardPanel.classList.toggle('wide', !!illo);
+    // Wider panel for animated cards on tablets/desktops (set inline so it always wins).
+    var wide = !!illo && (canvas.clientWidth || window.innerWidth) >= 900;
+    cardPanel.style.width = wide ? 'min(600px, calc(100vw - 44px))' : '';
     if (illo && CARD_ILLUSTRATIONS[illo]) illustrationStop = CARD_ILLUSTRATIONS[illo](cardCanvas, lang);
     cardIcon.textContent = icon;
     cardKicker.textContent = kicker;
