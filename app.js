@@ -1530,7 +1530,7 @@
     beyondScene.add(new THREE.Mesh(new THREE.TorusGeometry(2.12, 0.05, 8, 128), new THREE.MeshBasicMaterial({ color: 0xfff4d6, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false })));
     var amb = glowSprite('rgba(255,120,40,1)', 26, 0.22); amb.position.z = -1; beyondScene.add(amb);
     var sun = glowSprite('rgba(255,240,180,1)', 1.1); sun.position.set(16, 5, -8); beyondScene.add(sun);
-    addLabel('beyond', sun, BEYOND.sunLabel, 'feature');
+    addLabel('beyond', sun, BEYOND.sunLabel, 'hero', function () { switchView('overview'); });
     BEYOND.hotspots.forEach(function (h) {
       var sprite = hotspotSprite(h, h.color, beyondHotspots, 1.0);
       sprite.position.set(h.pos[0], h.pos[1], h.pos[2]);
