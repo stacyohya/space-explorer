@@ -4294,6 +4294,10 @@ var FAMILY_CONTENT = {
     "loading": {
       "en": "Loading…",
       "zh": "載入中…"
+    },
+    "credits": {
+      "en": "Footage: NASA/GSFC/SVS · NASA/SDO · NASA/JHUAPL/SwRI · NASA/Goddard/Univ. of Arizona · ESA/Hubble (CC BY 4.0) — full credits in CREDITS.md",
+      "zh": "影片素材：NASA/GSFC/SVS · NASA/SDO · NASA/JHUAPL/SwRI · NASA/Goddard/亞利桑那大學 · ESA/Hubble（CC BY 4.0）"
     }
   },
   "stops": [

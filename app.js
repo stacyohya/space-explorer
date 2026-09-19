@@ -964,6 +964,7 @@
     introSkip.textContent = FAMILY.ui.skip[lang];
     introGateTitle.textContent = '🔭 ' + FAMILY.name[lang];
     introGateSub.textContent = FAMILY.subtitle[lang];
+    introCredits.textContent = FAMILY.ui.credits[lang];
     introLangButtons.forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-lang') === lang); });
     if (INTRO.active && INTRO.stop >= 0) renderIntroCaption();
     Object.keys(labelLayers).forEach(function (k) {
