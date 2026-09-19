@@ -1844,14 +1844,16 @@
     if (i >= FAMILY.stops.length) { endIntro(); return; }
     INTRO.stop = i; INTRO.line = -1; INTRO.t = 0; INTRO.cam = null;
     var seg = INTRO_SEGMENTS[FAMILY.stops[i].key];
-    introVideo.classList.add('dip');
+    var near = Math.abs(introVideo.currentTime - seg[0]) < 4;   // already at the cross-dissolve: let it play through, no black dip
+    if (!near) introVideo.classList.add('dip');
     INTRO.timer = setTimeout(function () {
-      seekAndPlay(seg[0]);
+      if (near) { INTRO.holding = false; var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); }
+      else seekAndPlay(seg[0]);
       introVideo.classList.remove('dip');
       if (i === FAMILY.stops.length - 1) introCredits.hidden = false;
       renderIntroCaption();
       playIntroLine(0);
-    }, i === 0 ? 50 : 450);
+    }, (i === 0 || near) ? 50 : 450);
   }
 
   function renderIntroCaption() {
