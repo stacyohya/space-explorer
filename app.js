@@ -795,7 +795,7 @@
   function sceneItems() {
     var body = activeBody(), d = body.detail, groups = [];
     if (d.features) groups.push({ title: t('listFeatures'), kind: 'feature', items: d.features.map(function (f, i) { return { icon: f.icon, text: f[lang].title, kind: 'feature', item: f, index: i }; }) });
-    if (d.hotspots) groups.push({ title: t('listSpots'), kind: 'hotspot', items: d.hotspots.map(function (h, i) { return { icon: h.icon, text: h[lang].title, kind: 'hotspot', item: h, index: i }; }) });
+    if (d.hotspots) groups.push({ title: t('listFeatures'), kind: 'hotspot', items: d.hotspots.map(function (h, i) { return { icon: h.icon, text: h[lang].title, kind: 'hotspot', item: h, index: i }; }) });
     if (d.moons && d.moons.length) groups.push({ title: t('listMoons'), kind: 'moon', items: d.moons.map(function (m, i) { return { icon: m.icon, text: m[lang].name, kind: 'moon', item: m, index: i }; }) });
     if (d.dwarfs) groups.push({ title: t('listDwarfs'), kind: 'dwarf', items: d.dwarfs.map(function (m, i) { return { icon: m.icon, text: m[lang].name, kind: 'dwarf', item: null, index: i }; }) });
     if (d.facts && d.facts.length) groups.push({ title: t('listFacts'), kind: 'fact', items: d.facts.map(function (f, i) { return { icon: f.icon, text: f[lang].title, kind: 'fact', item: null, index: i }; }) });
