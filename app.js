@@ -1758,10 +1758,10 @@
   var introRange = document.getElementById('intro-range');
   var introTicks = document.getElementById('intro-ticks');
   var introPauseIcon = document.getElementById('intro-pause');
-  var INTRO_TOTAL = 164;
+  var INTRO_TOTAL = 162;
   INTRO.paused = false; INTRO.scrubbing = false;
   // Where each stop lives inside film/intro.mp4 (seconds)
-  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 164] };
+  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 162] };
   function introSeg() { var s = FAMILY.stops[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
   function sentencesOf(stop) {
     var out = [];
@@ -1852,7 +1852,8 @@
     var seg = INTRO_SEGMENTS[FAMILY.stops[i].key];
     var target = atTime !== undefined ? atTime : seg[0];
     var near = atTime === undefined && Math.abs(introVideo.currentTime - seg[0]) < 4;   // already at the cross-dissolve: let it play through, no black dip
-    if (!near) introVideo.classList.add('dip');
+    var scrub = atTime !== undefined;                                                    // user dragged the bar: seek in place, never go black
+    if (!near && !scrub) introVideo.classList.add('dip');
     INTRO.timer = setTimeout(function () {
       var go = function () {
         introVideo.classList.remove('dip');
@@ -1867,7 +1868,7 @@
         seekAndPlay(target);
         setTimeout(fin, 1500);
       }
-    }, (i === 0 || near) ? 50 : 500);
+    }, (i === 0 || near || scrub) ? 50 : 500);
   }
 
   function renderIntroCaption() {
@@ -1953,7 +1954,12 @@
   }).join('');
   introRange.max = INTRO_TOTAL;
   introRange.addEventListener('pointerdown', function () { INTRO.scrubbing = true; });
-  introRange.addEventListener('input', function () { INTRO.scrubbing = true; });
+  var scrubPreviewTimer = null;
+  introRange.addEventListener('input', function () {
+    INTRO.scrubbing = true;
+    clearTimeout(scrubPreviewTimer);
+    scrubPreviewTimer = setTimeout(function () { try { introVideo.currentTime = +introRange.value; } catch (e) {} }, 60);   // live preview while dragging
+  });
   function scrubTo(t) {
     INTRO.scrubbing = false;
     if (!INTRO.active) return;
