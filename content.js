@@ -4264,7 +4264,7 @@ var FAMILY_CONTENT = {
   },
   "subtitle": {
     "en": "Meet the Members of the Universe",
-    "zh": "認識宇宙的組成成員"
+    "zh": "認識宇宙成員"
   },
   "chip": {
     "en": "🔭 Cosmic family",
