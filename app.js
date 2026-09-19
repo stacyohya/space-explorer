@@ -173,7 +173,6 @@
   var speakLabel = document.getElementById('speak-label');
   var nextBtn = document.getElementById('next-btn');
   var pagerCount = document.getElementById('pager-count');
-  var autoBtn = document.getElementById('auto-btn');
   var listPlayBtn = document.getElementById('list-play');
   var prevBtn = document.getElementById('prev-btn');
   var linkBtn = document.getElementById('link-btn');
@@ -518,8 +517,6 @@
     nextBtn.hidden = false; prevBtn.hidden = false;
     var pos = seqPosition(c), seqLen = sceneSequence().length;
     pagerCount.textContent = pos >= 0 ? (pos + 1) + ' / ' + seqLen : '';
-    autoBtn.textContent = t('stopAll');
-    autoBtn.hidden = !autoPlay;
     nextBtn.title = t('next'); prevBtn.title = t('prev');
     nextBtn.setAttribute('aria-label', t('next')); prevBtn.setAttribute('aria-label', t('prev'));
     linkBtn.hidden = !link;
@@ -576,14 +573,12 @@
   function startAutoPlay(fromStart) {
     autoPlay = true;
     if (fromStart || !currentCard) { var first = sceneSequence()[0]; if (!first) return; closeList(); openCard(first.kind, first.item, first.index); }
-    autoBtn.textContent = t('stopAll'); autoBtn.hidden = false;
     listPlayBtn.textContent = t('stopAll');
     speak(currentSpeech);
   }
   function stopAutoPlay() {
     autoPlay = false;
     clearTimeout(autoTimer);
-    autoBtn.hidden = true;
     listPlayBtn.textContent = t('playAll');
   }
   function onSpeechDone() {
@@ -594,7 +589,6 @@
       if (stepDeck(1)) speak(currentSpeech); else stopAutoPlay();
     }, 900);
   }
-  autoBtn.addEventListener('click', stopAutoPlay);
   listPlayBtn.addEventListener('click', function () { if (autoPlay) stopAutoPlay(); else startAutoPlay(true); });
   factsBtn.addEventListener('click', function () { openCard('fact', null, factIndex); });
 
