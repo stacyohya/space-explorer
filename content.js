@@ -2399,7 +2399,7 @@ var BEYOND_CONTENT = {
       }
     },
     {
-      "pos": [16, 9, -8],
+      "pos": [10.5, 8.2, -5],
       "color": "#fff1a8",
       "icon": "☀️",
       "en": {
