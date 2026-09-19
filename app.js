@@ -926,6 +926,11 @@
       p.label.classList.toggle('seen', seen);
       p.label.querySelector('.name').textContent = (seen ? '✓ ' : '') + p.text[lang];
     });
+    labelLayers.family.list.forEach(function (p) {
+      var seen = isVisited('family', 'hotspot', FAMILY.stops.indexOf(p.item));
+      p.label.classList.toggle('seen', seen);
+      p.label.querySelector('.name').textContent = (seen ? '✓ ' : '') + p.text[lang];
+    });
     var pr = sceneProgress();
     listBtn.textContent = '📋 ' + pr.seen + '/' + pr.total;
     if (listPanel.classList.contains('show')) renderList();
@@ -1735,7 +1740,8 @@
         var head = glowSprite('rgba(255,250,235,1)', 0.9); head.position.set(0.6, 0.5, 0); holder.add(head);
         for (var k = 1; k <= 8; k++) { var tl = glowSprite('rgba(190,225,255,1)', 0.5 + k * 0.22, 0.45 * (1 - k / 9)); tl.position.set(0.6 + k * 0.38, 0.5 + k * 0.22, 0); holder.add(tl); }
       }
-      var hs = hotspotSprite(s, '#ffe3a8', familyHotspots, 1.3, true); hs.position.set(x, 2.6, 0); familyGroup.add(hs);
+      var hit = new THREE.Mesh(new THREE.SphereGeometry(2.1, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
+      hit.position.set(x, 0.1, 0); hit.userData.hotspot = s; familyHotspots.push(hit); familyGroup.add(hit);
       var anchor = new THREE.Object3D(); anchor.position.set(x, -2.4, 0); familyGroup.add(anchor);
       addLabel('family', anchor, { en: s.icon + ' ' + s.en.title, zh: s.icon + ' ' + s.zh.title }, 'feature', function () { openCard('hotspot', s); }, s);
     });
@@ -2101,7 +2107,6 @@
       renderer.render(galaxyScene, detailCamera);
     } else if (currentView === 'family') {
       familySpinners.forEach(function (sp) { if (sp.sprite) sp.obj.material.rotation += sp.speed * delta; else if (sp.axis === 'z') sp.obj.rotation.z += sp.speed * delta; else sp.obj.rotation.y += sp.speed * delta; });
-      pulseHotspots(familyHotspots, tm);
       updateLabelList(labelLayers.family.list, detailCamera);
       renderer.render(familyScene, detailCamera);
     } else if (currentView === 'galaxies') {
