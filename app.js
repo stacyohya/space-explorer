@@ -28,7 +28,16 @@
       prev: '◀ Previous',
       factKicker: 'Did you know?',
       moonKicker: 'Moon of {name}',
-      sub: '— {name}, {subtitle}'
+      sub: '— {name}, {subtitle}',
+      listTitle: 'Things to find here',
+      listSpots: 'Glowing spots',
+      listFeatures: 'Things to explore',
+      listMoons: 'Moons',
+      listDwarfs: 'Dwarf planets',
+      listFacts: 'Fun facts',
+      listSeen: 'seen',
+      listReset: 'Start over',
+      listClose: 'Close'
     },
     zh: {
       titleMain: '🔭 探索太陽系',
@@ -48,7 +57,16 @@
       prev: '◀ 上一個',
       factKicker: '你知道嗎？',
       moonKicker: '{name}的衛星',
-      sub: '— {name}，{subtitle}'
+      sub: '— {name}，{subtitle}',
+      listTitle: '這裡可以看的東西',
+      listSpots: '光點問答',
+      listFeatures: '可以探索的東西',
+      listMoons: '衛星',
+      listDwarfs: '矮行星',
+      listFacts: '有趣知識',
+      listSeen: '已看',
+      listReset: '重新開始',
+      listClose: '關閉'
     }
   };
 
@@ -155,6 +173,11 @@
   var cardClose = document.getElementById('card-close');
   var factsBtn = document.getElementById('facts-btn');
   var featureBar = document.getElementById('feature-bar');
+  var listBtn = document.getElementById('list-btn');
+  var listPanel = document.getElementById('list-panel');
+  var listBody = document.getElementById('list-body');
+  var listTitle = document.getElementById('list-title');
+  var listProgress = document.getElementById('list-progress');
   var langButtons = Array.prototype.slice.call(document.querySelectorAll('#lang-toggle button'));
 
   // Floating HTML labels: one layer per view. Entries: { obj, label, text? }
@@ -349,13 +372,13 @@
     return sprite;
   }
 
-  function addLabel(view, obj, textObj, cls, onClick) {
+  function addLabel(view, obj, textObj, cls, onClick, item) {
     var el = document.createElement('div');
     el.className = 'planet-label ' + (cls || 'feature');
     el.innerHTML = '<span class="dot"></span><span class="name"></span>' + (cls === 'hero' ? '<span class="cta"></span>' : '');
     if (onClick) el.addEventListener('click', onClick); else el.style.pointerEvents = 'none';
     labelLayers[view].el.appendChild(el);
-    labelLayers[view].list.push({ obj: obj, label: el, text: textObj });
+    labelLayers[view].list.push({ obj: obj, label: el, text: textObj, item: item || null });
     return el;
   }
 
@@ -493,9 +516,11 @@
     if (link) { linkBtn.textContent = link.linkLabel[lang]; linkBtn.onclick = function () { switchView(link.link); }; }
     currentSpeech = (question ? question + ' ' : '') + text;
     currentClipId = body.key + '-' + c.kind + '-' + idx + '-' + lang;
+    markVisited(body.key, c.kind, idx);
   }
 
   function openCard(kind, item, index) {
+    closeList();
     currentCard = { kind: kind, item: item, index: index };
     stopAllSpeech();
     renderCard();
@@ -715,6 +740,100 @@
   };
 
   // ------------------------------------------------------------------
+  // Visited tracking (per browser session) + checklist drawer
+  // ------------------------------------------------------------------
+  var visited = {};
+  try { visited = JSON.parse(sessionStorage.getItem('sse-visited') || '{}') || {}; } catch (e) { visited = {}; }
+  function saveVisited() { try { sessionStorage.setItem('sse-visited', JSON.stringify(visited)); } catch (e) { /* ignore */ } }
+  function visitKey(bodyKey, kind, idx) { return bodyKey + '-' + kind + '-' + idx; }
+  function isVisited(bodyKey, kind, idx) { return !!visited[visitKey(bodyKey, kind, idx)]; }
+  function markVisited(bodyKey, kind, idx) {
+    var k = visitKey(bodyKey, kind, idx);
+    if (visited[k]) return;
+    visited[k] = 1; saveVisited();
+    refreshVisited();
+  }
+
+  // Everything a child can open in the current scene, grouped.
+  function sceneItems() {
+    var body = activeBody(), d = body.detail, groups = [];
+    if (d.features) groups.push({ title: t('listFeatures'), kind: 'feature', items: d.features.map(function (f, i) { return { icon: f.icon, text: f[lang].title, kind: 'feature', item: f, index: i }; }) });
+    if (d.hotspots) groups.push({ title: t('listSpots'), kind: 'hotspot', items: d.hotspots.map(function (h, i) { return { icon: h.icon, text: h[lang].title, kind: 'hotspot', item: h, index: i }; }) });
+    if (d.moons && d.moons.length) groups.push({ title: t('listMoons'), kind: 'moon', items: d.moons.map(function (m, i) { return { icon: m.icon, text: m[lang].name, kind: 'moon', item: m, index: i }; }) });
+    if (d.dwarfs) groups.push({ title: t('listDwarfs'), kind: 'dwarf', items: d.dwarfs.map(function (m, i) { return { icon: m.icon, text: m[lang].name, kind: 'dwarf', item: null, index: i }; }) });
+    return { body: body, groups: groups, facts: d.facts || [] };
+  }
+
+  function sceneProgress() {
+    var s = sceneItems(), seen = 0, total = 0;
+    s.groups.forEach(function (g) { g.items.forEach(function (it) { total++; if (isVisited(s.body.key, it.kind, it.index)) seen++; }); });
+    return { seen: seen, total: total };
+  }
+
+  function renderList() {
+    var s = sceneItems();
+    listTitle.textContent = t('listTitle');
+    var p = sceneProgress();
+    listProgress.textContent = p.seen + ' / ' + p.total;
+    listBtn.textContent = '📋 ' + p.seen + '/' + p.total;
+    listBody.innerHTML = '';
+    s.groups.forEach(function (g) {
+      var h = document.createElement('div'); h.className = 'group'; h.textContent = g.title; listBody.appendChild(h);
+      g.items.forEach(function (it) {
+        var row = document.createElement('div'); row.className = 'row' + (isVisited(s.body.key, it.kind, it.index) ? ' seen' : '');
+        row.innerHTML = '<span class="check">' + (isVisited(s.body.key, it.kind, it.index) ? '✓' : '') + '</span><span class="ico"></span><span class="name"></span><button class="say" aria-label="Listen">🔊</button>';
+        row.querySelector('.ico').textContent = it.icon;
+        row.querySelector('.name').textContent = it.text;
+        row.addEventListener('click', function () { closeList(); openCard(it.kind, it.item, it.index); });
+        row.querySelector('.say').addEventListener('click', function (e) { e.stopPropagation(); closeList(); openCard(it.kind, it.item, it.index); speak(currentSpeech); });
+        listBody.appendChild(row);
+      });
+    });
+    if (s.facts.length) {
+      var h2 = document.createElement('div'); h2.className = 'group'; h2.textContent = t('listFacts'); listBody.appendChild(h2);
+      var seenFacts = s.facts.filter(function (f, i) { return isVisited(s.body.key, 'fact', i); }).length;
+      var row2 = document.createElement('div'); row2.className = 'row';
+      row2.innerHTML = '<span class="check">' + (seenFacts === s.facts.length ? '✓' : '') + '</span><span class="ico">✨</span><span class="name"></span><span class="count"></span>';
+      row2.querySelector('.name').textContent = t('listFacts');
+      row2.querySelector('.count').textContent = seenFacts + ' / ' + s.facts.length + ' ' + t('listSeen');
+      row2.addEventListener('click', function () { closeList(); openCard('fact', null, factIndex); });
+      listBody.appendChild(row2);
+    }
+    var reset = document.createElement('button'); reset.className = 'reset'; reset.textContent = t('listReset');
+    reset.addEventListener('click', function () { visited = {}; saveVisited(); refreshVisited(); renderList(); });
+    listBody.appendChild(reset);
+  }
+
+  function openList() { closeCard(); renderList(); listPanel.classList.add('show'); listBtn.classList.add('active'); }
+  function closeList() { listPanel.classList.remove('show'); listBtn.classList.remove('active'); }
+  listBtn.addEventListener('click', function () { if (listPanel.classList.contains('show')) closeList(); else openList(); });
+  document.getElementById('list-close').addEventListener('click', closeList);
+
+  // Update the ✓ marks on 3D hotspots and overview labels, plus the button counter.
+  function refreshVisited() {
+    var body = activeBody();
+    var lists = { detail: hotspotSprites, beyond: beyondHotspots, galaxy: galaxyHotspots, galaxies: galaxiesHotspots };
+    Object.keys(lists).forEach(function (v) {
+      lists[v].forEach(function (s) {
+        var h = s.userData.hotspot, d = v === 'detail' ? (currentPlanet && currentPlanet.detail) : (v === 'beyond' ? BEYOND : v === 'galaxy' ? GALAXY : GALAXIES);
+        var key = v === 'detail' ? (currentPlanet && currentPlanet.key) : v;
+        s.userData.visited = !!(d && key && isVisited(key, 'hotspot', d.hotspots.indexOf(h)));
+      });
+    });
+    labelLayers.overview.list.forEach(function (p) {
+      if (!p.item || !p.text) return;
+      var kind = p.item.chip ? 'feature' : 'dwarf';
+      var idx = kind === 'feature' ? OVERVIEW.features.indexOf(p.item) : OVERVIEW.dwarfs.indexOf(p.item);
+      var seen = isVisited('overview', kind, idx);
+      p.label.classList.toggle('seen', seen);
+      p.label.querySelector('.name').textContent = (seen ? '✓ ' : '') + p.text[lang];
+    });
+    var pr = sceneProgress();
+    listBtn.textContent = '📋 ' + pr.seen + '/' + pr.total;
+    if (listPanel.classList.contains('show')) renderList();
+  }
+
+  // ------------------------------------------------------------------
   // Language + breadcrumbs
   // ------------------------------------------------------------------
   function applyLanguage() {
@@ -745,6 +864,7 @@
     });
     featureChips.forEach(function (fc) { fc.el.textContent = fc.item.chip[lang]; });
     renderCrumbs();
+    refreshVisited();
     if (currentCard) renderCard();
   }
 
@@ -881,6 +1001,8 @@
     applyAspect(detailCamera, 45, w / h);
     var wasNarrow = narrow;
     narrow = w < 700;
+    // keep the checklist button just left of the language toggle
+    document.documentElement.style.setProperty('--toggle-w', (document.getElementById('lang-toggle').offsetWidth + 10) + 'px');
     langButtons.forEach(function (b) {
       var zh = b.getAttribute('data-lang') === 'zh';
       b.textContent = narrow ? (zh ? '中文' : 'EN') : (zh ? '繁體中文' : 'English');
@@ -1023,7 +1145,7 @@
       pivot.add(s); tail.push(s);
     }
     comet = { pivot: pivot, nucleus: nucleus, coma: coma, tail: tail, M: 0.6, a: 32, e: 0.72, prev: new THREE.Vector3() };
-    addLabel('overview', nucleus, cometItem.label, 'feature', function () { openFeature(cometItem); });
+    addLabel('overview', nucleus, cometItem.label, 'feature', function () { openFeature(cometItem); }, cometItem);
 
     // Asteroid belt + Ceres (dwarf planet)
     var beltItem = featureByKey('belt');
@@ -1032,25 +1154,25 @@
     var beltHit = new THREE.Mesh(new THREE.RingGeometry(20.0, 23.1, 96), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false }));
     beltHit.rotation.x = -Math.PI / 2; beltHit.userData.feature = beltItem; featureHits.push(beltHit); beltGroup.add(beltHit);
     var beltAnchor = new THREE.Object3D(); beltAnchor.position.set(-15.3, 0.4, 15.3); beltGroup.add(beltAnchor);
-    addLabel('overview', beltAnchor, beltItem.label, 'feature', function () { openFeature(beltItem); });
+    addLabel('overview', beltAnchor, beltItem.label, 'feature', function () { openFeature(beltItem); }, beltItem);
     var ceresItem = OVERVIEW.dwarfs[dwarfIndex('ceres')];
     var ceres = new THREE.Mesh(new THREE.DodecahedronGeometry(0.3, 1), new THREE.MeshStandardMaterial({ color: 0x9a9088, roughness: 1 }));
     ceres.position.set(21.4, 0.1, 0); beltGroup.add(ceres);
     var ceresHit = hitSphere(1.2, { dwarf: ceresItem }); ceresHit.position.copy(ceres.position); beltGroup.add(ceresHit);
-    addLabel('overview', ceres, ceresItem.label, 'feature', function () { openCard('dwarf', null, dwarfIndex('ceres')); });
+    addLabel('overview', ceres, ceresItem.label, 'feature', function () { openCard('dwarf', null, dwarfIndex('ceres')); }, ceresItem);
 
     // Kuiper belt + Pluto
     var kuiperItem = featureByKey('kuiper');
     kuiperGroup = new THREE.Object3D(); overviewScene.add(kuiperGroup);
     kuiperGroup.add(makePointsRing(1800, 41, 48, 1.2, 0.12, 0xa9c4e0));
     var kuiperAnchor = new THREE.Object3D(); kuiperAnchor.position.set(31, 0.8, 31); kuiperGroup.add(kuiperAnchor);
-    addLabel('overview', kuiperAnchor, kuiperItem.label, 'feature', function () { openFeature(kuiperItem); });
+    addLabel('overview', kuiperAnchor, kuiperItem.label, 'feature', function () { openFeature(kuiperItem); }, kuiperItem);
     var plutoItem = OVERVIEW.dwarfs[dwarfIndex('pluto')];
     plutoPivot = new THREE.Object3D(); plutoPivot.rotation.x = 0.3; plutoPivot.rotation.y = 2.0; overviewScene.add(plutoPivot);
     var pluto = new THREE.Mesh(new THREE.SphereGeometry(0.3, 20, 14), new THREE.MeshStandardMaterial({ color: 0xcdb59b, roughness: 1 }));
     pluto.position.set(44, 0, 0); plutoPivot.add(pluto);
     var plutoHit = hitSphere(1.4, { dwarf: plutoItem }); plutoHit.position.copy(pluto.position); plutoPivot.add(plutoHit);
-    addLabel('overview', pluto, plutoItem.label, 'feature', function () { openCard('dwarf', null, dwarfIndex('pluto')); });
+    addLabel('overview', pluto, plutoItem.label, 'feature', function () { openCard('dwarf', null, dwarfIndex('pluto')); }, plutoItem);
 
     // Other dwarf planets: Haumea (egg + ring), Makemake, Eris (far, tilted)
     Object.keys(DWARF_BODIES).forEach(function (key) {
@@ -1066,7 +1188,7 @@
       var guide = new THREE.Mesh(new THREE.RingGeometry(b.dist - 0.03, b.dist + 0.03, 160), new THREE.MeshBasicMaterial({ color: 0x3b5773, transparent: true, opacity: 0.16, side: THREE.DoubleSide }));
       guide.rotation.x = -Math.PI / 2; dp.add(guide);
       var hit = hitSphere(1.4, { dwarf: item }); hit.position.copy(mesh.position); dp.add(hit);
-      addLabel('overview', mesh, item.label, 'feature', function () { openCard('dwarf', null, dwarfIndex(key)); });
+      addLabel('overview', mesh, item.label, 'feature', function () { openCard('dwarf', null, dwarfIndex(key)); }, item);
       dwarfObjs.push({ cfg: b, pivot: dp, mesh: mesh });
     });
 
@@ -1076,7 +1198,7 @@
     voyager.scale.set(2.4, 2.4, 1); voyager.position.set(-46, 9, -34);
     overviewScene.add(voyager);
     voyager.add(hitSphere(2.2, { feature: voyItem }));
-    addLabel('overview', voyager, voyItem.label, 'feature', function () { openFeature(voyItem); });
+    addLabel('overview', voyager, voyItem.label, 'feature', function () { openFeature(voyItem); }, voyItem);
 
     // Meteor pool
     for (var m = 0; m < 16; m++) {
@@ -1540,6 +1662,7 @@
     fadeEl.classList.add('show');
     setTimeout(function () {
       closeCard();
+      closeList();
       currentPlanet = null;
       Object.keys(labelLayers).forEach(function (k) { labelLayers[k].el.style.display = 'none'; });
       showChipsFor(view);
@@ -1581,6 +1704,8 @@
 
   function pulseHotspots(list, tm) {
     list.forEach(function (s) {
+      if (s.userData.visited) { s.scale.set(s.userData.baseScale * 0.7, s.userData.baseScale * 0.7, 1); s.material.opacity = 0.4; return; }
+      s.material.opacity = 1;
       var pulse = 0.9 + Math.sin(tm * 2.2 + s.position.x) * 0.12;
       s.scale.set(s.userData.baseScale * pulse, s.userData.baseScale * pulse, 1);
     });
@@ -1614,10 +1739,11 @@
       var camDir = detailCamera.position.clone().normalize();
       var worldQuat = new THREE.Quaternion(); planetGroup.getWorldQuaternion(worldQuat);
       hotspotSprites.forEach(function (s) {
-        var pulse = 0.9 + Math.sin(tm * 2.2 + s.position.x) * 0.12;
+        var seen = s.userData.visited;
+        var pulse = seen ? 0.7 : 0.9 + Math.sin(tm * 2.2 + s.position.x) * 0.12;
         s.scale.set(s.userData.baseScale * pulse, s.userData.baseScale * pulse, 1);
         var facing = s.userData.normal.clone().applyQuaternion(worldQuat).dot(camDir);
-        s.material.opacity = Math.max(0.08, Math.min(1, (facing + 0.15) * 1.6));
+        s.material.opacity = Math.max(0.08, Math.min(1, (facing + 0.15) * 1.6)) * (seen ? 0.4 : 1);
       });
       renderer.render(detailScene, detailCamera);
     } else if (currentView === 'beyond') {
