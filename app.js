@@ -1785,7 +1785,7 @@
   });
   introVideo.addEventListener('timeupdate', function () {
     var seg = introSeg(); if (!INTRO.active || !seg) return;
-    if (!INTRO.paused && introVideo.currentTime >= seg[1] - 0.15 && !introVideo.paused) { INTRO.holding = true; introVideo.pause(); }   // hold the last frame while narration finishes
+    if (!INTRO.paused && !INTRO.scrubbing && introVideo.currentTime >= seg[1] - 0.15 && !introVideo.paused) { INTRO.holding = true; introVideo.pause(); }   // hold the last frame while narration finishes
   });
   function primeIntroVideo() {
     if (!introVideo.getAttribute('src')) { introVideo.setAttribute('src', 'film/intro.mp4?v=' + (window.APP_BUILD || '1')); introVideo.load(); }
@@ -1957,16 +1957,29 @@
     return '<span style="left:' + (seg[0] / INTRO_TOTAL * 100) + '%" title="' + s.en.title + '"></span>';
   }).join('');
   introRange.max = INTRO_TOTAL;
-  introRange.addEventListener('pointerdown', function () { INTRO.scrubbing = true; });
-  var scrubPreviewTimer = null;
-  introRange.addEventListener('input', function () {
+  // Dragging: freeze narration and the video, preview frames as the thumb moves; commit once on release.
+  function beginScrub() {
+    if (INTRO.scrubbing || !INTRO.active) return;
     INTRO.scrubbing = true;
+    clearTimeout(INTRO.timer);
+    stopAllSpeech();
+    INTRO.holding = true;            // keeps the auto-play nudges quiet while we hold the frame
+    introVideo.pause();
+    introVideo.classList.remove('dip');
+    introLineEl.classList.remove('show');
+  }
+  var scrubPreviewTimer = null;
+  introRange.addEventListener('pointerdown', beginScrub);
+  introRange.addEventListener('touchstart', beginScrub, { passive: true });
+  introRange.addEventListener('input', function () {
+    beginScrub();
     clearTimeout(scrubPreviewTimer);
-    scrubPreviewTimer = setTimeout(function () { try { introVideo.currentTime = +introRange.value; } catch (e) {} }, 60);   // live preview while dragging
+    scrubPreviewTimer = setTimeout(function () { try { introVideo.currentTime = +introRange.value; } catch (e) {} }, 60);
   });
   function scrubTo(t) {
+    if (!INTRO.scrubbing || !INTRO.active) return;   // commit once (change + pointerup both fire)
     INTRO.scrubbing = false;
-    if (!INTRO.active) return;
+    clearTimeout(scrubPreviewTimer);
     clearTimeout(INTRO.timer);
     stopAllSpeech();
     INTRO.paused = false; introPauseIcon.hidden = true; introCredits.hidden = true;
@@ -1981,6 +1994,7 @@
   }
   introRange.addEventListener('change', function () { scrubTo(+introRange.value); });
   introRange.addEventListener('pointerup', function () { scrubTo(+introRange.value); });
+  introRange.addEventListener('touchend', function () { scrubTo(+introRange.value); });
 
   function introLineDone() {
     if (!INTRO.active || INTRO.paused) return;
