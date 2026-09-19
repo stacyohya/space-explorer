@@ -2026,22 +2026,26 @@
     if (location.hash === '#/intro') replaceRoute('#/solar');
     INTRO.active = false; INTRO.stop = -1; INTRO.cam = null;
     stopAllSpeech();
-    finishIntroUI();
     if (currentView === 'overview') {
+      finishIntroUI();
       controls.enabled = true;
       labelLayers.overview.el.style.display = 'block';
       showChipsFor('overview');
       mode = 'overview';
       applyLanguage();
     } else if (stayHere) {                                  // history took us back: restore the page the film was started from
+      finishIntroUI();
       if (labelLayers[currentView]) labelLayers[currentView].el.style.display = 'block';
       showChipsFor(currentView);
       mode = currentView;
       applyLanguage();
     } else {
-      mode = 'overview';   // let switchView run; it restores overview state
+      // keep the (black) film on screen while the page underneath switches, so the page the film
+      // was started from never flashes before the solar system appears
+      mode = 'overview';
       currentView = 'x';
       switchView('overview');
+      setTimeout(finishIntroUI, 480);
     }
     if (!silent) showToast(FAMILY.ui.welcome[lang]);
   }
