@@ -355,12 +355,12 @@ var PLANET_CONTENT = {
       {
         "icon": "🌙",
         "en": {
-          "title": "No moons",
-          "text": "Mercury has no moons at all. Zero!"
+          "title": "No moon at all",
+          "text": "Mercury has no moon. It is the closest planet to the Sun, and the Sun pulls very, very hard. If a moon came near, the Sun would pull it away. Mercury is also the smallest planet, so its own pull is too weak to hold a moon. Only Mercury and Venus have no moons!"
         },
         "zh": {
           "title": "一顆衛星都沒有",
-          "text": "水星沒有任何衛星。它離太陽太近了，太陽的引力會把任何衛星都搶走。"
+          "text": "水星沒有衛星。它是離太陽最近的行星，太陽的拉力非常非常強。如果有衛星靠近，太陽就會把它拉走。而且水星是最小的行星，自己的拉力太弱，抓不住衛星。太陽系裡只有水星和金星沒有衛星喔！"
         }
       },
       {
