@@ -4263,8 +4263,8 @@ var FAMILY_CONTENT = {
     "zh": "宇宙家族"
   },
   "subtitle": {
-    "en": "What Is What in Space",
-    "zh": "宇宙裡的東西怎麼分"
+    "en": "Meet the Members of the Universe",
+    "zh": "認識宇宙的組成成員"
   },
   "chip": {
     "en": "🔭 Cosmic family",
@@ -4456,21 +4456,25 @@ var FAMILY_CONTENT = {
       "link": "overview:comet",
       "en": {
         "title": "Asteroids & Comets",
-        "def": "Asteroids and comets are small rocks and snowballs. They are too small to be round.",
+        "def": "Asteroids and comets are small rocks and snowballs. They are too small and light to become round balls.",
         "lines": [
           "This lumpy rock is an asteroid. Millions of them go around the Sun between Mars and Jupiter.",
           "And this is a comet, a snowball from far away. When it comes near the Sun, it grows a long glowing tail.",
-          "They are too small to become round."
-        ]
+          "They are too small and too light to pull themselves into a round ball."
+        ],
+        "text": "This lumpy rock is an asteroid. Millions of them go around the Sun between Mars and Jupiter. And this is a comet, a snowball from far away. When it comes near the Sun, it grows a long glowing tail. They are too small and too light to pull themselves into a round ball.",
+        "question": "Asteroids and comets are small rocks and snowballs. They are too small and light to become round balls."
       },
       "zh": {
         "title": "小行星與彗星",
-        "def": "小行星和彗星是小石頭和小雪球，太小了，圓不起來。",
+        "def": "小行星和彗星是小石頭和小雪球，太小、太輕了，沒辦法變成圓圓的球。",
         "lines": [
           "這顆凹凸不平的石頭是小行星。火星和木星之間，有幾百萬顆這樣的石頭繞著太陽轉。",
           "這是彗星，從很遠的地方來的雪球。靠近太陽的時候，它會長出一條長長的、發光的尾巴。",
-          "它們太小了，圓不起來。"
-        ]
+          "它們太小、太輕了，沒辦法把自己拉成圓圓的球。"
+        ],
+        "text": "這顆凹凸不平的石頭是小行星。火星和木星之間，有幾百萬顆這樣的石頭繞著太陽轉。 這是彗星，從很遠的地方來的雪球。靠近太陽的時候，它會長出一條長長的、發光的尾巴。 它們太小、太輕了，沒辦法把自己拉成圓圓的球。",
+        "question": "小行星和彗星是小石頭和小雪球，太小、太輕了，沒辦法變成圓圓的球。"
       }
     }
   ],
