@@ -28,12 +28,12 @@
   var vigCv=document.createElement('canvas');vigCv.width=512;vigCv.height=288;(function(){var x=vigCv.getContext('2d');var g=x.createRadialGradient(256,144,140,256,144,330);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,0.6)');x.fillStyle=g;x.fillRect(0,0,512,288);})();
   var vig=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(vigCv),transparent:true,depthWrite:false,depthTest:false}));vig.renderOrder=998;scene.add(vig);
   function ease(v){v=Math.max(0,Math.min(1,v));return v*v*(3-2*v);}
-  var c0=new THREE.Vector3(0,90,150), c1=new THREE.Vector3(0,26,52);
+  var c0=new THREE.Vector3(0,62,110), c1=new THREE.Vector3(0,26,52);
   window.renderFrame=function(t){
     corona.forEach(function(s,i){var k=1+Math.sin(t*(1.3+i*0.4)+i)*0.035;s.scale.set([12,20,38][i]*k,[12,20,38][i]*k,1);});
     sun.rotation.y=t*0.03; shimmer.rotation.y=-t*0.02;
-    planets.forEach(function(p){p.pv.rotation.y+=p.sp*0.006;p.m.rotation.y+=0.01;});
-    camera.position.copy(c0.clone().lerp(c1,ease(t/12))); camera.lookAt(0,0,0); camera.updateProjectionMatrix();
+    planets.forEach(function(p){p.pv.rotation.y+=p.sp*0.012;p.m.rotation.y+=0.015;});
+    camera.position.copy(c0.clone().lerp(c1,ease(t/7))); camera.lookAt(0,0,0); camera.updateProjectionMatrix();
     var d=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);vig.position.copy(camera.position).add(d.multiplyScalar(1.6));var h=2*1.6*Math.tan(camera.fov/2*Math.PI/180);vig.scale.set(h*camera.aspect*1.02,h*1.02,1);
     renderer.render(scene,camera);
   };

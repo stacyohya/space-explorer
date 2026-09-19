@@ -1755,7 +1755,7 @@
   var introVideo = document.getElementById('intro-video');
   var introCredits = document.getElementById('intro-credits');
   // Where each stop lives inside film/intro.mp4 (seconds)
-  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 169] };
+  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 164] };
   function introSeg() { var s = FAMILY.stops[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
   function sentencesOf(stop) {
     var out = [];
