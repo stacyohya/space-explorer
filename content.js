@@ -392,7 +392,7 @@ var PLANET_CONTENT = {
           "kicker": "Clouds",
           "title": "The Hidden Ground",
           "question": "Why can't we see the ground?",
-          "text": "Venus is wrapped in thick, thick clouds. Nobody can see the ground with their eyes. Space robots looked through the clouds with special cameras to make this picture."
+          "text": "Venus is wrapped in thick, thick clouds. Nobody can see the ground with their eyes. Spacecraft looked through the clouds with special cameras to make this picture."
         },
         "zh": {
           "kicker": "雲層",
