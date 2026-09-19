@@ -2917,6 +2917,11 @@ var GALAXIES_CONTENT = {
         "title": "螺旋星系",
         "question": "星系有哪些形狀？",
         "text": "星系主要有三種形狀。螺旋星系，像我們的銀河系和仙女座星系，是扁扁的圓盤，有充滿氣體和年輕藍色星星的旋臂。它們還在忙著製造新星星。"
+      },
+      "link": "galaxy",
+      "linkLabel": {
+        "en": "🌌 Go to the Milky Way →",
+        "zh": "🌌 前往銀河系 →"
       }
     },
     {

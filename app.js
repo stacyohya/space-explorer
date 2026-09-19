@@ -1602,7 +1602,7 @@
     var smc = place(makeGalaxyPoints({ type: 'irregular', count: 800, radius: 1.5, size: 0.13 }), new THREE.Vector3(-26.5, -10.5, 10.5), [0.2, 0.5, 0], 'rgba(200,225,255,1)', 1.6);
     addLabel('galaxies', lmc, GALAXIES.labels.lmc, 'feature');
     addLabel('galaxies', smc, GALAXIES.labels.smc, 'feature');
-    addLabel('galaxies', milky, GALAXIES.labels.milky, 'feature');
+    addLabel('galaxies', milky, GALAXIES.labels.milky, 'hero', function () { switchView('galaxy'); });
     addLabel('galaxies', andromeda.group, GALAXIES.labels.andromeda, 'feature');
     addLabel('galaxies', ellip, GALAXIES.labels.elliptical, 'feature');
     addLabel('galaxies', irr, GALAXIES.labels.irregular, 'feature');
