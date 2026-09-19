@@ -5,6 +5,7 @@ set -e
 cd "$(dirname "$0")/.."
 V=$(date +%Y%m%d%H%M)
 sed -i '' -E "s/(content\.js|app\.js|audio\/manifest\.js|manifest\.json)(\?v=[0-9]+)?/\1?v=$V/g" index.html
+sed -i '' -E "s/window\.APP_BUILD *= *'[0-9]*'/window.APP_BUILD = '$V'/" index.html
 git add -A
 git commit -q -m "${1:-Update} (build $V)
 

@@ -1751,6 +1751,19 @@
   // Intro film — flies through the cosmic family, then lands on the solar system
   // ------------------------------------------------------------------
   var INTRO = { active: false, stop: -1, line: -1, t: 0, timer: null, cam: null, from: null };
+  var introFilm = document.getElementById('intro-film');
+  var introVideo = document.getElementById('intro-video');
+  var introCredits = document.getElementById('intro-credits');
+  // Where each stop lives inside film/intro.mp4 (seconds)
+  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 156] };
+  function introSeg() { var s = FAMILY.stops[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
+  introVideo.addEventListener('timeupdate', function () {
+    var seg = introSeg(); if (!INTRO.active || !seg) return;
+    if (introVideo.currentTime >= seg[1] - 0.25) introVideo.currentTime = seg[0] + 3;   // hold inside the stop while narration finishes
+  });
+  function primeIntroVideo() {
+    if (!introVideo.getAttribute('src')) { introVideo.setAttribute('src', 'film/intro.mp4?v=' + (window.APP_BUILD || '1')); introVideo.load(); }
+  }
   var introGate = document.getElementById('intro-gate');
   var introGateStart = document.getElementById('intro-start');
   var introGateTitle = document.getElementById('intro-gate-title');
@@ -1767,6 +1780,7 @@
   function markIntroSeen() { try { localStorage.setItem('sse-intro-seen', '1'); } catch (e) { /* ignore */ } }
 
   function showIntroGate() {
+    primeIntroVideo();
     introGate.hidden = false; introSkip.hidden = false;
     document.body.classList.add('intro');
     mode = 'intro';
@@ -1789,6 +1803,11 @@
     closeCard(); closeList(); stopAutoPlay(); stopAllSpeech();
     INTRO.active = true; INTRO.stop = -1;
     document.body.classList.add('intro');
+    primeIntroVideo();
+    introFilm.hidden = false; introCredits.hidden = true;
+    introVideo.currentTime = 0;
+    var p = introVideo.play(); if (p && p.catch) p.catch(function () { /* autoplay blocked: captions still run */ });
+    mode = 'intro'; controls.enabled = false;
     introSkip.hidden = false; introCaption.hidden = false;
     introDots.innerHTML = FAMILY.stops.map(function () { return '<span></span>'; }).join('');
     playIntroStop(0);
@@ -1797,21 +1816,17 @@
   function playIntroStop(i) {
     clearTimeout(INTRO.timer);
     if (i >= FAMILY.stops.length) { endIntro(); return; }
-    INTRO.stop = i; INTRO.line = -1; INTRO.t = 0;
-    var s = FAMILY.stops[i], cam = INTRO_CAMS[s.key];
-    INTRO.cam = cam;
-    var target = cam.view === 'detail' ? PLANETS.find(function (p) { return p.key === cam.planet; }) : null;
-    var sameView = (cam.view === currentView) && (cam.view !== 'detail' || currentPlanet === target);
-    if (!sameView) switchView(cam.view, target);
+    INTRO.stop = i; INTRO.line = -1; INTRO.t = 0; INTRO.cam = null;
+    var seg = INTRO_SEGMENTS[FAMILY.stops[i].key];
+    introFilm.classList.add('dip');
     INTRO.timer = setTimeout(function () {
-      mode = 'intro'; controls.enabled = false;
-      Object.keys(labelLayers).forEach(function (k) { labelLayers[k].el.style.display = 'none'; });
-      if (cam.view !== 'overview' && cam.from !== undefined) camDist = cam.from;
-      if (cam.fromPos) { overviewCamera.position.set(cam.fromPos[0], cam.fromPos[1], cam.fromPos[2]); }
-      INTRO.from = overviewCamera.position.clone();
+      try { introVideo.currentTime = seg[0]; } catch (e) { /* not ready yet */ }
+      var p = introVideo.play(); if (p && p.catch) p.catch(function () {});
+      introFilm.classList.remove('dip');
+      if (i === FAMILY.stops.length - 1) introCredits.hidden = false;
       renderIntroCaption();
       playIntroLine(0);
-    }, sameView ? 60 : 520);
+    }, i === 0 ? 50 : 450);
   }
 
   function renderIntroCaption() {
@@ -1841,6 +1856,7 @@
 
   function finishIntroUI() {
     document.body.classList.remove('intro');
+    introVideo.pause(); introFilm.hidden = true; introFilm.classList.remove('dip'); introCredits.hidden = true;
     introCaption.hidden = true; introSkip.hidden = true; introGate.hidden = true;
     introLineEl.classList.remove('show');
   }
@@ -1851,9 +1867,6 @@
     stopAllSpeech();
     finishIntroUI();
     if (currentView === 'overview') {
-      controls.target.set(0, 0, 0);
-      overviewCamera.position.set(0, 24, 48);
-      controls.update();
       controls.enabled = true;
       labelLayers.overview.el.style.display = 'block';
       showChipsFor('overview');
