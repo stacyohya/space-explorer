@@ -96,6 +96,13 @@
   var BEYOND = window.BEYOND_CONTENT;
   var GALAXY = window.GALAXY_CONTENT;
   var GALAXIES = window.GALAXIES_CONTENT;
+  var FAMILY = window.FAMILY_CONTENT;
+  // Ladder stops double as hotspot cards: kicker/question/text derived from the film lines.
+  FAMILY.stops.forEach(function (s) {
+    ['en', 'zh'].forEach(function (l) { s[l].kicker = FAMILY.name[l]; s[l].question = s[l].def; s[l].text = s[l].lines.join(' '); });
+    s.linkLabel = FAMILY.ui.goSee;
+  });
+  var FAMILY_DETAIL = { subtitle: FAMILY.subtitle, hotspots: FAMILY.stops, moons: [], facts: [] };
 
   var SUN_TEX = 'textures/2k_sun.jpg';
   var STARFIELD_TEX = 'textures/2k_stars_milky_way.jpg';
@@ -104,7 +111,8 @@
     detail:   { y: 0.14 },
     beyond:   { dist: 16, y: 0.22, min: 9,  max: 30 },
     galaxy:   { dist: 62, y: 0.55, min: 24, max: 110 },
-    galaxies: { dist: 54, y: 0.35, min: 26, max: 95 }
+    galaxies: { dist: 54, y: 0.35, min: 26, max: 95 },
+    family:   { dist: 30, y: 0.12, min: 16, max: 60 }
   };
   var DWARF_BODIES = {
     haumea:   { dist: 46,   tilt: 0.50, speed: 0.007,  size: 0.30, color: 0xdedede, egg: true, ring: true, phase: 4.0 },
@@ -126,7 +134,7 @@
   }
 
   var canvas = document.getElementById('c');
-  var renderer, overviewScene, detailScene, beyondScene, galaxyScene, galaxiesScene, overviewCamera, detailCamera, controls, clock;
+  var renderer, overviewScene, detailScene, beyondScene, galaxyScene, galaxiesScene, familyScene, overviewCamera, detailCamera, controls, clock;
   var textures = {};
   var mode = 'overview';        // input mode: 'overview' | 'detail' | 'beyond' | 'galaxy' | 'galaxies' | 'transition'
   var currentView = 'overview'; // scene on screen
@@ -140,6 +148,7 @@
   var beyondGroup = null, beyondHotspots = [], discMesh = null, haloMesh = null;
   var galaxyGroup = null, galaxyHotspots = [], hereRing = null, nebulae = [];
   var galaxiesGroup = null, galaxiesHotspots = [], andromeda = null;
+  var familyGroup = null, familyHotspots = [], familySpinners = [], plutoMesh = null;
   var lastDragTime = 0;
 
   var drag = { down: false, moved: false, x: 0, y: 0, lastX: 0, lastY: 0 };
@@ -194,7 +203,8 @@
     beyond: { el: makeLabelLayer(), list: [] },
     galaxy: { el: makeLabelLayer(), list: [] },
     galaxies: { el: makeLabelLayer(), list: [] },
-    detail: { el: makeLabelLayer(), list: [] }
+    detail: { el: makeLabelLayer(), list: [] },
+    family: { el: makeLabelLayer(), list: [] }
   };
   function makeLabelLayer() {
     var el = document.createElement('div');
@@ -469,7 +479,7 @@
 
   function speak(text, forceSynth) {
     if (!forceSynth && window.AUDIO_CLIPS && AUDIO_CLIPS[currentClipId]) { playClip(AUDIO_CLIPS[currentClipId]); return; }
-    if (!('speechSynthesis' in window)) { showToast(t('noSpeech')); if (autoPlay) { clearTimeout(autoTimer); autoTimer = setTimeout(onSpeechDone, 5000); } return; }
+    if (!('speechSynthesis' in window)) { if (INTRO.active) { clearTimeout(INTRO.timer); INTRO.timer = setTimeout(introLineDone, 4500); return; } showToast(t('noSpeech')); if (autoPlay) { clearTimeout(autoTimer); autoTimer = setTimeout(onSpeechDone, 5000); } return; }
     stopAllSpeech();
     var utter = new SpeechSynthesisUtterance(text);
     utter.lang = lang === 'zh' ? 'zh-TW' : 'en-US';
@@ -501,6 +511,7 @@
     if (currentView === 'beyond') return { key: 'beyond', detail: BEYOND, name: BEYOND.name };
     if (currentView === 'galaxy') return { key: 'galaxy', detail: GALAXY, name: GALAXY.name };
     if (currentView === 'galaxies') return { key: 'galaxies', detail: GALAXIES, name: GALAXIES.name };
+    if (currentView === 'family') return { key: 'family', detail: FAMILY_DETAIL, name: FAMILY.name };
     if (currentPlanet) return { key: currentPlanet.key, detail: currentPlanet.detail, name: currentPlanet.name };
     return { key: 'overview', detail: OVERVIEW, name: OVERVIEW.name };
   }
@@ -513,13 +524,13 @@
       var h = c.item[lang];
       icon = c.item.icon; kicker = h.kicker; title = h.title; question = h.question; text = h.text;
       idx = ((c.kind === 'hotspot' ? body.detail.hotspots : body.detail.features) || []).indexOf(c.item);
-      if (c.item.link) link = { view: c.item.link, cfg: null, label: c.item.linkLabel[lang] };
+      if (c.item.link) link = { go: (function (target) { return function () { goLink(target); }; })(c.item.link), label: c.item.linkLabel[lang] };
     } else if (c.kind === 'moon') {
       var m = c.item[lang];
       icon = c.item.icon; kicker = fmt(t('moonKicker'), { name: body.name[lang] });
       title = m.name; question = m.subtitle; text = m.text;
       idx = body.detail.moons.indexOf(c.item);
-      if (c.item.detail && currentPlanet) link = { view: 'detail', cfg: moonCfg(c.item, currentPlanet), label: fmt(t('exploreMoon'), { name: m.name }) };
+      if (c.item.detail && currentPlanet) link = { go: (function (mc) { return function () { switchView('detail', mc); }; })(moonCfg(c.item, currentPlanet)), label: fmt(t('exploreMoon'), { name: m.name }) };
     } else if (c.kind === 'dwarf') {
       var d = OVERVIEW.dwarfs[c.index], dd = d[lang];
       icon = d.icon; kicker = OVERVIEW.dwarfKicker[lang] + (c.index > 0 ? '  ' + c.index + ' / ' + (OVERVIEW.dwarfs.length - 1) : '');
@@ -550,10 +561,26 @@
     nextBtn.title = t('next'); prevBtn.title = t('prev');
     nextBtn.setAttribute('aria-label', t('next')); prevBtn.setAttribute('aria-label', t('prev'));
     linkBtn.hidden = !link;
-    if (link) { linkBtn.textContent = link.label; linkBtn.onclick = function () { switchView(link.view, link.cfg); }; }
+    if (link) { linkBtn.textContent = link.label; linkBtn.onclick = link.go; }
     currentSpeech = (question ? question + ' ' : '') + text;
     currentClipId = body.key + '-' + c.kind + '-' + idx + '-' + lang;
     markVisited(body.key, c.kind, idx);
+  }
+
+  // "view", "detail:<planet>", "overview:dwarf", "overview:<feature key>"
+  function goLink(target) {
+    var parts = String(target).split(':'), view = parts[0], arg = parts[1];
+    if (view === 'detail') { var pc = PLANETS.find(function (p) { return p.key === arg; }); if (pc) switchView('detail', pc); return; }
+    if (view === 'overview' && arg) {
+      switchView('overview');
+      setTimeout(function () {
+        if (mode !== 'overview') return;
+        if (arg === 'dwarf') openCard('dwarf', null, dwarfIndex('pluto'));
+        else { var f = featureByKey(arg); if (f) openFeature(f); }
+      }, 540);
+      return;
+    }
+    switchView(view);
   }
 
   function openCard(kind, item, index) {
@@ -612,6 +639,7 @@
     listPlayBtn.textContent = t('playAll');
   }
   function onSpeechDone() {
+    if (INTRO.active) { introLineDone(); return; }
     if (!autoPlay || !currentCard) return;
     clearTimeout(autoTimer);
     autoTimer = setTimeout(function () {
@@ -881,10 +909,11 @@
   // Update the ✓ marks on 3D hotspots and overview labels, plus the button counter.
   function refreshVisited() {
     var body = activeBody();
-    var lists = { detail: hotspotSprites, beyond: beyondHotspots, galaxy: galaxyHotspots, galaxies: galaxiesHotspots };
+    var lists = { detail: hotspotSprites, beyond: beyondHotspots, galaxy: galaxyHotspots, galaxies: galaxiesHotspots, family: familyHotspots };
+    var details = { beyond: BEYOND, galaxy: GALAXY, galaxies: GALAXIES, family: FAMILY_DETAIL };
     Object.keys(lists).forEach(function (v) {
       lists[v].forEach(function (s) {
-        var h = s.userData.hotspot, d = v === 'detail' ? (currentPlanet && currentPlanet.detail) : (v === 'beyond' ? BEYOND : v === 'galaxy' ? GALAXY : GALAXIES);
+        var h = s.userData.hotspot, d = v === 'detail' ? (currentPlanet && currentPlanet.detail) : details[v];
         var key = v === 'detail' ? (currentPlanet && currentPlanet.key) : v;
         s.userData.visited = !!(d && key && isVisited(key, 'hotspot', d.hotspots.indexOf(h)));
       });
@@ -924,6 +953,14 @@
       hintEl.textContent = t('hintScene');
     }
     langButtons.forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-lang') === lang); });
+    var bodyNow = activeBody();
+    factsBtn.hidden = !(bodyNow.detail.facts && bodyNow.detail.facts.length);
+    introGateStart.textContent = FAMILY.ui.start[lang];
+    introSkip.textContent = FAMILY.ui.skip[lang];
+    introGateTitle.textContent = '🔭 ' + FAMILY.name[lang];
+    introGateSub.textContent = FAMILY.subtitle[lang];
+    introLangButtons.forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-lang') === lang); });
+    if (INTRO.active && INTRO.stop >= 0) renderIntroCaption();
     Object.keys(labelLayers).forEach(function (k) {
       labelLayers[k].list.forEach(function (p) {
         if (p.text) p.label.querySelector('.name').textContent = p.text[lang];
@@ -975,12 +1012,14 @@
       else if (currentView === 'detail') segs = [{ link: solar }, { cur: currentPlanet.name[lang] }];
       else if (currentView === 'galaxy') segs = [{ link: solar }, { cur: GALAXY.name[lang] }];
       else if (currentView === 'beyond') segs = [{ link: galaxyLink }, { cur: BEYOND.subtitle[lang] }];
+      else if (currentView === 'family') segs = [{ link: solar }, { cur: FAMILY.name[lang] }];
       else segs = [{ link: galaxyLink }, { cur: GALAXIES.name[lang] }];
     } else if (currentView === 'overview') segs = [{ cur: solar.text }, { next: GALAXY.crumb[lang], view: 'galaxy' }];
     else if (currentView === 'detail' && currentPlanet.parent) segs = [{ link: solar }, { link: { text: currentPlanet.parent.name[lang], view: 'detail', cfg: currentPlanet.parent } }, { cur: currentPlanet.name[lang] }];
     else if (currentView === 'detail') segs = [{ link: solar }, { cur: currentPlanet.name[lang] }];
     else if (currentView === 'galaxy') segs = [{ link: solar }, { cur: GALAXY.name[lang] }, { next: BEYOND.crumb[lang], view: 'beyond' }, { next: GALAXIES.crumb[lang], view: 'galaxies' }];
     else if (currentView === 'beyond') segs = [{ link: solar }, { link: galaxyLink }, { cur: BEYOND.subtitle[lang] }];
+    else if (currentView === 'family') segs = [{ link: solar }, { cur: FAMILY.name[lang] }];
     else segs = [{ link: solar }, { link: galaxyLink }, { cur: GALAXIES.name[lang] }];
     segs.forEach(function (s, i) {
       if (i > 0) { var sep = document.createElement('span'); sep.className = 'sep'; sep.textContent = '›'; crumbsEl.appendChild(sep); }
@@ -1021,6 +1060,7 @@
     beyondScene = new THREE.Scene();
     galaxyScene = new THREE.Scene();
     galaxiesScene = new THREE.Scene();
+    familyScene = new THREE.Scene();
 
     overviewCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 500);
     overviewCamera.position.set(0, 24, 48);
@@ -1107,7 +1147,12 @@
       loadingText.textContent = fmt(t('loadingProgress'), { a: loaded, b: total });
     };
     manager.onError = function (url) { console.warn('Failed to load', String(url).slice(0, 60)); };
-    manager.onLoad = function () { setTimeout(function () { loadingEl.classList.add('hidden'); }, 350); };
+    manager.onLoad = function () {
+      setTimeout(function () {
+        loadingEl.classList.add('hidden');
+        if (!introSeen() || location.hash.indexOf('intro') >= 0) showIntroGate();
+      }, 350);
+    };
 
     files.forEach(function (f) {
       // Embedded base64 data URIs (textures-data.js): WebGL refuses to upload
@@ -1117,12 +1162,13 @@
       if (THREE.sRGBEncoding !== undefined) textures[f].encoding = THREE.sRGBEncoding;
     });
 
-    [overviewScene, detailScene, beyondScene, galaxyScene, galaxiesScene].forEach(buildStarfield);
+    [overviewScene, detailScene, beyondScene, galaxyScene, galaxiesScene, familyScene].forEach(buildStarfield);
     buildOverviewScene();
     buildDetailBase();
     buildBeyondScene();
     buildGalaxyScene();
     buildGalaxiesScene();
+    buildFamilyScene();
   }
 
   function buildStarfield(scene) {
@@ -1242,7 +1288,7 @@
     var plutoItem = OVERVIEW.dwarfs[dwarfIndex('pluto')];
     plutoPivot = new THREE.Object3D(); plutoPivot.rotation.x = 0.3; plutoPivot.rotation.y = 2.0; overviewScene.add(plutoPivot);
     var pluto = new THREE.Mesh(new THREE.SphereGeometry(0.3, 20, 14), new THREE.MeshStandardMaterial({ color: 0xcdb59b, roughness: 1 }));
-    pluto.position.set(44, 0, 0); plutoPivot.add(pluto);
+    pluto.position.set(44, 0, 0); plutoPivot.add(pluto); plutoMesh = pluto;
     var plutoHit = hitSphere(1.4, { dwarf: plutoItem }); plutoHit.position.copy(pluto.position); plutoPivot.add(plutoHit);
     addLabel('overview', pluto, plutoItem.label, 'feature', function () { openCard('dwarf', null, dwarfIndex('pluto')); }, plutoItem);
 
@@ -1394,6 +1440,16 @@
       featureBar.appendChild(gb);
       featureChips.push({ item: h, el: gb });
     });
+    var fam = document.createElement('button');
+    fam.type = 'button'; fam.className = 'beyond'; fam.dataset.view = 'overview';
+    fam.addEventListener('click', function () { if (mode === 'overview') switchView('family'); });
+    featureBar.appendChild(fam);
+    featureChips.push({ item: { chip: FAMILY.chip }, el: fam });
+    var replay = document.createElement('button');
+    replay.type = 'button'; replay.dataset.view = 'family';
+    replay.addEventListener('click', function () { if (mode === 'family') startIntro(); });
+    featureBar.appendChild(replay);
+    featureChips.push({ item: { chip: FAMILY.ui.replay }, el: replay });
     featureChips.forEach(function (fc) { if (!fc.el.dataset.view) fc.el.dataset.view = 'overview'; });
     // Outward navigation as chips (phones only — the breadcrumbs shrink to parent › here there)
     [{ view: 'overview', to: 'galaxy', item: GALAXY }, { view: 'galaxy', to: 'beyond', item: BEYOND }, { view: 'galaxy', to: 'galaxies', item: GALAXIES }]
@@ -1643,6 +1699,193 @@
   }
 
   // ------------------------------------------------------------------
+  // Cosmic family ladder — seven small models in a row, biggest to smallest
+  // ------------------------------------------------------------------
+  function buildFamilyScene() {
+    var key = new THREE.DirectionalLight(0xfff3e0, 1.6); key.position.set(6, 5, 8); familyScene.add(key);
+    familyScene.add(new THREE.AmbientLight(0x404a63, 0.8));
+    familyGroup = new THREE.Object3D(); familyScene.add(familyGroup);
+    var spacing = 5.6;
+    FAMILY.stops.forEach(function (s, i) {
+      var x = (i - 3) * spacing, holder = new THREE.Object3D(); holder.position.x = x; familyGroup.add(holder);
+      var body;
+      if (s.key === 'galaxy') {
+        body = makeGalaxyPoints({ type: 'spiral', count: 5000, radius: 2.5, arms: 4, twist: 1.6, thickness: 0.12, bar: true, size: 0.1 });
+        body.rotation.x = 1.05; holder.add(body); holder.add(glowSprite('rgba(255,225,170,1)', 1.8, 0.7));
+        familySpinners.push({ obj: body, speed: 0.15, axis: 'z' });
+      } else if (s.key === 'nebula') {
+        body = new THREE.Sprite(new THREE.SpriteMaterial({ map: makeNebulaTexture('emission'), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+        body.scale.set(3.8, 3.8, 1); holder.add(body); familySpinners.push({ obj: body, speed: 0.04, sprite: true });
+      } else if (s.key === 'star') {
+        body = new THREE.Mesh(new THREE.SphereGeometry(1.5, 48, 32), new THREE.MeshBasicMaterial({ map: textures[SUN_TEX] }));
+        holder.add(body); holder.add(glowSprite('rgba(255,200,120,1)', 4.2, 0.5)); holder.add(glowSprite('rgba(255,200,120,1)', 7, 0.2));
+        familySpinners.push({ obj: body, speed: 0.08 });
+      } else if (s.key === 'planet') {
+        body = new THREE.Mesh(new THREE.SphereGeometry(1.25, 48, 32), new THREE.MeshStandardMaterial({ map: textures['textures/2k_jupiter.jpg'], roughness: 1 }));
+        holder.add(body); familySpinners.push({ obj: body, speed: 0.25 });
+      } else if (s.key === 'dwarf') {
+        body = new THREE.Mesh(new THREE.SphereGeometry(0.55, 32, 22), new THREE.MeshStandardMaterial({ color: 0xcdb59b, roughness: 1 }));
+        holder.add(body); familySpinners.push({ obj: body, speed: 0.2 });
+      } else if (s.key === 'moon') {
+        body = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 22), new THREE.MeshStandardMaterial({ map: textures['textures/2k_moon.jpg'], roughness: 1 }));
+        holder.add(body); familySpinners.push({ obj: body, speed: 0.12 });
+      } else {
+        var rock = new THREE.Mesh(new THREE.DodecahedronGeometry(0.32, 1), new THREE.MeshStandardMaterial({ color: 0x9a9088, roughness: 1 }));
+        rock.position.set(-0.9, -0.4, 0); holder.add(rock); familySpinners.push({ obj: rock, speed: 0.5 });
+        var head = glowSprite('rgba(255,250,235,1)', 0.9); head.position.set(0.6, 0.5, 0); holder.add(head);
+        for (var k = 1; k <= 8; k++) { var tl = glowSprite('rgba(190,225,255,1)', 0.5 + k * 0.22, 0.45 * (1 - k / 9)); tl.position.set(0.6 + k * 0.38, 0.5 + k * 0.22, 0); holder.add(tl); }
+      }
+      var hs = hotspotSprite(s, '#ffe3a8', familyHotspots, 1.3, true); hs.position.set(x, 2.6, 0); familyGroup.add(hs);
+      var anchor = new THREE.Object3D(); anchor.position.set(x, -2.4, 0); familyGroup.add(anchor);
+      addLabel('family', anchor, { en: s.icon + ' ' + s.en.title, zh: s.icon + ' ' + s.zh.title }, 'feature', function () { openCard('hotspot', s); }, s);
+    });
+  }
+
+  // ------------------------------------------------------------------
+  // Intro film — flies through the cosmic family, then lands on the solar system
+  // ------------------------------------------------------------------
+  var INTRO = { active: false, stop: -1, line: -1, t: 0, timer: null, cam: null, from: null };
+  var introGate = document.getElementById('intro-gate');
+  var introGateStart = document.getElementById('intro-start');
+  var introGateTitle = document.getElementById('intro-gate-title');
+  var introGateSub = document.getElementById('intro-gate-sub');
+  var introSkip = document.getElementById('intro-skip');
+  var introCaption = document.getElementById('intro-caption');
+  var introStopEl = document.getElementById('intro-stop');
+  var introLineEl = document.getElementById('intro-line');
+  var introDots = document.getElementById('intro-dots');
+  var introLangButtons = Array.prototype.slice.call(document.querySelectorAll('#intro-gate .langs button'));
+  introLangButtons.forEach(function (b) { b.addEventListener('click', function () { setLanguage(b.getAttribute('data-lang')); }); });
+
+  function introSeen() { try { return !!localStorage.getItem('sse-intro-seen'); } catch (e) { return false; } }
+  function markIntroSeen() { try { localStorage.setItem('sse-intro-seen', '1'); } catch (e) { /* ignore */ } }
+
+  function showIntroGate() {
+    introGate.hidden = false; introSkip.hidden = false;
+    document.body.classList.add('intro');
+    mode = 'intro';
+  }
+  introGateStart.addEventListener('click', function () { introGate.hidden = true; startIntro(); });
+  introSkip.addEventListener('click', function () { if (INTRO.active) endIntro(); else { introGate.hidden = true; markIntroSeen(); finishIntroUI(); } });
+
+  var INTRO_CAMS = {
+    galaxy:  { view: 'galaxies', from: 95, to: 58 },
+    nebula:  { view: 'galaxy', from: 78, to: 34 },
+    star:    { view: 'detail', planet: 'sun', from: 17, to: 11 },
+    planet:  { view: 'overview', fromPos: [0, 70, 100], toPos: [0, 26, 50] },
+    dwarf:   { view: 'overview', follow: 'pluto', offset: [0, 7, 13] },
+    moon:    { view: 'detail', planet: 'earth', from: 16, to: 10.5 },
+    small:   { view: 'overview', follow: 'comet', offset: [0, 9, 16] }
+  };
+
+  function startIntro() {
+    markIntroSeen();
+    closeCard(); closeList(); stopAutoPlay(); stopAllSpeech();
+    INTRO.active = true; INTRO.stop = -1;
+    document.body.classList.add('intro');
+    introSkip.hidden = false; introCaption.hidden = false;
+    introDots.innerHTML = FAMILY.stops.map(function () { return '<span></span>'; }).join('');
+    playIntroStop(0);
+  }
+
+  function playIntroStop(i) {
+    clearTimeout(INTRO.timer);
+    if (i >= FAMILY.stops.length) { endIntro(); return; }
+    INTRO.stop = i; INTRO.line = -1; INTRO.t = 0;
+    var s = FAMILY.stops[i], cam = INTRO_CAMS[s.key];
+    INTRO.cam = cam;
+    var target = cam.view === 'detail' ? PLANETS.find(function (p) { return p.key === cam.planet; }) : null;
+    var sameView = (cam.view === currentView) && (cam.view !== 'detail' || currentPlanet === target);
+    if (!sameView) switchView(cam.view, target);
+    INTRO.timer = setTimeout(function () {
+      mode = 'intro'; controls.enabled = false;
+      Object.keys(labelLayers).forEach(function (k) { labelLayers[k].el.style.display = 'none'; });
+      if (cam.view !== 'overview' && cam.from !== undefined) camDist = cam.from;
+      if (cam.fromPos) { overviewCamera.position.set(cam.fromPos[0], cam.fromPos[1], cam.fromPos[2]); }
+      INTRO.from = overviewCamera.position.clone();
+      renderIntroCaption();
+      playIntroLine(0);
+    }, sameView ? 60 : 520);
+  }
+
+  function renderIntroCaption() {
+    var s = FAMILY.stops[INTRO.stop]; if (!s) return;
+    introStopEl.textContent = s.icon + ' ' + s[lang].title;
+    var lines = s[lang].lines;
+    introLineEl.textContent = INTRO.line >= 0 ? lines[Math.min(INTRO.line, lines.length - 1)] : '';
+    Array.prototype.forEach.call(introDots.children, function (d, k) { d.className = k < INTRO.stop ? 'done' : (k === INTRO.stop ? 'now' : ''); });
+  }
+
+  function playIntroLine(j) {
+    clearTimeout(INTRO.timer);
+    var s = FAMILY.stops[INTRO.stop], lines = s[lang].lines;
+    if (j >= lines.length) { INTRO.timer = setTimeout(function () { playIntroStop(INTRO.stop + 1); }, 700); return; }
+    INTRO.line = j;
+    introLineEl.classList.remove('show'); void introLineEl.offsetWidth;
+    renderIntroCaption(); introLineEl.classList.add('show');
+    speak(lines[j], true);
+    INTRO.timer = setTimeout(introLineDone, 16000);           // safety net if speech never reports the end
+  }
+
+  function introLineDone() {
+    if (!INTRO.active) return;
+    clearTimeout(INTRO.timer);
+    INTRO.timer = setTimeout(function () { playIntroLine(INTRO.line + 1); }, 650);
+  }
+
+  function finishIntroUI() {
+    document.body.classList.remove('intro');
+    introCaption.hidden = true; introSkip.hidden = true; introGate.hidden = true;
+    introLineEl.classList.remove('show');
+  }
+
+  function endIntro() {
+    clearTimeout(INTRO.timer);
+    INTRO.active = false; INTRO.stop = -1; INTRO.cam = null;
+    stopAllSpeech();
+    finishIntroUI();
+    if (currentView === 'overview') {
+      controls.target.set(0, 0, 0);
+      overviewCamera.position.set(0, 24, 48);
+      controls.update();
+      controls.enabled = true;
+      labelLayers.overview.el.style.display = 'block';
+      showChipsFor('overview');
+      mode = 'overview';
+      applyLanguage();
+    } else {
+      mode = 'overview';   // let switchView run; it restores overview state
+      currentView = 'x';
+      switchView('overview');
+    }
+    showToast(FAMILY.ui.welcome[lang]);
+  }
+
+  function ease(v) { v = Math.max(0, Math.min(1, v)); return v * v * (3 - 2 * v); }
+
+  function updateIntroCamera(delta) {
+    if (!INTRO.active || !INTRO.cam) return;
+    INTRO.t += delta;
+    var cam = INTRO.cam, k = ease(INTRO.t / 22);
+    if (cam.view === 'overview') {
+      var target = new THREE.Vector3(0, 0, 0);
+      if (cam.follow === 'pluto' && plutoMesh) plutoMesh.getWorldPosition(target);
+      if (cam.follow === 'comet' && comet) comet.nucleus.getWorldPosition(target);
+      var pos;
+      if (cam.follow) {
+        var want = target.clone().add(new THREE.Vector3(cam.offset[0], cam.offset[1], cam.offset[2]));
+        pos = overviewCamera.position.clone().lerp(want, Math.min(1, delta * 1.6));
+      } else {
+        pos = new THREE.Vector3(cam.fromPos[0], cam.fromPos[1], cam.fromPos[2]).lerp(new THREE.Vector3(cam.toPos[0], cam.toPos[1], cam.toPos[2]), k);
+      }
+      overviewCamera.position.copy(pos);
+      overviewCamera.lookAt(target);
+    } else if (cam.from !== undefined) {
+      camDist = cam.from + (cam.to - cam.from) * k;
+    }
+  }
+
+  // ------------------------------------------------------------------
   // Pointer interaction
   // ------------------------------------------------------------------
   function setPointerNDC(e) {
@@ -1683,6 +1926,11 @@
     var dx = e.clientX - drag.lastX, dy = e.clientY - drag.lastY;
     drag.lastX = e.clientX; drag.lastY = e.clientY;
     if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 5) drag.moved = true;
+    if (mode === 'family' && drag.moved && familyGroup) {
+      familyGroup.position.x = Math.max(-19, Math.min(19, familyGroup.position.x + dx * 0.035));
+      lastDragTime = clock.getElapsedTime();
+      return;
+    }
     var target = spinTarget();
     if (target && drag.moved) {
       target.rotation.y += dx * 0.006;
@@ -1700,7 +1948,7 @@
     if (!drag.moved) handleClick(e);
   }
   function onWheel(e) {
-    if (mode === 'overview' || mode === 'transition') return;
+    if (mode === 'overview' || mode === 'transition' || mode === 'intro') return;
     camDist = Math.max(camDistMin, Math.min(camDistMax, camDist + e.deltaY * 0.01 * (camDist / 11)));
   }
 
@@ -1725,9 +1973,9 @@
         var moon = hitMoon[0].object.userData.moon;
         if (moon.detail) switchView('detail', moonCfg(moon, currentPlanet)); else openCard('moon', moon);
       }
-    } else if (mode === 'beyond' || mode === 'galaxy' || mode === 'galaxies') {
+    } else if (mode === 'beyond' || mode === 'galaxy' || mode === 'galaxies' || mode === 'family') {
       raycaster.setFromCamera(pointerNDC, detailCamera);
-      var list = { beyond: beyondHotspots, galaxy: galaxyHotspots, galaxies: galaxiesHotspots }[mode];
+      var list = { beyond: beyondHotspots, galaxy: galaxyHotspots, galaxies: galaxiesHotspots, family: familyHotspots }[mode];
       var hs = raycaster.intersectObjects(list);
       if (hs.length) openCard('hotspot', hs[0].object.userData.hotspot);
     }
@@ -1759,8 +2007,8 @@
         var vc = VIEW_CAM[view];
         camDist = vc.dist; camDistMin = vc.min; camDistMax = vc.max;
         if (labelLayers[view]) labelLayers[view].el.style.display = 'block';
-        var g = { beyond: beyondGroup, galaxy: galaxyGroup, galaxies: galaxiesGroup }[view];
-        if (g) g.rotation.set(0, 0, 0);
+        var g = { beyond: beyondGroup, galaxy: galaxyGroup, galaxies: galaxiesGroup, family: familyGroup }[view];
+        if (g) { g.rotation.set(0, 0, 0); if (view === 'family') g.position.x = 0; }
       }
       currentView = view;
       factIndex = 0;
@@ -1807,11 +2055,11 @@
     var delta = Math.min(clock.getDelta(), 0.05);
     var tm = clock.getElapsedTime();
     var idle = !drag.down && tm - lastDragTime > 1.6;
+    updateIntroCamera(delta);
 
     if (currentView === 'overview') {
       updateOverview(delta, tm);
-      controls.update();
-      updateLabelList(labelLayers.overview.list, overviewCamera);
+      if (!INTRO.active) { controls.update(); updateLabelList(labelLayers.overview.list, overviewCamera); }
       renderer.render(overviewScene, overviewCamera);
       return;
     }
@@ -1851,6 +2099,11 @@
       pulseHotspots(galaxyHotspots, tm);
       updateLabelList(labelLayers.galaxy.list, detailCamera);
       renderer.render(galaxyScene, detailCamera);
+    } else if (currentView === 'family') {
+      familySpinners.forEach(function (sp) { if (sp.sprite) sp.obj.material.rotation += sp.speed * delta; else if (sp.axis === 'z') sp.obj.rotation.z += sp.speed * delta; else sp.obj.rotation.y += sp.speed * delta; });
+      pulseHotspots(familyHotspots, tm);
+      updateLabelList(labelLayers.family.list, detailCamera);
+      renderer.render(familyScene, detailCamera);
     } else if (currentView === 'galaxies') {
       if (idle) galaxiesGroup.rotation.y += delta * 0.015;
       andromeda.p += delta / 90;                                  // slow approach, then loop

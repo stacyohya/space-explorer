@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Solar System" />
 <link rel="apple-touch-icon" href="icon-180.png" />
 <link rel="icon" href="icon-180.png" />
-<link rel="manifest" href="manifest.json?v=202609192113" />
+<link rel="manifest" href="manifest.json?v=202609192137" />
 <title>Solar System Explorer</title>
 <style>
   :root{
@@ -311,6 +311,45 @@
     #feature-bar button{font-size:12px !important; padding:8px 12px !important;}
   }
 
+  /* ---------- Intro film ---------- */
+  #intro-gate{
+    position:fixed; inset:0; z-index:60; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+    background:radial-gradient(ellipse at center, rgba(8,12,24,.55), rgba(3,5,10,.92)); text-align:center; padding:24px;
+  }
+  #intro-gate[hidden]{display:none;}
+  #intro-gate .emoji{font-size:64px; animation:float 2.4s ease-in-out infinite;}
+  #intro-gate h2{margin:0; font-size:28px; letter-spacing:.04em;}
+  #intro-gate p{margin:0 0 10px; color:var(--muted); font-size:15px;}
+  #intro-start{
+    background:linear-gradient(135deg,#fbbf24,#f59e0b); border:none; color:#1a1300; font-family:inherit; font-weight:700;
+    font-size:18px; padding:16px 34px; border-radius:999px; cursor:pointer; box-shadow:0 0 30px rgba(251,191,36,.45); transition:transform .15s ease;
+  }
+  #intro-start:hover{transform:scale(1.04);}
+  #intro-gate .langs{position:absolute; top:18px; right:18px; display:flex; gap:2px; padding:3px; background:var(--panel); border:1px solid var(--border); border-radius:999px;}
+  #intro-gate .langs button{background:transparent; border:none; color:var(--muted); font-size:13px; font-weight:600; padding:8px 14px; border-radius:999px; cursor:pointer; font-family:inherit;}
+  #intro-gate .langs button.active{background:var(--cyan); color:#04202a;}
+  #intro-skip{
+    position:fixed; top:18px; right:18px; z-index:65; background:var(--panel); border:1px solid var(--border); color:var(--text);
+    font-family:inherit; font-size:13px; padding:9px 16px; border-radius:999px; cursor:pointer; backdrop-filter:blur(10px);
+  }
+  #intro-skip[hidden]{display:none;}
+  #intro-gate:not([hidden]) ~ #intro-skip{top:auto; bottom:calc(28px + env(safe-area-inset-bottom)); right:auto; left:50%; transform:translateX(-50%); background:transparent; border-color:transparent; color:var(--muted);}
+  #intro-caption{
+    position:fixed; left:50%; bottom:calc(28px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:62;
+    width:min(760px, calc(100vw - 32px)); background:var(--panel); border:1px solid var(--border); border-radius:18px;
+    padding:16px 22px 14px; text-align:center; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 12px 40px rgba(0,0,0,.5);
+  }
+  #intro-caption[hidden]{display:none;}
+  #intro-stop{font-size:15px; font-weight:700; color:var(--amber); letter-spacing:.04em; margin-bottom:6px;}
+  #intro-line{font-size:19px; line-height:1.5; min-height:58px; opacity:0; transition:opacity .35s ease;}
+  #intro-line.show{opacity:1;}
+  #intro-dots{display:flex; gap:6px; justify-content:center; margin-top:10px;}
+  #intro-dots span{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.18);}
+  #intro-dots span.done{background:rgba(251,191,36,.55);}
+  #intro-dots span.now{background:var(--amber); box-shadow:0 0 8px rgba(251,191,36,.8);}
+  body.intro #crumbs, body.intro #title-bar, body.intro #lang-toggle, body.intro #list-btn, body.intro #feature-bar, body.intro #facts-btn, body.intro #hint, body.intro #card-panel, body.intro #list-panel{display:none !important;}
+  @media (max-width:700px){ #intro-line{font-size:16px; min-height:72px;} #intro-gate h2{font-size:22px;} }
+
   /* ---------- Fade transition ---------- */
   #fade{position:fixed; inset:0; background:#000; z-index:90; opacity:0; pointer-events:none; transition:opacity .45s ease;}
   #fade.show{opacity:1;}
@@ -368,13 +407,27 @@
     </div>
   </div>
 
+  <div id="intro-gate" hidden>
+    <div class="langs"><button type="button" data-lang="en">English</button><button type="button" data-lang="zh">繁體中文</button></div>
+    <div class="emoji">🔭</div>
+    <h2 id="intro-gate-title">🔭 The Cosmic Family</h2>
+    <p id="intro-gate-sub">What is what in space</p>
+    <button id="intro-start" type="button">▶ Start exploring</button>
+  </div>
+  <button id="intro-skip" type="button" hidden>Skip ▶▶</button>
+  <div id="intro-caption" hidden>
+    <div id="intro-stop"></div>
+    <div id="intro-line"></div>
+    <div id="intro-dots"></div>
+  </div>
+
   <div id="fade"></div>
 
   <script src="https://unpkg.com/three@0.144.0/build/three.min.js"></script>
   <script src="https://unpkg.com/three@0.144.0/examples/js/controls/OrbitControls.js"></script>
   <script>if (location.protocol === 'file:') document.write('<script src="textures-data.js"><\/script>');</script>
-  <script src="content.js?v=202609192113"></script>
-  <script src="audio/manifest.js?v=202609192113"></script>
-  <script src="app.js?v=202609192113"></script>
+  <script src="content.js?v=202609192137"></script>
+  <script src="audio/manifest.js?v=202609192137"></script>
+  <script src="app.js?v=202609192137"></script>
 </body>
 </html>
