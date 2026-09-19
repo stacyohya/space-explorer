@@ -1755,11 +1755,11 @@
   var introVideo = document.getElementById('intro-video');
   var introCredits = document.getElementById('intro-credits');
   // Where each stop lives inside film/intro.mp4 (seconds)
-  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 158] };
+  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 169] };
   function introSeg() { var s = FAMILY.stops[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
   introVideo.addEventListener('timeupdate', function () {
     var seg = introSeg(); if (!INTRO.active || !seg) return;
-    if (introVideo.currentTime >= seg[1] - 0.25) introVideo.currentTime = seg[0] + 3;   // hold inside the stop while narration finishes
+    if (introVideo.currentTime >= seg[1] - 0.15 && !introVideo.paused) introVideo.pause();   // hold the last frame while narration finishes
   });
   function primeIntroVideo() {
     if (!introVideo.getAttribute('src')) { introVideo.setAttribute('src', 'film/intro.mp4?v=' + (window.APP_BUILD || '1')); introVideo.load(); }
@@ -1772,7 +1772,6 @@
   var introCaption = document.getElementById('intro-caption');
   var introStopEl = document.getElementById('intro-stop');
   var introLineEl = document.getElementById('intro-line');
-  var introDots = document.getElementById('intro-dots');
   var introLangButtons = Array.prototype.slice.call(document.querySelectorAll('#intro-gate .langs button'));
   introLangButtons.forEach(function (b) { b.addEventListener('click', function () { setLanguage(b.getAttribute('data-lang')); }); });
 
@@ -1809,7 +1808,6 @@
     var p = introVideo.play(); if (p && p.catch) p.catch(function () { /* autoplay blocked: captions still run */ });
     mode = 'intro'; controls.enabled = false;
     introSkip.hidden = false; introCaption.hidden = false;
-    introDots.innerHTML = FAMILY.stops.map(function () { return '<span></span>'; }).join('');
     playIntroStop(0);
   }
 
@@ -1838,7 +1836,17 @@
   function playIntroLine(j) {
     clearTimeout(INTRO.timer);
     var s = FAMILY.stops[INTRO.stop], lines = s[lang].lines;
-    if (j >= lines.length) { INTRO.timer = setTimeout(function () { playIntroStop(INTRO.stop + 1); }, 350); return; }
+    if (j >= lines.length) {
+      if (INTRO.stop === FAMILY.stops.length - 1) {                   // last stop → ending shot of our solar system, then land
+        introLineEl.classList.remove('show');
+        try { introVideo.currentTime = INTRO_SEGMENTS.end[0]; } catch (e) {}
+        var p = introVideo.play(); if (p && p.catch) p.catch(function () {});
+        INTRO.stop = FAMILY.stops.length;                                  // no more captions / holds
+        INTRO.timer = setTimeout(function () { playIntroStop(FAMILY.stops.length); }, (INTRO_SEGMENTS.end[1] - INTRO_SEGMENTS.end[0]) * 1000 - 400);
+        return;
+      }
+      INTRO.timer = setTimeout(function () { playIntroStop(INTRO.stop + 1); }, 350); return;
+    }
     INTRO.line = j;
     introLineEl.classList.remove('show'); void introLineEl.offsetWidth;
     renderIntroCaption(); introLineEl.classList.add('show');
