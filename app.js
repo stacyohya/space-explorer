@@ -574,33 +574,11 @@
     var parts = String(target).split(':'), view = parts[0], arg = parts[1], extra = parts[2];
     if (view === 'detail') {
       var pc = PLANETS.find(function (p) { return p.key === arg; }); if (!pc) return;
-      switchView('detail', pc);
-      if (extra) setTimeout(function () {
-        if (mode !== 'detail') return;
-        var mn = pc.detail.moons.find(function (m) { return m.key === extra; });
-        if (mn) openCard('moon', mn, pc.detail.moons.indexOf(mn));
-      }, 540);
+      switchView('detail', pc, { card: extra || null });
       return;
     }
-    if ((view === 'galaxy' || view === 'beyond' || view === 'galaxies' || view === 'family') && arg) {
-      switchView(view);
-      setTimeout(function () {
-        if (mode !== view) return;
-        var d = activeBody().detail, hs = (d.hotspots || []).find(function (h) { return h.key === arg; });
-        if (hs) openCard('hotspot', hs);
-      }, 540);
-      return;
-    }
-    if (view === 'overview' && arg) {
-      switchView('overview');
-      setTimeout(function () {
-        if (mode !== 'overview') return;
-        if (arg === 'dwarf') openCard('dwarf', null, dwarfIndex('pluto'));
-        else { var f = featureByKey(arg); if (f) openFeature(f); }
-      }, 540);
-      return;
-    }
-    switchView(view);
+    if (view === 'overview' && arg === 'dwarf') { switchView('overview', null, { card: 'pluto' }); return; }
+    switchView(view, null, { card: arg || null });
   }
 
   function openCard(kind, item, index) {
@@ -1111,6 +1089,10 @@
     buildFeatureChips();
     showChipsFor('overview');
     applyLanguage();
+    var r0 = parseRoute(location.hash);
+    if (!r0) replaceRoute('#/solar');
+    else if (r0.view !== 'overview' && r0.view !== 'intro') setTimeout(function () { switchView(r0.view, r0.cfg, { push: false, card: r0.card }); }, 50);
+    else if (r0.card) setTimeout(function () { openCardByKey(r0.card); }, 400);
 
     window.addEventListener('resize', onResize);
     window.addEventListener('orientationchange', function () { setTimeout(onResize, 300); });
@@ -1181,7 +1163,8 @@
     manager.onLoad = function () {
       setTimeout(function () {
         loadingEl.classList.add('hidden');
-        if (!introSeen() || location.hash.indexOf('intro') >= 0) showIntroGate();
+        var r0 = parseRoute(location.hash);
+        if ((!introSeen() && (!r0 || r0.view === 'overview')) || (r0 && r0.view === 'intro')) showIntroGate();
       }, 350);
     };
 
@@ -1839,7 +1822,7 @@
     mode = 'intro';
   }
   introGateStart.addEventListener('click', function () { introGate.hidden = true; startIntro(); });
-  introSkip.addEventListener('click', function () { if (INTRO.active) endIntro(); else { introGate.hidden = true; markIntroSeen(); finishIntroUI(); } });
+  introSkip.addEventListener('click', function () { if (INTRO.active) endIntro(); else { introGate.hidden = true; markIntroSeen(); finishIntroUI(); if (location.hash === '#/intro') replaceRoute('#/solar'); mode = 'overview'; } });
 
   var INTRO_CAMS = {
     galaxy:  { view: 'galaxies', from: 95, to: 58 },
@@ -1867,6 +1850,7 @@
   function startIntro() {
     unlockSpeech();
     markIntroSeen();
+    if (location.hash !== '#/intro') pushRoute('#/intro');
     closeCard(); closeList(); stopAutoPlay(); stopAllSpeech();
     INTRO.active = true; INTRO.stop = -1;
     document.body.classList.add('intro');
@@ -2037,8 +2021,9 @@
     introLineEl.classList.remove('show');
   }
 
-  function endIntro() {
+  function endIntro(silent) {
     clearTimeout(INTRO.timer);
+    if (location.hash === '#/intro') replaceRoute('#/solar');
     INTRO.active = false; INTRO.stop = -1; INTRO.cam = null;
     stopAllSpeech();
     finishIntroUI();
@@ -2053,7 +2038,7 @@
       currentView = 'x';
       switchView('overview');
     }
-    showToast(FAMILY.ui.welcome[lang]);
+    if (!silent) showToast(FAMILY.ui.welcome[lang]);
   }
 
   function ease(v) { v = Math.max(0, Math.min(1, v)); return v * v * (3 - 2 * v); }
@@ -2179,9 +2164,16 @@
   // ------------------------------------------------------------------
   // View switching (fade → swap → fade)
   // ------------------------------------------------------------------
-  function switchView(view, cfg) {
-    if (mode === 'transition') return;
-    if (view === currentView && view !== 'detail') return;
+  var pendingNav = null;   // navigation requested while a transition was running
+  function switchView(view, cfg, opts) {
+    opts = opts || {};
+    if (mode === 'transition') { pendingNav = { view: view, cfg: cfg, opts: opts }; return; }
+    if (view === currentView && (view !== 'detail' || cfg === currentPlanet)) {
+      if (opts.push !== false) pushRoute(routeFor(view, cfg, opts.card));
+      if (opts.card) openCardByKey(opts.card);
+      return;
+    }
+    if (INTRO.active) endIntro(true);
     mode = 'transition';
     controls.enabled = false;
     fadeEl.classList.add('show');
@@ -2215,8 +2207,80 @@
       mode = view;
       applyLanguage();
       fadeEl.classList.remove('show');
+      if (opts.push !== false) pushRoute(routeFor(view, cfg, opts.card));
+      if (opts.card) setTimeout(function () { openCardByKey(opts.card); }, 60);
+      if (pendingNav) { var p = pendingNav; pendingNav = null; setTimeout(function () { switchView(p.view, p.cfg, p.opts); }, 30); }
     }, 460);
   }
+
+  // ------------------------------------------------------------------
+  // Routing — every screen is a #/ address so Back / edge-swipe work
+  // ------------------------------------------------------------------
+  function routeFor(view, cfg, card) {
+    var r;
+    if (view === 'overview') r = '#/solar';
+    else if (view === 'detail') r = cfg.parent ? '#/planet/' + cfg.parent.key + '/' + cfg.key.split('-').pop() : '#/planet/' + cfg.key;
+    else r = { galaxy: '#/galaxy', beyond: '#/black-hole', galaxies: '#/galaxies', family: '#/family', intro: '#/intro' }[view] || '#/solar';
+    return card ? r + '?card=' + encodeURIComponent(card) : r;
+  }
+  var suppressPop = false;
+  function pushRoute(r) {
+    if (location.hash === r) return;
+    try { history.pushState({ r: r }, '', r); } catch (e) { location.hash = r; }
+  }
+  function replaceRoute(r) { try { history.replaceState({ r: r }, '', r); } catch (e) { /* ignore */ } }
+
+  // "#/planet/earth/moon?card=x" → { view, cfg, card }
+  function parseRoute(hash) {
+    var h = (hash || '').replace(/^#/, ''), card = null;
+    var q = h.indexOf('?'); if (q >= 0) { var m = /card=([^&]+)/.exec(h.slice(q)); if (m) card = decodeURIComponent(m[1]); h = h.slice(0, q); }
+    var parts = h.split('/').filter(Boolean);
+    if (!parts.length) return null;
+    var head = parts[0];
+    if (head === 'solar') return { view: 'overview', cfg: null, card: card };
+    if (head === 'intro') return { view: 'intro' };
+    if (head === 'galaxy') return { view: 'galaxy', card: card };
+    if (head === 'black-hole') return { view: 'beyond', card: card };
+    if (head === 'galaxies') return { view: 'galaxies', card: card };
+    if (head === 'family') return { view: 'family', card: card };
+    if (head === 'planet') {
+      var pc = PLANETS.find(function (p) { return p.key === parts[1]; }); if (!pc) return null;
+      if (parts[2]) { var mn = pc.detail.moons.find(function (m) { return m.key === parts[2]; }); if (mn && mn.detail) return { view: 'detail', cfg: moonCfg(mn, pc), card: card }; }
+      return { view: 'detail', cfg: pc, card: card };
+    }
+    return null;
+  }
+
+  // Open a card on the current screen by its key (features/dwarfs/moons/hotspots)
+  function openCardByKey(key) {
+    var d = activeBody().detail, i;
+    if (d.features) { i = d.features.findIndex(function (f) { return f.key === key; }); if (i >= 0) { openFeature(d.features[i]); return; } }
+    if (d.dwarfs) { i = d.dwarfs.findIndex(function (f) { return f.key === key; }); if (i >= 0) { openCard('dwarf', null, i); return; } }
+    if (d.moons) { i = d.moons.findIndex(function (m) { return m.key === key; }); if (i >= 0) { openCard('moon', d.moons[i], i); return; } }
+    if (d.hotspots) { i = d.hotspots.findIndex(function (h) { return h.key === key; }); if (i >= 0) { openCard('hotspot', d.hotspots[i], i); return; } }
+  }
+
+  function applyRoute(hash) {
+    var r = parseRoute(hash);
+    if (!r) { replaceRoute('#/solar'); r = { view: 'overview' }; }
+    if (r.view === 'intro') { if (!INTRO.active) { if (currentView !== 'overview') switchView('overview', null, { push: false }); showIntroGate(); } return; }
+    if (INTRO.active) { endIntro(true); }
+    switchView(r.view, r.cfg, { push: false, card: r.card });
+  }
+
+  window.addEventListener('popstate', function () {
+    // Back with a card or the checklist open just closes it (cards are not history entries).
+    if ((currentCard || listPanel.classList.contains('show')) && !INTRO.active) {
+      var here = routeFor(currentView, currentPlanet);
+      var target = parseRoute(location.hash);
+      if (!target || target.view !== currentView || (target.view === 'detail' && target.cfg !== currentPlanet)) {
+        closeCard(); closeList();
+        pushRoute(here);
+        return;
+      }
+    }
+    applyRoute(location.hash);
+  });
 
   // ------------------------------------------------------------------
   // Labels + animation loop
