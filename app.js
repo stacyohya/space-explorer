@@ -1967,16 +1967,21 @@
     introVideo.classList.remove('dip');
     introLineEl.classList.remove('show');
   }
-  var scrubPreviewTimer = null;
-  introRange.addEventListener('pointerdown', beginScrub);
-  introRange.addEventListener('touchstart', beginScrub, { passive: true });
+  var scrubPreviewTimer = null, scrubDown = false, lastCommit = 0;
+  introRange.addEventListener('pointerdown', function () { scrubDown = true; beginScrub(); });
+  introRange.addEventListener('touchstart', function () { scrubDown = true; beginScrub(); }, { passive: true });
   introRange.addEventListener('input', function () {
+    if (!scrubDown) return;                    // a trailing 'input' after release must not re-freeze the film
     beginScrub();
     clearTimeout(scrubPreviewTimer);
     scrubPreviewTimer = setTimeout(function () { try { introVideo.currentTime = +introRange.value; } catch (e) {} }, 60);
   });
   function scrubTo(t) {
-    if (!INTRO.scrubbing || !INTRO.active) return;   // commit once (change + pointerup both fire)
+    scrubDown = false;
+    if (!INTRO.active) return;
+    var now = Date.now();
+    if (!INTRO.scrubbing && now - lastCommit < 400) return;   // change + pointerup/touchend: commit once
+    lastCommit = now;
     INTRO.scrubbing = false;
     clearTimeout(scrubPreviewTimer);
     clearTimeout(INTRO.timer);
