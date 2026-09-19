@@ -1864,11 +1864,17 @@
     var scrub = atTime !== undefined;                                                    // user dragged the bar: seek in place, never go black
     if (!near && !scrub) introVideo.classList.add('dip');
     INTRO.timer = setTimeout(function () {
+      // when scrubbed into the middle of a stop, start at the sentence that matches the position
+      var startLine = 0;
+      if (scrub) {
+        var n = sentencesOf(FILM_STOPS[i]).length, frac = (target - seg[0]) / (seg[1] - seg[0]);
+        startLine = Math.max(0, Math.min(n - 1, Math.floor(frac * n)));
+      }
       var go = function () {
         introVideo.classList.remove('dip');
         if (i === FILM_STOPS.length - 1) introCredits.hidden = false;
         renderIntroCaption();
-        playIntroLine(0);
+        playIntroLine(startLine);
       };
       if (near) {
         INTRO.holding = false; var p = introVideo.play(); if (p && p.catch) p.catch(function () {});
