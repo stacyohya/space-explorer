@@ -157,6 +157,7 @@
   var camDist = 11, camDistMin = 6.5, camDistMax = 20;
 
   var currentCard = null;       // { kind: 'hotspot'|'feature'|'moon'|'fact'|'dwarf', item, index }
+  var cardGuardTimer = null;
   var currentSpeech = '';
   var currentClipId = '';
   var clipAudio = null;
@@ -589,6 +590,11 @@
     stopAllSpeech();
     renderCard();
     cardPanel.classList.add('show');
+    // A tap that opens the card can also fire a synthesized click ~300 ms later; keep the
+    // freshly shown buttons (e.g. "Go and see →") from swallowing it.
+    cardPanel.style.pointerEvents = 'none';
+    clearTimeout(cardGuardTimer);
+    cardGuardTimer = setTimeout(function () { cardPanel.style.pointerEvents = ''; }, 450);
     if (kind === 'fact' && currentView === 'overview') {
       var f = OVERVIEW.facts[index];
       if (f && f.key === 'sunlight') startPhoton();
