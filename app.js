@@ -798,13 +798,13 @@
     if (d.hotspots) groups.push({ title: t('listSpots'), kind: 'hotspot', items: d.hotspots.map(function (h, i) { return { icon: h.icon, text: h[lang].title, kind: 'hotspot', item: h, index: i }; }) });
     if (d.moons && d.moons.length) groups.push({ title: t('listMoons'), kind: 'moon', items: d.moons.map(function (m, i) { return { icon: m.icon, text: m[lang].name, kind: 'moon', item: m, index: i }; }) });
     if (d.dwarfs) groups.push({ title: t('listDwarfs'), kind: 'dwarf', items: d.dwarfs.map(function (m, i) { return { icon: m.icon, text: m[lang].name, kind: 'dwarf', item: null, index: i }; }) });
+    if (d.facts && d.facts.length) groups.push({ title: t('listFacts'), kind: 'fact', items: d.facts.map(function (f, i) { return { icon: f.icon, text: f[lang].title, kind: 'fact', item: null, index: i }; }) });
     return { body: body, groups: groups, facts: d.facts || [] };
   }
 
   function sceneSequence() {
     var s = sceneItems(), seq = [];
     s.groups.forEach(function (g) { g.items.forEach(function (it) { seq.push({ kind: it.kind, item: it.item, index: it.index }); }); });
-    s.facts.forEach(function (f, i) { seq.push({ kind: 'fact', item: null, index: i }); });
     return seq;
   }
   function seqPosition(card) {
@@ -834,21 +834,11 @@
         row.innerHTML = '<span class="check">' + (isVisited(s.body.key, it.kind, it.index) ? '✓' : '') + '</span><span class="ico"></span><span class="name"></span><button class="say" aria-label="Listen">🔊</button>';
         row.querySelector('.ico').textContent = it.icon;
         row.querySelector('.name').textContent = it.text;
-        row.addEventListener('click', function () { closeList(); openCard(it.kind, it.item, it.index); });
+        row.addEventListener('click', function () { closeList(); if (it.kind === 'fact') factIndex = it.index; openCard(it.kind, it.item, it.index); });
         row.querySelector('.say').addEventListener('click', function (e) { e.stopPropagation(); closeList(); stopAutoPlay(); openCard(it.kind, it.item, it.index); speak(currentSpeech); });
         listBody.appendChild(row);
       });
     });
-    if (s.facts.length) {
-      var h2 = document.createElement('div'); h2.className = 'group'; h2.textContent = t('listFacts'); listBody.appendChild(h2);
-      var seenFacts = s.facts.filter(function (f, i) { return isVisited(s.body.key, 'fact', i); }).length;
-      var row2 = document.createElement('div'); row2.className = 'row';
-      row2.innerHTML = '<span class="check">' + (seenFacts === s.facts.length ? '✓' : '') + '</span><span class="ico">✨</span><span class="name"></span><span class="count"></span>';
-      row2.querySelector('.name').textContent = t('listFacts');
-      row2.querySelector('.count').textContent = seenFacts + ' / ' + s.facts.length + ' ' + t('listSeen');
-      row2.addEventListener('click', function () { closeList(); openCard('fact', null, factIndex); });
-      listBody.appendChild(row2);
-    }
     var reset = document.createElement('button'); reset.className = 'reset'; reset.textContent = t('listReset');
     reset.addEventListener('click', function () { visited = {}; saveVisited(); refreshVisited(); renderList(); });
     listBody.appendChild(reset);
