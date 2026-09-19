@@ -227,6 +227,21 @@
     return tex;
   }
 
+  // Glow with a crisp ring — stands out against dense star fields.
+  function makeRingedGlowTexture(color) {
+    var size = 256, cv = document.createElement('canvas'); cv.width = cv.height = size;
+    var ctx = cv.getContext('2d'), c = size / 2;
+    var g = ctx.createRadialGradient(c, c, 0, c, c, c);
+    g.addColorStop(0, color); g.addColorStop(0.22, color); g.addColorStop(0.5, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, size, size);
+    ctx.strokeStyle = color; ctx.lineWidth = 7; ctx.globalAlpha = 0.95;
+    ctx.beginPath(); ctx.arc(c, c, size * 0.36, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 2.5; ctx.globalAlpha = 0.9;
+    ctx.beginPath(); ctx.arc(c, c, size * 0.36, 0, Math.PI * 2); ctx.stroke();
+    ctx.globalAlpha = 1;
+    var tex = new THREE.CanvasTexture(cv); tex.needsUpdate = true; return tex;
+  }
+
   function makeEmojiTexture(emoji) {
     var cv = document.createElement('canvas'); cv.width = cv.height = 128;
     var ctx = cv.getContext('2d');
@@ -371,8 +386,11 @@
     return s;
   }
 
-  function hotspotSprite(item, color, list, baseScale) {
-    var sprite = glowSprite(color, baseScale || 1.0);
+  function hotspotSprite(item, color, list, baseScale, ringed) {
+    var sprite = ringed
+      ? new THREE.Sprite(new THREE.SpriteMaterial({ map: makeRingedGlowTexture(color), transparent: true, depthWrite: false }))
+      : glowSprite(color, baseScale || 1.0);
+    sprite.scale.set(baseScale || 1.0, baseScale || 1.0, 1);
     sprite.userData.hotspot = item;
     sprite.userData.baseScale = baseScale || 1.0;
     sprite.userData.ownsTexture = true;
@@ -1573,7 +1591,7 @@
             : nebulaSpots[h.pos] ? nebulaSpots[h.pos][0].clone().add(new THREE.Vector3(0, nebulaSpots[h.pos][2] * 0.45, 0))
             : h.pos === 'starlife' ? nebulaSpots.ring[0].clone().lerp(nebulaSpots.crab[0], 0.5).add(new THREE.Vector3(0, 3.5, 0))
             : new THREE.Vector3(h.pos[0], h.pos[1], h.pos[2]);
-      var sprite = hotspotSprite(h, h.color, galaxyHotspots, 2.2);
+      var sprite = hotspotSprite(h, h.color, galaxyHotspots, 4.2, true);
       sprite.position.copy(p);
       galaxyGroup.add(sprite);
     });
@@ -1609,7 +1627,7 @@
 
     var anchors = { milky: [milky, [0, 6, 0]], andromeda: [andromeda.group, [0, 4.5, 0]], elliptical: [ellip, [0, 4.5, 0]], irregular: [irr, [0, 3, 0]], magellanic: [lmc, [0, 2.2, 0]], between: [galaxiesGroup, [3, 9, -6]] };
     GALAXIES.hotspots.forEach(function (h) {
-      var sprite = hotspotSprite(h, h.color, galaxiesHotspots, 2.0);
+      var sprite = hotspotSprite(h, h.color, galaxiesHotspots, 3.6, true);
       if (typeof h.pos === 'string') { var a = anchors[h.pos]; sprite.position.set(a[1][0], a[1][1], a[1][2]); a[0].add(sprite); }
       else { sprite.position.set(h.pos[0], h.pos[1], h.pos[2]); galaxiesGroup.add(sprite); }
     });
