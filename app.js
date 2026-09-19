@@ -37,7 +37,9 @@
       listFacts: 'Fun facts',
       listSeen: 'seen',
       listReset: 'Start over',
-      listClose: 'Close'
+      listClose: 'Close',
+      playAll: '▶ Play all',
+      stopAll: '■ Stop'
     },
     zh: {
       titleMain: '🔭 探索太陽系',
@@ -66,7 +68,9 @@
       listFacts: '有趣知識',
       listSeen: '已看',
       listReset: '重新開始',
-      listClose: '關閉'
+      listClose: '關閉',
+      playAll: '▶ 全部播放',
+      stopAll: '■ 停止'
     }
   };
 
@@ -168,6 +172,9 @@
   var speakBtn = document.getElementById('speak-btn');
   var speakLabel = document.getElementById('speak-label');
   var nextBtn = document.getElementById('next-btn');
+  var pagerCount = document.getElementById('pager-count');
+  var autoBtn = document.getElementById('auto-btn');
+  var listPlayBtn = document.getElementById('list-play');
   var prevBtn = document.getElementById('prev-btn');
   var linkBtn = document.getElementById('link-btn');
   var cardClose = document.getElementById('card-close');
@@ -436,13 +443,13 @@
     stopAllSpeech();
     clipAudio = new Audio(file);
     clipAudio.onplay = function () { speakBtn.classList.add('speaking'); speakLabel.textContent = t('speaking'); };
-    clipAudio.onended = clipAudio.onerror = function () { speakBtn.classList.remove('speaking'); speakLabel.textContent = t('listen'); clipAudio = null; };
+    clipAudio.onended = clipAudio.onerror = function () { speakBtn.classList.remove('speaking'); speakLabel.textContent = t('listen'); clipAudio = null; onSpeechDone(); };
     clipAudio.play().catch(function () { clipAudio = null; speak(currentSpeech, true); });
   }
 
   function speak(text, forceSynth) {
     if (!forceSynth && window.AUDIO_CLIPS && AUDIO_CLIPS[currentClipId]) { playClip(AUDIO_CLIPS[currentClipId]); return; }
-    if (!('speechSynthesis' in window)) { showToast(t('noSpeech')); return; }
+    if (!('speechSynthesis' in window)) { showToast(t('noSpeech')); if (autoPlay) { clearTimeout(autoTimer); autoTimer = setTimeout(onSpeechDone, 5000); } return; }
     stopAllSpeech();
     var utter = new SpeechSynthesisUtterance(text);
     utter.lang = lang === 'zh' ? 'zh-TW' : 'en-US';
@@ -451,7 +458,7 @@
     var voice = pickVoice();
     if (voice) utter.voice = voice;
     utter.onstart = function () { speakBtn.classList.add('speaking'); speakLabel.textContent = t('speaking'); };
-    var done = function () { speakBtn.classList.remove('speaking'); speakLabel.textContent = t('listen'); };
+    var done = function () { speakBtn.classList.remove('speaking'); speakLabel.textContent = t('listen'); onSpeechDone(); };
     utter.onend = done; utter.onerror = done;
     setTimeout(function () { window.speechSynthesis.speak(utter); }, 60);
   }
@@ -508,8 +515,11 @@
     cardQuestion.textContent = question;
     cardQuestion.style.display = question ? 'block' : 'none';
     cardText.textContent = text;
-    var deck = c.kind === 'fact' || c.kind === 'dwarf';
-    nextBtn.hidden = !deck; prevBtn.hidden = !deck;
+    nextBtn.hidden = false; prevBtn.hidden = false;
+    var pos = seqPosition(c), seqLen = sceneSequence().length;
+    pagerCount.textContent = pos >= 0 ? (pos + 1) + ' / ' + seqLen : '';
+    autoBtn.textContent = autoPlay ? t('stopAll') : t('playAll');
+    autoBtn.classList.toggle('on', autoPlay);
     nextBtn.title = t('next'); prevBtn.title = t('prev');
     nextBtn.setAttribute('aria-label', t('next')); prevBtn.setAttribute('aria-label', t('prev'));
     linkBtn.hidden = !link;
@@ -532,6 +542,7 @@
   }
 
   function closeCard() {
+    stopAutoPlay();
     currentCard = null;
     cardPanel.classList.remove('show');
     stopIllustration();
@@ -546,19 +557,45 @@
 
   cardClose.addEventListener('click', closeCard);
   speakBtn.addEventListener('click', function () { if (currentSpeech) speak(currentSpeech); });
+  // ‹ › walk through everything in the scene (same order as the checklist); wraps around.
   function stepDeck(dir) {
-    if (!currentCard) return;
-    if (currentCard.kind === 'dwarf') {
-      var n = OVERVIEW.dwarfs.length;
-      openCard('dwarf', null, (currentCard.index + dir + n) % n);
-      return;
-    }
-    var total = activeBody().detail.facts.length;
-    factIndex = (factIndex + dir + total) % total;
-    openCard('fact', null, factIndex);
+    if (!currentCard) return false;
+    var seq = sceneSequence(), pos = seqPosition(currentCard);
+    if (pos < 0 || !seq.length) return false;
+    var next = (pos + dir + seq.length) % seq.length;
+    var n = seq[next];
+    if (n.kind === 'fact') factIndex = n.index;
+    openCard(n.kind, n.item, n.index);
+    return next !== 0 || dir < 0;   // false when we wrapped back to the start
   }
-  nextBtn.addEventListener('click', function () { stepDeck(1); });
-  prevBtn.addEventListener('click', function () { stepDeck(-1); });
+  nextBtn.addEventListener('click', function () { stopAutoPlay(); stepDeck(1); });
+  prevBtn.addEventListener('click', function () { stopAutoPlay(); stepDeck(-1); });
+
+  // ▶ Play all: read the current card, then move on to the next one until the end.
+  var autoPlay = false, autoTimer = null;
+  function startAutoPlay(fromStart) {
+    autoPlay = true;
+    if (fromStart || !currentCard) { var first = sceneSequence()[0]; if (!first) return; closeList(); openCard(first.kind, first.item, first.index); }
+    autoBtn.textContent = t('stopAll'); autoBtn.classList.add('on');
+    listPlayBtn.textContent = t('stopAll');
+    speak(currentSpeech);
+  }
+  function stopAutoPlay() {
+    autoPlay = false;
+    clearTimeout(autoTimer);
+    autoBtn.textContent = t('playAll'); autoBtn.classList.remove('on');
+    listPlayBtn.textContent = t('playAll');
+  }
+  function onSpeechDone() {
+    if (!autoPlay || !currentCard) return;
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(function () {
+      if (!autoPlay || !currentCard) return;
+      if (stepDeck(1)) speak(currentSpeech); else stopAutoPlay();
+    }, 900);
+  }
+  autoBtn.addEventListener('click', function () { if (autoPlay) stopAutoPlay(); else startAutoPlay(false); });
+  listPlayBtn.addEventListener('click', function () { if (autoPlay) stopAutoPlay(); else startAutoPlay(true); });
   factsBtn.addEventListener('click', function () { openCard('fact', null, factIndex); });
 
   // Small 2D animations drawn inside the knowledge card. Each returns a stop().
@@ -764,6 +801,18 @@
     return { body: body, groups: groups, facts: d.facts || [] };
   }
 
+  function sceneSequence() {
+    var s = sceneItems(), seq = [];
+    s.groups.forEach(function (g) { g.items.forEach(function (it) { seq.push({ kind: it.kind, item: it.item, index: it.index }); }); });
+    s.facts.forEach(function (f, i) { seq.push({ kind: 'fact', item: null, index: i }); });
+    return seq;
+  }
+  function seqPosition(card) {
+    var seq = sceneSequence();
+    for (var i = 0; i < seq.length; i++) if (seq[i].kind === card.kind && seq[i].index === card.index) return i;
+    return -1;
+  }
+
   function sceneProgress() {
     var s = sceneItems(), seen = 0, total = 0;
     s.groups.forEach(function (g) { g.items.forEach(function (it) { total++; if (isVisited(s.body.key, it.kind, it.index)) seen++; }); });
@@ -773,6 +822,7 @@
   function renderList() {
     var s = sceneItems();
     listTitle.textContent = t('listTitle');
+    listPlayBtn.textContent = autoPlay ? t('stopAll') : t('playAll');
     var p = sceneProgress();
     listProgress.textContent = p.seen + ' / ' + p.total;
     listBtn.textContent = '📋 ' + p.seen + '/' + p.total;
@@ -785,7 +835,7 @@
         row.querySelector('.ico').textContent = it.icon;
         row.querySelector('.name').textContent = it.text;
         row.addEventListener('click', function () { closeList(); openCard(it.kind, it.item, it.index); });
-        row.querySelector('.say').addEventListener('click', function (e) { e.stopPropagation(); closeList(); openCard(it.kind, it.item, it.index); speak(currentSpeech); });
+        row.querySelector('.say').addEventListener('click', function (e) { e.stopPropagation(); closeList(); stopAutoPlay(); openCard(it.kind, it.item, it.index); speak(currentSpeech); });
         listBody.appendChild(row);
       });
     });
@@ -870,6 +920,7 @@
 
   function setLanguage(next) {
     if (next === lang) return;
+    stopAutoPlay();
     lang = next;
     try { localStorage.setItem('sse-lang', lang); } catch (e) { /* ignore */ }
     stopAllSpeech();

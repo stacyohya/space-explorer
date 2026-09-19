@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Solar System" />
 <link rel="apple-touch-icon" href="icon-180.png" />
 <link rel="icon" href="icon-180.png" />
-<link rel="manifest" href="manifest.json?v=202609191258" />
+<link rel="manifest" href="manifest.json?v=202609191305" />
 <title>Solar System Explorer</title>
 <style>
   :root{
@@ -237,7 +237,19 @@
   #speak-btn:hover{filter:brightness(1.15);}
   #speak-btn.speaking{background:linear-gradient(135deg,#fbbf24,#f59e0b); border-color:#fbbf24; color:#1a1300;}
   #card-panel .actions{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
-  #card-panel .pager{margin-left:auto; display:flex; gap:6px;}
+  #card-panel .pager{margin-left:auto; display:flex; gap:6px; align-items:center;}
+  #pager-count{color:var(--muted); font-size:12px; min-width:44px; text-align:center;}
+  #auto-btn{
+    background:transparent; border:1px solid rgba(201,184,255,.5); color:#d8ccff; font-family:inherit;
+    padding:9px 12px; border-radius:999px; font-size:12px; cursor:pointer; transition:all .15s ease; white-space:nowrap;
+  }
+  #auto-btn:hover{background:rgba(120,80,255,.15);}
+  #auto-btn.on{background:linear-gradient(135deg,#fbbf24,#f59e0b); border-color:#fbbf24; color:#1a1300;}
+  #list-panel .playrow{padding:10px 16px 0;}
+  #list-play{
+    width:100%; background:linear-gradient(135deg,rgba(120,80,255,.35),rgba(60,30,140,.35)); border:1px solid rgba(201,184,255,.6); color:#e6dcff;
+    padding:11px 16px; border-radius:999px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;
+  }
   #prev-btn, #next-btn{
     width:36px; height:36px; padding:0; display:inline-flex; align-items:center; justify-content:center;
     background:transparent; border:1px solid rgba(251,191,36,.5); color:var(--amber);
@@ -273,6 +285,7 @@
     #crumbs button{font-size:14px; padding:9px 14px;}
     #lang-toggle button{font-size:14px; padding:9px 16px;}
     #speak-btn, #link-btn{font-size:15px; padding:12px 20px;}
+    #auto-btn{font-size:14px; padding:11px 14px;}
     #prev-btn, #next-btn{width:44px; height:44px; font-size:26px;}
     #card-panel .close{font-size:24px; padding:8px;}
     .planet-label .name{font-size:13px; padding:4px 11px;}
@@ -331,6 +344,7 @@
   <button id="list-btn" aria-label="Checklist">📋</button>
   <aside id="list-panel" aria-label="Checklist">
     <div class="head"><span id="list-title">Things to find here</span><span id="list-progress" class="progress"></span><button id="list-close" class="close" aria-label="Close">✕</button></div>
+    <div class="playrow"><button id="list-play" type="button">▶ Play all</button></div>
     <div id="list-body"></div>
   </aside>
   <div id="lang-toggle" role="group" aria-label="Language">
@@ -352,8 +366,10 @@
     <p class="body" id="card-text"></p>
     <div class="actions">
       <button id="speak-btn">🔊 <span id="speak-label">Listen</span></button>
+      <button id="auto-btn" type="button">▶ Play all</button>
       <span class="pager">
         <button id="prev-btn" hidden aria-label="Previous">‹</button>
+        <span id="pager-count"></span>
         <button id="next-btn" hidden aria-label="Next">›</button>
       </span>
       <button id="link-btn" hidden></button>
@@ -365,8 +381,8 @@
   <script src="https://unpkg.com/three@0.144.0/build/three.min.js"></script>
   <script src="https://unpkg.com/three@0.144.0/examples/js/controls/OrbitControls.js"></script>
   <script>if (location.protocol === 'file:') document.write('<script src="textures-data.js"><\/script>');</script>
-  <script src="content.js?v=202609191258"></script>
-  <script src="audio/manifest.js?v=202609191258"></script>
-  <script src="app.js?v=202609191258"></script>
+  <script src="content.js?v=202609191305"></script>
+  <script src="audio/manifest.js?v=202609191305"></script>
+  <script src="app.js?v=202609191305"></script>
 </body>
 </html>
