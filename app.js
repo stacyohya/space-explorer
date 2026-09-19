@@ -36,7 +36,7 @@
       listDwarfs: 'Dwarf planets',
       listFacts: 'Fun facts',
       listSeen: 'seen',
-      listReset: 'Start over',
+      listReset: 'Play again',
       listClose: 'Close',
       playAll: '▶ Play all',
       stopAll: '■ Stop'
@@ -67,7 +67,7 @@
       listDwarfs: '矮行星',
       listFacts: '有趣知識',
       listSeen: '已看',
-      listReset: '重新開始',
+      listReset: '再玩一次',
       listClose: '關閉',
       playAll: '▶ 全部播放',
       stopAll: '■ 停止'
