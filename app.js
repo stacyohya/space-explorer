@@ -2047,7 +2047,6 @@
       switchView('overview');
       setTimeout(finishIntroUI, 480);
     }
-    if (!silent) showToast(FAMILY.ui.welcome[lang]);
   }
 
   function ease(v) { v = Math.max(0, Math.min(1, v)); return v * v * (3 - 2 * v); }
