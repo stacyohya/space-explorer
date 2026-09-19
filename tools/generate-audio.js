@@ -33,6 +33,7 @@ const BEYOND = sandbox.BEYOND_CONTENT;
 function jobs() {
   const out = [];
   const bodies = Object.assign({}, CONTENT, { overview: OVERVIEW, beyond: BEYOND, galaxy: sandbox.GALAXY_CONTENT, galaxies: sandbox.GALAXIES_CONTENT });
+  for (const pk of Object.keys(CONTENT)) (CONTENT[pk].moons || []).forEach(m => { if (m.detail) bodies[`${pk}-${m.key}`] = m.detail; });
   for (const key of Object.keys(bodies)) {
     if (ONLY && !ONLY.includes(key)) continue;
     const d = bodies[key];

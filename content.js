@@ -642,6 +642,186 @@ var PLANET_CONTENT = {
           "name": "月球",
           "subtitle": "我們唯一的衛星",
           "text": "月球正慢慢離我們而去，每年大約遠離 4 公分。它的引力會拉動海水，形成潮汐。已經有十二個人在上面走過！"
+        },
+        "detail": {
+          "subtitle": {
+            "en": "Our Night Light",
+            "zh": "我們的夜燈"
+          },
+          "camDist": 11,
+          "rotY": -1.75,
+          "moons": [],
+          "hotspots": [
+            {
+              "lat": 0.7,
+              "lon": 23.5,
+              "color": "#ffe3a8",
+              "icon": "👣",
+              "en": {
+                "kicker": "Footprints",
+                "title": "People Walked Here",
+                "question": "Did people really go to the Moon?",
+                "text": "Yes! A long time ago, astronauts flew to the Moon in a rocket. They landed right here. They walked, jumped, and picked up rocks. Their footprints are still there today, because the Moon has no wind to blow them away."
+              },
+              "zh": {
+                "kicker": "腳印",
+                "title": "人類在這裡走過",
+                "question": "真的有人去過月球嗎？",
+                "text": "真的！很久以前，太空人坐火箭飛到月球，就降落在這裡。他們在月球上走路、跳來跳去、撿石頭。他們的腳印到現在都還在，因為月球上沒有風可以把腳印吹掉。"
+              }
+            },
+            {
+              "lat": -43,
+              "lon": -11,
+              "color": "#ffffff",
+              "icon": "🎯",
+              "en": {
+                "kicker": "Big Crater",
+                "title": "A Big Splash Mark",
+                "question": "What are the holes on the Moon?",
+                "text": "The holes are called craters. Space rocks crashed into the Moon and made them. This one has bright lines going out from it, like a splash! You can see it from Earth with binoculars."
+              },
+              "zh": {
+                "kicker": "大坑洞",
+                "title": "大大的撞擊痕跡",
+                "question": "月球上的洞是什麼？",
+                "text": "這些洞叫做隕石坑，是太空石頭撞上月球撞出來的。這一個周圍有亮亮的線往外散開，像水花一樣！從地球用望遠鏡就看得到。"
+              }
+            },
+            {
+              "lat": 8,
+              "lon": 31,
+              "color": "#9ad1ff",
+              "icon": "🌑",
+              "en": {
+                "kicker": "Dark Patches",
+                "title": "The Moon Seas",
+                "question": "What are the dark parts?",
+                "text": "The dark parts are called seas, but there is no water in them! Long ago, hot lava flowed out and cooled into flat, dark rock. When you look at the Moon, the dark parts make a face or a rabbit!"
+              },
+              "zh": {
+                "kicker": "暗暗的地方",
+                "title": "月亮上的海",
+                "question": "暗暗的地方是什麼？",
+                "text": "暗暗的地方叫做「月海」，可是裡面沒有水！很久以前，滾燙的岩漿流出來，冷掉變成平平的黑色石頭。你看月亮的時候，這些暗暗的地方就像一張臉，或是一隻兔子！"
+              }
+            },
+            {
+              "lat": 5,
+              "lon": 180,
+              "color": "#c9b8ff",
+              "icon": "🙈",
+              "en": {
+                "kicker": "Far Side",
+                "title": "The Side We Never See",
+                "question": "Why do we always see the same side?",
+                "text": "The Moon spins very slowly, just as slowly as it goes around Earth. So it always shows us the same face! The other side is bumpier, with lots more craters. People saw it for the first time from a spacecraft."
+              },
+              "zh": {
+                "kicker": "背面",
+                "title": "我們看不到的那一面",
+                "question": "為什麼我們總是看到同一面？",
+                "text": "月球轉得很慢很慢，剛好跟它繞地球一圈一樣慢，所以永遠只給我們看同一面！另一面比較坑坑洞洞。人類第一次看到它，是靠太空船拍照片。"
+              }
+            },
+            {
+              "lat": -85,
+              "lon": 0,
+              "color": "#7dffd8",
+              "icon": "🧊",
+              "en": {
+                "kicker": "South Pole",
+                "title": "Ice in the Dark",
+                "question": "Is there water on the Moon?",
+                "text": "A little bit! At the bottom of the Moon, some deep holes never get sunlight. It is very cold there, and there is ice. One day, astronauts might use it for drinking water!"
+              },
+              "zh": {
+                "kicker": "南極",
+                "title": "黑暗裡的冰",
+                "question": "月球上有水嗎？",
+                "text": "有一點點！在月球的最下面，有些很深的洞永遠照不到太陽。那裡非常冷，有冰。有一天，太空人可能會用它來喝水！"
+              }
+            }
+          ],
+          "facts": [
+            {
+              "icon": "🌗",
+              "en": {
+                "title": "Why the Moon changes shape",
+                "text": "The Moon does not really change shape! The Sun lights up one side of it. As the Moon goes around Earth, we see more or less of the bright side. That is why it looks like a banana, then a circle."
+              },
+              "zh": {
+                "title": "月亮為什麼會變形狀",
+                "text": "月亮其實沒有變形狀！太陽照亮它的一邊。月亮繞著地球走的時候，我們看到亮的那一邊有時多、有時少。所以它有時像香蕉，有時像圓圓的餅。"
+              }
+            },
+            {
+              "icon": "🌊",
+              "en": {
+                "title": "It pulls the ocean",
+                "text": "The Moon pulls on the water of Earth. That makes the sea go up and down every day. We call it the tide."
+              },
+              "zh": {
+                "title": "它會拉海水",
+                "text": "月亮會拉地球上的水。所以海水每天都會漲上來、退下去。這叫做潮汐。"
+              }
+            },
+            {
+              "icon": "🦘",
+              "en": {
+                "title": "Super jumps",
+                "text": "On the Moon, you could jump six times higher than on Earth! The astronauts bounced around like kangaroos."
+              },
+              "zh": {
+                "title": "超級跳",
+                "text": "在月球上，你可以跳得比在地球高六倍！太空人在上面像袋鼠一樣蹦蹦跳。"
+              }
+            },
+            {
+              "icon": "🤫",
+              "en": {
+                "title": "No sound, no wind",
+                "text": "The Moon has no air. So there is no wind and no sound. Even in the daytime, the sky is black!"
+              },
+              "zh": {
+                "title": "沒有聲音、沒有風",
+                "text": "月球上沒有空氣。所以沒有風，也沒有聲音。就算是白天，天空也是黑的！"
+              }
+            },
+            {
+              "icon": "🏃",
+              "en": {
+                "title": "Slowly moving away",
+                "text": "Every year, the Moon moves a tiny bit farther from Earth. About as much as your fingernail grows in a year!"
+              },
+              "zh": {
+                "title": "慢慢地離我們遠去",
+                "text": "每一年，月亮都會離地球遠一點點。大概跟你的指甲一年長的長度差不多！"
+              }
+            },
+            {
+              "icon": "🐣",
+              "en": {
+                "title": "How the Moon was made",
+                "text": "Long, long ago, a big space rock crashed into baby Earth. Pieces flew off into space. The pieces came together and made the Moon!"
+              },
+              "zh": {
+                "title": "月亮是怎麼來的",
+                "text": "很久很久以前，一顆大石頭撞上了小時候的地球。很多碎片飛到太空中。碎片聚在一起，就變成了月亮！"
+              }
+            },
+            {
+              "icon": "🚀",
+              "en": {
+                "title": "Three days away",
+                "text": "The Moon is far, but not too far. A rocket takes about three days to get there. You could fit thirty Earths in a row between Earth and the Moon."
+              },
+              "zh": {
+                "title": "三天就到",
+                "text": "月亮很遠，但沒有太遠。火箭大約三天就能飛到。地球和月亮中間，可以排三十顆地球。"
+              }
+            }
+          ]
         }
       }
     ],
@@ -2415,6 +2595,11 @@ var GALAXY_CONTENT = {
         "title": "我們小小的位置",
         "question": "太陽在銀河系的哪裡？",
         "text": "我們的太陽只是銀河系大約兩千億顆星星裡的一顆。它離中心大約 2.6 萬光年，位在一條叫「獵戶臂」的小旋臂上，離邊緣還有一段距離。從這裡繞銀河系一圈，大約要 2 億 3 千萬年。"
+      },
+      "link": "overview",
+      "linkLabel": {
+        "en": "☀️ Go to the solar system →",
+        "zh": "☀️ 前往太陽系 →"
       }
     },
     {

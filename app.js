@@ -39,7 +39,8 @@
       listReset: 'Play again',
       listClose: 'Close',
       playAll: '▶ Play all',
-      stopAll: '■ Stop'
+      stopAll: '■ Stop',
+      exploreMoon: '🌕 Explore {name} →'
     },
     zh: {
       titleMain: '🔭 探索太陽系',
@@ -70,7 +71,8 @@
       listReset: '再玩一次',
       listClose: '關閉',
       playAll: '▶ 全部播放',
-      stopAll: '■ 停止'
+      stopAll: '■ 停止',
+      exploreMoon: '🌕 前往{name} →'
     }
   };
 
@@ -469,6 +471,13 @@
   // ------------------------------------------------------------------
   // Knowledge card
   // ------------------------------------------------------------------
+  function moonCfg(moon, parent) {
+    if (!moon._cfg) {
+      moon._cfg = { key: parent.key + '-' + moon.key, name: { en: moon.en.name, zh: moon.zh.name }, tex: moon.tex, detail: moon.detail, parent: parent };
+    }
+    return moon._cfg;
+  }
+
   function activeBody() {
     if (currentView === 'beyond') return { key: 'beyond', detail: BEYOND, name: BEYOND.name };
     if (currentView === 'galaxy') return { key: 'galaxy', detail: GALAXY, name: GALAXY.name };
@@ -485,12 +494,13 @@
       var h = c.item[lang];
       icon = c.item.icon; kicker = h.kicker; title = h.title; question = h.question; text = h.text;
       idx = ((c.kind === 'hotspot' ? body.detail.hotspots : body.detail.features) || []).indexOf(c.item);
-      if (c.item.link) link = c.item;
+      if (c.item.link) link = { view: c.item.link, cfg: null, label: c.item.linkLabel[lang] };
     } else if (c.kind === 'moon') {
       var m = c.item[lang];
       icon = c.item.icon; kicker = fmt(t('moonKicker'), { name: body.name[lang] });
       title = m.name; question = m.subtitle; text = m.text;
       idx = body.detail.moons.indexOf(c.item);
+      if (c.item.detail && currentPlanet) link = { view: 'detail', cfg: moonCfg(c.item, currentPlanet), label: fmt(t('exploreMoon'), { name: m.name }) };
     } else if (c.kind === 'dwarf') {
       var d = OVERVIEW.dwarfs[c.index], dd = d[lang];
       icon = d.icon; kicker = OVERVIEW.dwarfKicker[lang] + (c.index > 0 ? '  ' + c.index + ' / ' + (OVERVIEW.dwarfs.length - 1) : '');
@@ -515,12 +525,13 @@
     cardQuestion.style.display = question ? 'block' : 'none';
     cardText.textContent = text;
     nextBtn.hidden = false; prevBtn.hidden = false;
+    c.index = idx;   // cards opened by tapping a 3D spot arrive without an index
     var pos = seqPosition(c), seqLen = sceneSequence().length;
     pagerCount.textContent = pos >= 0 ? (pos + 1) + ' / ' + seqLen : '';
     nextBtn.title = t('next'); prevBtn.title = t('prev');
     nextBtn.setAttribute('aria-label', t('next')); prevBtn.setAttribute('aria-label', t('prev'));
     linkBtn.hidden = !link;
-    if (link) { linkBtn.textContent = link.linkLabel[lang]; linkBtn.onclick = function () { switchView(link.link); }; }
+    if (link) { linkBtn.textContent = link.label; linkBtn.onclick = function () { switchView(link.view, link.cfg); }; }
     currentSpeech = (question ? question + ' ' : '') + text;
     currentClipId = body.key + '-' + c.kind + '-' + idx + '-' + lang;
     markVisited(body.key, c.kind, idx);
@@ -828,7 +839,12 @@
         row.innerHTML = '<span class="check">' + (isVisited(s.body.key, it.kind, it.index) ? '✓' : '') + '</span><span class="ico"></span><span class="name"></span><button class="say" aria-label="Listen">🔊</button>';
         row.querySelector('.ico').textContent = it.icon;
         row.querySelector('.name').textContent = it.text;
-        row.addEventListener('click', function () { closeList(); if (it.kind === 'fact') factIndex = it.index; openCard(it.kind, it.item, it.index); });
+        row.addEventListener('click', function () {
+          closeList();
+          if (it.kind === 'moon' && it.item.detail && currentPlanet) { switchView('detail', moonCfg(it.item, currentPlanet)); return; }
+          if (it.kind === 'fact') factIndex = it.index;
+          openCard(it.kind, it.item, it.index);
+        });
         row.querySelector('.say').addEventListener('click', function (e) { e.stopPropagation(); closeList(); stopAutoPlay(); openCard(it.kind, it.item, it.index); speak(currentSpeech); });
         listBody.appendChild(row);
       });
@@ -936,11 +952,13 @@
     if (compact) {
       // Phones: only "← parent › [here]"; the outward links live in the bottom chip row.
       if (currentView === 'overview') segs = [{ cur: solar.text }];
+      else if (currentView === 'detail' && currentPlanet.parent) segs = [{ link: { text: currentPlanet.parent.name[lang], view: 'detail', cfg: currentPlanet.parent } }, { cur: currentPlanet.name[lang] }];
       else if (currentView === 'detail') segs = [{ link: solar }, { cur: currentPlanet.name[lang] }];
       else if (currentView === 'galaxy') segs = [{ link: solar }, { cur: GALAXY.name[lang] }];
       else if (currentView === 'beyond') segs = [{ link: galaxyLink }, { cur: BEYOND.subtitle[lang] }];
       else segs = [{ link: galaxyLink }, { cur: GALAXIES.name[lang] }];
     } else if (currentView === 'overview') segs = [{ cur: solar.text }, { next: GALAXY.crumb[lang], view: 'galaxy' }];
+    else if (currentView === 'detail' && currentPlanet.parent) segs = [{ link: solar }, { link: { text: currentPlanet.parent.name[lang], view: 'detail', cfg: currentPlanet.parent } }, { cur: currentPlanet.name[lang] }];
     else if (currentView === 'detail') segs = [{ link: solar }, { cur: currentPlanet.name[lang] }];
     else if (currentView === 'galaxy') segs = [{ link: solar }, { cur: GALAXY.name[lang] }, { next: BEYOND.crumb[lang], view: 'beyond' }, { next: GALAXIES.crumb[lang], view: 'galaxies' }];
     else if (currentView === 'beyond') segs = [{ link: solar }, { link: galaxyLink }, { cur: BEYOND.subtitle[lang] }];
@@ -955,7 +973,7 @@
         // Phones: the parent link shrinks to "← emoji" so the trail always fits on one line.
         b.textContent = (i === 0 ? '← ' : '') + (narrow ? s.link.text.split(' ')[0] : s.link.text);
         b.title = s.link.text;
-        b.addEventListener('click', function () { switchView(s.link.view); });
+        b.addEventListener('click', function () { switchView(s.link.view, s.link.cfg); });
       }
       else { b.className = 'next'; b.textContent = s.next; b.addEventListener('click', function () { switchView(s.view); }); }
       crumbsEl.appendChild(b);
@@ -1352,7 +1370,6 @@
     GALAXY.hotspots.filter(function (h) { return h.chip; }).forEach(function (h) {
       var gb = document.createElement('button');
       gb.type = 'button';
-      gb.className = 'beyond';
       gb.dataset.view = 'galaxy';
       gb.addEventListener('click', function () { if (mode === 'galaxy') openCard('hotspot', h); });
       featureBar.appendChild(gb);
@@ -1411,7 +1428,7 @@
     if (d.axisTilt) tiltGroup.rotation.set(d.axisTilt.x || 0, d.axisTilt.y || 0, d.axisTilt.z || 0);
     detailScene.add(tiltGroup);
     planetGroup = new THREE.Object3D();
-    planetGroup.rotation.y = -1.0;
+    planetGroup.rotation.y = d.rotY !== undefined ? d.rotY : -1.0;   // which longitude faces the camera at first
     tiltGroup.add(planetGroup);
 
     var heroTex = textures[cfg.heroTex || cfg.tex];
@@ -1536,7 +1553,7 @@
     var here = glowSprite('rgba(255,245,200,1)', 2.2); here.position.copy(sunPos); here.position.y = 0.6; galaxyGroup.add(here);
     hereRing = new THREE.Mesh(new THREE.RingGeometry(1.6, 1.85, 48), new THREE.MeshBasicMaterial({ color: 0xffe7a8, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthWrite: false }));
     hereRing.position.copy(sunPos); hereRing.rotation.x = -Math.PI / 2; galaxyGroup.add(hereRing);
-    addLabel('galaxy', here, GALAXY.youAreHere, 'feature');
+    addLabel('galaxy', here, GALAXY.youAreHere, 'hero', function () { switchView('overview'); });
 
     var armPos = spiralPoint(R, twist, arms, 1, 0.82);
     var nebulaSpots = {
@@ -1677,7 +1694,10 @@
       var hitHot = raycaster.intersectObjects(hotspotSprites);
       if (hitHot.length) { openCard('hotspot', hitHot[0].object.userData.hotspot); return; }
       var hitMoon = raycaster.intersectObjects(moonObjs.map(function (m) { return m.mesh; }));
-      if (hitMoon.length) openCard('moon', hitMoon[0].object.userData.moon);
+      if (hitMoon.length) {
+        var moon = hitMoon[0].object.userData.moon;
+        if (moon.detail) switchView('detail', moonCfg(moon, currentPlanet)); else openCard('moon', moon);
+      }
     } else if (mode === 'beyond' || mode === 'galaxy' || mode === 'galaxies') {
       raycaster.setFromCamera(pointerNDC, detailCamera);
       var list = { beyond: beyondHotspots, galaxy: galaxyHotspots, galaxies: galaxiesHotspots }[mode];
