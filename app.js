@@ -1759,11 +1759,13 @@
   var introRange = document.getElementById('intro-range');
   var introTicks = document.getElementById('intro-ticks');
   var introPauseIcon = document.getElementById('intro-pause');
-  var INTRO_TOTAL = 161;
+  var INTRO_TOTAL = 167;
   INTRO.paused = false; INTRO.scrubbing = false;
   // Where each stop lives inside film/intro.mp4 (seconds)
-  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 161] };
-  function introSeg() { var s = FAMILY.stops[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
+  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 167] };
+  // The film has one more stop than the ladder: the recap over our own solar system.
+  var FILM_STOPS = FAMILY.stops.concat([{ key: 'end', icon: '☀️', en: FAMILY.ending.en, zh: FAMILY.ending.zh }]);
+  function introSeg() { var s = FILM_STOPS[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
   function sentencesOf(stop) {
     var out = [];
     stop[lang].lines.forEach(function (line) {
@@ -1854,9 +1856,9 @@
 
   function playIntroStop(i, atTime) {
     clearTimeout(INTRO.timer);
-    if (i >= FAMILY.stops.length) { endIntro(); return; }
+    if (i >= FILM_STOPS.length) { endIntro(); return; }
     INTRO.stop = i; INTRO.line = -1; INTRO.t = 0; INTRO.cam = null;
-    var seg = INTRO_SEGMENTS[FAMILY.stops[i].key];
+    var seg = INTRO_SEGMENTS[FILM_STOPS[i].key];
     var target = atTime !== undefined ? atTime : (i === 0 ? 0 : seg[0] + 1);   // land after the 1 s cross-dissolve so the new subject is on screen
     var near = atTime === undefined && Math.abs(introVideo.currentTime - seg[0]) < 4;   // already at the cross-dissolve: let it play through, no black dip
     var scrub = atTime !== undefined;                                                    // user dragged the bar: seek in place, never go black
@@ -1864,7 +1866,7 @@
     INTRO.timer = setTimeout(function () {
       var go = function () {
         introVideo.classList.remove('dip');
-        if (i === FAMILY.stops.length - 1) introCredits.hidden = false;
+        if (i === FILM_STOPS.length - 1) introCredits.hidden = false;
         renderIntroCaption();
         playIntroLine(0);
       };
@@ -1883,7 +1885,7 @@
   }
 
   function renderIntroCaption() {
-    var s = FAMILY.stops[INTRO.stop]; if (!s) return;
+    var s = FILM_STOPS[INTRO.stop]; if (!s) return;
     var lines = sentencesOf(s);
     var txt = INTRO.line >= 0 ? lines[Math.min(INTRO.line, lines.length - 1)] : '';
     if (lang === 'zh') txt = txt.replace(/。$/, '');
@@ -1893,16 +1895,10 @@
   function playIntroLine(j) {
     clearTimeout(INTRO.timer);
     if (INTRO.paused) return;
-    var s = FAMILY.stops[INTRO.stop], lines = sentencesOf(s);
+    var s = FILM_STOPS[INTRO.stop], lines = sentencesOf(s);
     if (j >= lines.length) {
-      if (INTRO.stop === FAMILY.stops.length - 1) {                   // last stop → ending shot of our solar system, then land
-        introLineEl.classList.remove('show');
-        seekAndPlay(INTRO_SEGMENTS.end[0]);
-        INTRO.stop = FAMILY.stops.length;                                  // no more captions / holds
-        INTRO.timer = setTimeout(function () { playIntroStop(FAMILY.stops.length); }, (INTRO_SEGMENTS.end[1] - INTRO_SEGMENTS.end[0]) * 1000 - 400);
-        return;
-      }
-      INTRO.timer = setTimeout(function () { playIntroStop(INTRO.stop + 1); }, 350); return;
+      INTRO.timer = setTimeout(function () { playIntroStop(INTRO.stop + 1); }, INTRO.stop === FILM_STOPS.length - 1 ? 900 : 350);
+      return;
     }
     INTRO.line = j;
     introLineEl.classList.remove('show'); void introLineEl.offsetWidth;
@@ -1928,10 +1924,6 @@
     INTRO.paused = false;
     introPauseIcon.hidden = true;
     if (!INTRO.holding) { var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); }
-    if (INTRO.stop >= FAMILY.stops.length) {            // was in the ending shot
-      INTRO.timer = setTimeout(function () { playIntroStop(FAMILY.stops.length); }, Math.max(300, (INTRO_SEGMENTS.end[1] - introVideo.currentTime) * 1000 - 400));
-      return;
-    }
     if (INTRO.wasSpeaking) {
       if (clipAudio) { clipAudio.play().catch(function () {}); return; }
       window.speechSynthesis.resume();
@@ -1950,7 +1942,7 @@
 
   // --- progress bar with the seven stops as ticks; dragging scrubs the film
   function introStopAt(time) {
-    var keys = FAMILY.stops.map(function (s) { return s.key; });
+    var keys = FILM_STOPS.map(function (s) { return s.key; });
     for (var k = keys.length - 1; k >= 0; k--) if (time >= INTRO_SEGMENTS[keys[k]][0]) return k;
     return 0;
   }
@@ -1959,7 +1951,7 @@
     introRange.value = Math.round(introVideo.currentTime * 10) / 10;
   }
   introVideo.addEventListener('timeupdate', updateIntroBar);
-  introTicks.innerHTML = FAMILY.stops.map(function (s) {
+  introTicks.innerHTML = FILM_STOPS.map(function (s) {
     var seg = INTRO_SEGMENTS[s.key];
     return '<span style="left:' + (seg[0] / INTRO_TOTAL * 100) + '%" title="' + s.en.title + '"></span>';
   }).join('');
@@ -1990,13 +1982,6 @@
     clearTimeout(INTRO.timer);
     stopAllSpeech();
     INTRO.paused = false; introPauseIcon.hidden = true; introCredits.hidden = true;
-    if (t >= INTRO_SEGMENTS.end[0]) {
-      introLineEl.classList.remove('show');
-      INTRO.stop = FAMILY.stops.length;
-      seekAndPlay(t);
-      INTRO.timer = setTimeout(function () { playIntroStop(FAMILY.stops.length); }, Math.max(300, (INTRO_SEGMENTS.end[1] - t) * 1000 - 400));
-      return;
-    }
     playIntroStop(introStopAt(t), t);
   }
   introRange.addEventListener('change', function () { scrubTo(+introRange.value); });

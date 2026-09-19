@@ -4460,7 +4460,7 @@ var FAMILY_CONTENT = {
         "lines": [
           "This lumpy rock is an asteroid. Millions of them go around the Sun between Mars and Jupiter.",
           "And this is a comet, a snowball from far away. When it comes near the Sun, it grows a long glowing tail.",
-          "They are too small to become round. Now you know: stars make light, planets go around stars, moons go around planets. Welcome to the solar system!"
+          "They are too small to become round."
         ]
       },
       "zh": {
@@ -4469,9 +4469,25 @@ var FAMILY_CONTENT = {
         "lines": [
           "這顆凹凸不平的石頭是小行星。火星和木星之間，有幾百萬顆這樣的石頭繞著太陽轉。",
           "這是彗星，從很遠的地方來的雪球。靠近太陽的時候，它會長出一條長長的、發光的尾巴。",
-          "它們太小了，圓不起來。現在你知道了：恆星會發光，行星繞恆星，衛星繞行星。歡迎來到太陽系！"
+          "它們太小了，圓不起來。"
         ]
       }
     }
-  ]
+  ],
+  "ending": {
+    "en": {
+      "title": "Our Solar System",
+      "lines": [
+        "Now you know! Stars make light. Planets go around stars. Moons go around planets.",
+        "Welcome to the solar system!"
+      ]
+    },
+    "zh": {
+      "title": "我們的太陽系",
+      "lines": [
+        "現在你知道了：恆星會發光，行星繞恆星，衛星繞行星。",
+        "歡迎來到太陽系！"
+      ]
+    }
+  }
 };
