@@ -1850,7 +1850,7 @@
     if (i >= FAMILY.stops.length) { endIntro(); return; }
     INTRO.stop = i; INTRO.line = -1; INTRO.t = 0; INTRO.cam = null;
     var seg = INTRO_SEGMENTS[FAMILY.stops[i].key];
-    var target = atTime !== undefined ? atTime : seg[0];
+    var target = atTime !== undefined ? atTime : (i === 0 ? 0 : seg[0] + 1);   // land after the 1 s cross-dissolve so the new subject is on screen
     var near = atTime === undefined && Math.abs(introVideo.currentTime - seg[0]) < 4;   // already at the cross-dissolve: let it play through, no black dip
     var scrub = atTime !== undefined;                                                    // user dragged the bar: seek in place, never go black
     if (!near && !scrub) introVideo.classList.add('dip');
@@ -1861,7 +1861,11 @@
         renderIntroCaption();
         playIntroLine(0);
       };
-      if (near) { INTRO.holding = false; var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); go(); }
+      if (near) {
+        INTRO.holding = false; var p = introVideo.play(); if (p && p.catch) p.catch(function () {});
+        var wait = Math.max(0, (seg[0] + 0.9 - introVideo.currentTime) * 1000);   // let the dissolve finish before the first sentence
+        INTRO.timer = setTimeout(go, Math.min(wait, 5000));
+      }
       else {
         var done = false, fin = function () { if (done) return; done = true; introVideo.removeEventListener('seeked', fin); setTimeout(go, 80); };
         introVideo.addEventListener('seeked', fin);
