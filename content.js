@@ -503,6 +503,17 @@ var PLANET_CONTENT = {
         }
       },
       {
+        "icon": "🌙",
+        "en": {
+          "title": "No moon at all",
+          "text": "Venus has no moon. Why? Venus is close to the Sun, and the Sun pulls very hard. If a moon came near, the Sun would pull it away. Venus also spins very slowly and backwards, so it could not hold on to a moon. Only Venus and Mercury have no moons!"
+        },
+        "zh": {
+          "title": "一顆衛星都沒有",
+          "text": "金星沒有衛星。為什麼呢？金星離太陽很近，太陽的拉力很強。如果有衛星靠近，太陽就會把它拉走。而且金星轉得很慢、還倒著轉，抓不住衛星。太陽系裡只有金星和水星沒有衛星喔！"
+        }
+      },
+      {
         "icon": "🌧️",
         "en": {
           "title": "Rain that never lands",
