@@ -518,8 +518,8 @@
     nextBtn.hidden = false; prevBtn.hidden = false;
     var pos = seqPosition(c), seqLen = sceneSequence().length;
     pagerCount.textContent = pos >= 0 ? (pos + 1) + ' / ' + seqLen : '';
-    autoBtn.textContent = autoPlay ? t('stopAll') : t('playAll');
-    autoBtn.classList.toggle('on', autoPlay);
+    autoBtn.textContent = t('stopAll');
+    autoBtn.hidden = !autoPlay;
     nextBtn.title = t('next'); prevBtn.title = t('prev');
     nextBtn.setAttribute('aria-label', t('next')); prevBtn.setAttribute('aria-label', t('prev'));
     linkBtn.hidden = !link;
@@ -576,14 +576,14 @@
   function startAutoPlay(fromStart) {
     autoPlay = true;
     if (fromStart || !currentCard) { var first = sceneSequence()[0]; if (!first) return; closeList(); openCard(first.kind, first.item, first.index); }
-    autoBtn.textContent = t('stopAll'); autoBtn.classList.add('on');
+    autoBtn.textContent = t('stopAll'); autoBtn.hidden = false;
     listPlayBtn.textContent = t('stopAll');
     speak(currentSpeech);
   }
   function stopAutoPlay() {
     autoPlay = false;
     clearTimeout(autoTimer);
-    autoBtn.textContent = t('playAll'); autoBtn.classList.remove('on');
+    autoBtn.hidden = true;
     listPlayBtn.textContent = t('playAll');
   }
   function onSpeechDone() {
@@ -594,7 +594,7 @@
       if (stepDeck(1)) speak(currentSpeech); else stopAutoPlay();
     }, 900);
   }
-  autoBtn.addEventListener('click', function () { if (autoPlay) stopAutoPlay(); else startAutoPlay(false); });
+  autoBtn.addEventListener('click', stopAutoPlay);
   listPlayBtn.addEventListener('click', function () { if (autoPlay) stopAutoPlay(); else startAutoPlay(true); });
   factsBtn.addEventListener('click', function () { openCard('fact', null, factIndex); });
 
