@@ -463,7 +463,7 @@
   }
 
   function stopAllSpeech() {
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if ('speechSynthesis' in window) { window.speechSynthesis.resume(); window.speechSynthesis.cancel(); }
     if (clipAudio) { clipAudio.pause(); clipAudio = null; }
     speakBtn.classList.remove('speaking');
     speakLabel.textContent = t('listen');
@@ -1854,13 +1854,20 @@
     var near = atTime === undefined && Math.abs(introVideo.currentTime - seg[0]) < 4;   // already at the cross-dissolve: let it play through, no black dip
     if (!near) introVideo.classList.add('dip');
     INTRO.timer = setTimeout(function () {
-      if (near) { INTRO.holding = false; var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); }
-      else seekAndPlay(target);
-      introVideo.classList.remove('dip');
-      if (i === FAMILY.stops.length - 1) introCredits.hidden = false;
-      renderIntroCaption();
-      playIntroLine(0);
-    }, (i === 0 || near) ? 50 : 450);
+      var go = function () {
+        introVideo.classList.remove('dip');
+        if (i === FAMILY.stops.length - 1) introCredits.hidden = false;
+        renderIntroCaption();
+        playIntroLine(0);
+      };
+      if (near) { INTRO.holding = false; var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); go(); }
+      else {
+        var done = false, fin = function () { if (done) return; done = true; introVideo.removeEventListener('seeked', fin); setTimeout(go, 80); };
+        introVideo.addEventListener('seeked', fin);
+        seekAndPlay(target);
+        setTimeout(fin, 1500);
+      }
+    }, (i === 0 || near) ? 50 : 500);
   }
 
   function renderIntroCaption() {
@@ -1898,8 +1905,10 @@
     INTRO.paused = true;
     clearTimeout(INTRO.timer);
     introVideo.pause();
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    if (clipAudio) { clipAudio.pause(); clipAudio = null; }
+    // freeze the narration mid-sentence (resume continues where it stopped)
+    INTRO.wasSpeaking = false;
+    if (clipAudio) { clipAudio.pause(); INTRO.wasSpeaking = true; }
+    else if ('speechSynthesis' in window && window.speechSynthesis.speaking) { window.speechSynthesis.pause(); INTRO.wasSpeaking = true; }
     introPauseIcon.hidden = false;
   }
   function resumeIntro() {
@@ -1911,7 +1920,16 @@
       INTRO.timer = setTimeout(function () { playIntroStop(FAMILY.stops.length); }, Math.max(300, (INTRO_SEGMENTS.end[1] - introVideo.currentTime) * 1000 - 400));
       return;
     }
-    if (INTRO.line >= 0) playIntroLine(INTRO.line);       // re-read the current sentence
+    if (INTRO.wasSpeaking) {
+      if (clipAudio) { clipAudio.play().catch(function () {}); return; }
+      window.speechSynthesis.resume();
+      INTRO.timer = setTimeout(introLineDone, 9000);       // safety net
+      // some browsers drop a paused utterance: if nothing is speaking shortly after resume, re-read this sentence
+      setTimeout(function () { if (INTRO.active && !INTRO.paused && !window.speechSynthesis.speaking && INTRO.line >= 0) playIntroLine(INTRO.line); }, 1200);
+      return;
+    }
+    // paused in the gap between sentences → go on to the next one
+    INTRO.timer = setTimeout(function () { playIntroLine(INTRO.line + 1); }, 180);
   }
   introFilm.addEventListener('click', function (e) {
     if (!INTRO.active || e.target.closest('#intro-bar')) return;
