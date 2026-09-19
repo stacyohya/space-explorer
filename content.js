@@ -1236,6 +1236,175 @@ var PLANET_CONTENT = {
           "name": "埃歐",
           "subtitle": "火山衛星",
           "text": "木星用力擠壓、拉扯埃歐，把它裡面的岩石都融化了！埃歐會把熾熱的火山噴到太空中，是全太陽系火山最多的地方。它的黃色來自硫磺。"
+        },
+        "detail": {
+          "subtitle": {
+            "en": "The Volcano Moon",
+            "zh": "火山衛星"
+          },
+          "camDist": 11,
+          "rotY": -1,
+          "moons": [],
+          "hotspots": [
+            {
+              "lat": -18,
+              "lon": -105,
+              "color": "#ff7a3c",
+              "icon": "🌋",
+              "en": {
+                "kicker": "Volcano",
+                "title": "Big Volcanoes",
+                "question": "Why does Io have so many volcanoes?",
+                "text": "Io has more volcanoes than any place we know! More than four hundred. They shoot hot lava high up into space, higher than mountains. Some are erupting right now."
+              },
+              "zh": {
+                "kicker": "火山",
+                "title": "好多火山",
+                "question": "為什麼埃歐有這麼多火山？",
+                "text": "埃歐的火山比我們知道的任何地方都多！有四百多座。它們把滾燙的岩漿噴到太空中，比高山還高。有些火山現在正在噴發。"
+              }
+            },
+            {
+              "lat": 20,
+              "lon": -40,
+              "color": "#ffd166",
+              "icon": "🍕",
+              "en": {
+                "kicker": "Colors",
+                "title": "The Pizza Moon",
+                "question": "Why does Io look like a pizza?",
+                "text": "Io is yellow, orange, red, and white. The colors come from a stuff called sulfur that comes out of the volcanoes. From far away, it looks just like a pizza!"
+              },
+              "zh": {
+                "kicker": "顏色",
+                "title": "披薩衛星",
+                "question": "為什麼埃歐長得像披薩？",
+                "text": "埃歐是黃色、橘色、紅色和白色的。這些顏色來自火山噴出來的一種東西，叫做硫磺。從遠處看，它就像一片披薩！"
+              }
+            },
+            {
+              "lat": -5,
+              "lon": 60,
+              "color": "#ff5a3c",
+              "icon": "🔥",
+              "en": {
+                "kicker": "Lava Lake",
+                "title": "A Lake of Fire",
+                "question": "Are there lakes on Io?",
+                "text": "Yes, but not water lakes! Io has lakes of hot, glowing lava. The biggest one is bigger than a whole city. The lava keeps bubbling and never cools down."
+              },
+              "zh": {
+                "kicker": "岩漿湖",
+                "title": "火的湖",
+                "question": "埃歐上有湖嗎？",
+                "text": "有，但不是水做的湖！埃歐有滾燙、發光的岩漿湖。最大的一個比一整座城市還大。岩漿一直咕嚕咕嚕冒泡，永遠不會冷掉。"
+              }
+            },
+            {
+              "lat": 40,
+              "lon": 150,
+              "color": "#c9b8ff",
+              "icon": "🤏",
+              "en": {
+                "kicker": "Squeeze",
+                "title": "Jupiter Squeezes It",
+                "question": "Why is Io so hot inside?",
+                "text": "Jupiter is very big and very close. It pulls on Io, and the other moons pull too. Io gets squeezed and stretched, like a ball you squish in your hands. All that squeezing makes it hot inside!"
+              },
+              "zh": {
+                "kicker": "擠壓",
+                "title": "木星在擠它",
+                "question": "埃歐裡面為什麼這麼熱？",
+                "text": "木星又大又近，一直拉著埃歐，其他衛星也在拉。埃歐被擠來擠去、拉來拉去，就像你用手捏一顆球。這樣一直捏，裡面就變熱了！"
+              }
+            },
+            {
+              "lat": -50,
+              "lon": 10,
+              "color": "#eaf2ff",
+              "icon": "🕳️",
+              "en": {
+                "kicker": "No Craters",
+                "title": "No Holes Here",
+                "question": "Why doesn't Io have craters?",
+                "text": "Most moons are full of holes from space rocks. Io has almost none! New lava covers the ground all the time, like fresh paint. So the old holes get filled up."
+              },
+              "zh": {
+                "kicker": "沒有坑洞",
+                "title": "這裡沒有洞",
+                "question": "為什麼埃歐沒有隕石坑？",
+                "text": "大部分的衛星都有很多太空石頭撞出來的洞。埃歐幾乎沒有！因為新的岩漿一直流出來蓋住地面，像重新刷油漆一樣。舊的洞都被填平了。"
+              }
+            }
+          ],
+          "facts": [
+            {
+              "icon": "🚀",
+              "en": {
+                "title": "A big surprise",
+                "text": "Long ago, a spacecraft flew past Io and took a picture. A scientist saw a big cloud on the edge. It was a volcano erupting! It was the first volcano ever seen on another world."
+              },
+              "zh": {
+                "title": "大驚喜",
+                "text": "很久以前，一艘太空船飛過埃歐拍了照片。一位科學家看到邊邊有一大團雲。那是火山正在噴發！那是人類第一次在別的星球上看到火山。"
+              }
+            },
+            {
+              "icon": "👃",
+              "en": {
+                "title": "Stinky moon",
+                "text": "Io's volcanoes make a gas that smells like rotten eggs. Pee-yew! Good thing we can't smell it from here."
+              },
+              "zh": {
+                "title": "臭臭的衛星",
+                "text": "埃歐的火山會噴出一種聞起來像壞掉雞蛋的氣體。好臭！還好我們在這裡聞不到。"
+              }
+            },
+            {
+              "icon": "📏",
+              "en": {
+                "title": "About the size of our Moon",
+                "text": "Io is a little bit bigger than our Moon. But it is a very different place!"
+              },
+              "zh": {
+                "title": "跟月球差不多大",
+                "text": "埃歐比我們的月球大一點點。但它是一個很不一樣的地方！"
+              }
+            },
+            {
+              "icon": "🏃",
+              "en": {
+                "title": "A fast trip",
+                "text": "Io goes around Jupiter very fast. One trip takes less than two days!"
+              },
+              "zh": {
+                "title": "跑得很快",
+                "text": "埃歐繞木星一圈很快，不到兩天！"
+              }
+            },
+            {
+              "icon": "⚡",
+              "en": {
+                "title": "Lightning to Jupiter",
+                "text": "Io and Jupiter are connected by invisible electricity. It makes glowing lights on Jupiter's top and bottom!"
+              },
+              "zh": {
+                "title": "連到木星的電",
+                "text": "埃歐和木星之間有看不見的電連著。它會讓木星的上面和下面發光！"
+              }
+            },
+            {
+              "icon": "🔭",
+              "en": {
+                "title": "Found by Galileo",
+                "text": "A man named Galileo found Io with his telescope a long, long time ago. It was one of the first moons ever found around another planet."
+              },
+              "zh": {
+                "title": "伽利略發現的",
+                "text": "很久很久以前，一個叫伽利略的人用望遠鏡發現了埃歐。它是人類最早在別的行星旁邊找到的衛星之一。"
+              }
+            }
+          ]
         }
       },
       {
@@ -1254,6 +1423,175 @@ var PLANET_CONTENT = {
           "name": "歐羅巴",
           "subtitle": "海洋衛星",
           "text": "在冰冷、布滿裂痕的外殼底下，歐羅巴可能藏著一片大海，水量比地球所有海洋加起來還多！科學家認為那裡甚至可能住著小小的生命。"
+        },
+        "detail": {
+          "subtitle": {
+            "en": "The Ocean Moon",
+            "zh": "海洋衛星"
+          },
+          "camDist": 11,
+          "rotY": -1,
+          "moons": [],
+          "hotspots": [
+            {
+              "lat": 10,
+              "lon": -60,
+              "color": "#9ad1ff",
+              "icon": "🧊",
+              "en": {
+                "kicker": "Ice Shell",
+                "title": "A World of Ice",
+                "question": "What is Europa made of?",
+                "text": "The outside of Europa is ice. It is smooth and white, like a giant ice rink! The ice is very thick, maybe as thick as a mountain is tall."
+              },
+              "zh": {
+                "kicker": "冰殼",
+                "title": "冰做的世界",
+                "question": "歐羅巴是什麼做的？",
+                "text": "歐羅巴的外面是冰。它又光滑又白，像一個巨大的溜冰場！冰非常厚，可能跟一座山一樣高。"
+              }
+            },
+            {
+              "lat": -20,
+              "lon": 40,
+              "color": "#d9a066",
+              "icon": "🩹",
+              "en": {
+                "kicker": "Cracks",
+                "title": "The Red Lines",
+                "question": "What are the red lines?",
+                "text": "The red and brown lines are cracks in the ice. Jupiter pulls on Europa and the ice cracks, like ice on a pond. Salty water comes up through the cracks and paints them red."
+              },
+              "zh": {
+                "kicker": "裂痕",
+                "title": "紅色的線",
+                "question": "那些紅色的線是什麼？",
+                "text": "那些紅色和咖啡色的線是冰上的裂痕。木星拉著歐羅巴，冰就裂開了，像池塘上的冰一樣。鹹鹹的水從裂痕冒上來，把它們染成紅色。"
+              }
+            },
+            {
+              "lat": 0,
+              "lon": 140,
+              "color": "#5ec8ff",
+              "icon": "🌊",
+              "en": {
+                "kicker": "Ocean",
+                "title": "A Hidden Ocean",
+                "question": "Is there water on Europa?",
+                "text": "Yes! Under the ice, there is a giant ocean of salty water. It goes all the way around the moon. There is more water in it than in all the oceans on Earth!"
+              },
+              "zh": {
+                "kicker": "海洋",
+                "title": "藏起來的海",
+                "question": "歐羅巴上有水嗎？",
+                "text": "有！在冰的下面，有一片鹹鹹的大海，包住整個衛星。裡面的水比地球所有的海加起來還多！"
+              }
+            },
+            {
+              "lat": -55,
+              "lon": -120,
+              "color": "#7dffd8",
+              "icon": "🐟",
+              "en": {
+                "kicker": "Life?",
+                "title": "Could Something Live There?",
+                "question": "Could there be animals on Europa?",
+                "text": "Maybe! Where there is water, there might be life. Scientists think tiny creatures could live in the dark ocean. Nobody knows yet. That is why we want to go and look!"
+              },
+              "zh": {
+                "kicker": "生命？",
+                "title": "會不會有東西住在那裡？",
+                "question": "歐羅巴會不會有動物？",
+                "text": "說不定喔！有水的地方，就可能有生命。科學家認為，小小的生物可能住在黑暗的海裡。還沒有人知道。所以我們想去看看！"
+              }
+            },
+            {
+              "lat": 45,
+              "lon": 90,
+              "color": "#eaf2ff",
+              "icon": "⛲",
+              "en": {
+                "kicker": "Water Jets",
+                "title": "Fountains into Space",
+                "question": "Does water come out?",
+                "text": "Sometimes, big fountains of water shoot up from the cracks! They go high into space. A spacecraft flying past could catch some drops and check if anything lives in them."
+              },
+              "zh": {
+                "kicker": "水柱",
+                "title": "噴到太空的噴泉",
+                "question": "水會噴出來嗎？",
+                "text": "有時候，大大的水柱會從裂痕噴上來！噴到很高的太空。飛過去的太空船可以接住幾滴，看看裡面有沒有東西住。"
+              }
+            }
+          ],
+          "facts": [
+            {
+              "icon": "🚀",
+              "en": {
+                "title": "A spacecraft is on the way",
+                "text": "A spacecraft named Europa Clipper is flying to Europa right now. It will fly close many times and look under the ice."
+              },
+              "zh": {
+                "title": "太空船正在路上",
+                "text": "一艘叫「歐羅巴快船」的太空船正在飛往歐羅巴。它會靠近好多次，看看冰的下面。"
+              }
+            },
+            {
+              "icon": "📏",
+              "en": {
+                "title": "A little smaller than our Moon",
+                "text": "Europa is a bit smaller than our Moon. It is the smallest of Jupiter's four big moons."
+              },
+              "zh": {
+                "title": "比月球小一點",
+                "text": "歐羅巴比我們的月球小一點。它是木星四顆大衛星裡最小的。"
+              }
+            },
+            {
+              "icon": "✨",
+              "en": {
+                "title": "The smoothest place",
+                "text": "Europa is one of the smoothest worlds we know. It has almost no mountains and almost no holes."
+              },
+              "zh": {
+                "title": "最光滑的地方",
+                "text": "歐羅巴是我們知道最光滑的世界之一。幾乎沒有山，也幾乎沒有洞。"
+              }
+            },
+            {
+              "icon": "🌡️",
+              "en": {
+                "title": "Very, very cold",
+                "text": "The ice on Europa is colder than any freezer. Much colder than the coldest place on Earth!"
+              },
+              "zh": {
+                "title": "非常非常冷",
+                "text": "歐羅巴的冰比任何冰箱都冷。比地球最冷的地方還冷很多！"
+              }
+            },
+            {
+              "icon": "💡",
+              "en": {
+                "title": "Warm inside",
+                "text": "The ocean stays liquid because Europa is warm inside. Jupiter squeezes it, and the squeezing makes heat, just like on Io."
+              },
+              "zh": {
+                "title": "裡面暖暖的",
+                "text": "海水不會結冰，是因為歐羅巴裡面是暖的。木星擠壓它，擠壓會產生熱，跟埃歐一樣。"
+              }
+            },
+            {
+              "icon": "🔭",
+              "en": {
+                "title": "Found by Galileo",
+                "text": "Galileo found Europa with his telescope on the same night he found Io!"
+              },
+              "zh": {
+                "title": "伽利略發現的",
+                "text": "伽利略用望遠鏡發現歐羅巴，和發現埃歐是同一天晚上！"
+              }
+            }
+          ]
         }
       },
       {
@@ -1272,6 +1610,175 @@ var PLANET_CONTENT = {
           "name": "蓋尼米德",
           "subtitle": "巨大衛星",
           "text": "蓋尼米德是全太陽系最大的衛星，甚至比水星還大！它是我們目前知道唯一會自己製造磁場的衛星。"
+        },
+        "detail": {
+          "subtitle": {
+            "en": "The Giant Moon",
+            "zh": "巨大衛星"
+          },
+          "camDist": 11,
+          "rotY": -1,
+          "moons": [],
+          "hotspots": [
+            {
+              "lat": 15,
+              "lon": -50,
+              "color": "#c9b8ff",
+              "icon": "👑",
+              "en": {
+                "kicker": "Size",
+                "title": "The Biggest Moon of All",
+                "question": "How big is Ganymede?",
+                "text": "Ganymede is the biggest moon in the whole solar system! It is even bigger than the planet Mercury. If it went around the Sun instead of Jupiter, we would call it a planet."
+              },
+              "zh": {
+                "kicker": "大小",
+                "title": "最大的衛星",
+                "question": "蓋尼米德有多大？",
+                "text": "蓋尼米德是全太陽系最大的衛星！它比水星這顆行星還大。如果它繞的是太陽而不是木星，我們就會叫它行星。"
+              }
+            },
+            {
+              "lat": -25,
+              "lon": 30,
+              "color": "#8a7f74",
+              "icon": "🌑",
+              "en": {
+                "kicker": "Dark Land",
+                "title": "Old Dark Parts",
+                "question": "Why are some parts dark?",
+                "text": "The dark parts are very, very old. They are full of holes from space rocks that hit them long ago. Nothing has changed there for a very long time."
+              },
+              "zh": {
+                "kicker": "暗暗的地方",
+                "title": "古老的暗區",
+                "question": "為什麼有些地方暗暗的？",
+                "text": "暗暗的地方非常非常老。上面滿滿都是很久以前太空石頭撞出來的洞。那裡很久很久都沒有變過了。"
+              }
+            },
+            {
+              "lat": 20,
+              "lon": 80,
+              "color": "#eaf2ff",
+              "icon": "🪥",
+              "en": {
+                "kicker": "Grooves",
+                "title": "Light Stripes",
+                "question": "What are the light stripes?",
+                "text": "The light parts have long grooves, like someone dragged a giant comb across the ice. The ice cracked and moved a long time ago and made these lines."
+              },
+              "zh": {
+                "kicker": "溝槽",
+                "title": "亮亮的條紋",
+                "question": "那些亮亮的條紋是什麼？",
+                "text": "亮的地方有長長的溝槽，像有人用一把巨大的梳子刮過冰面。很久以前冰裂開、移動，就留下了這些線。"
+              }
+            },
+            {
+              "lat": 70,
+              "lon": 0,
+              "color": "#7dffd8",
+              "icon": "🧲",
+              "en": {
+                "kicker": "Magnet",
+                "title": "A Magnet Inside",
+                "question": "What is special about Ganymede?",
+                "text": "Ganymede is the only moon with its own magnet inside! It works like a giant bar magnet. It even makes little glowing lights at the top and bottom, like northern lights."
+              },
+              "zh": {
+                "kicker": "磁鐵",
+                "title": "裡面有磁鐵",
+                "question": "蓋尼米德特別在哪裡？",
+                "text": "蓋尼米德是唯一裡面有自己磁鐵的衛星！它就像一根巨大的棒狀磁鐵。它的上面和下面還會發出小小的光，像極光一樣。"
+              }
+            },
+            {
+              "lat": -50,
+              "lon": -140,
+              "color": "#5ec8ff",
+              "icon": "🌊",
+              "en": {
+                "kicker": "Ocean",
+                "title": "Water Deep Down",
+                "question": "Is there water on Ganymede?",
+                "text": "Yes! Deep under the ice, there is a salty ocean. It is very deep, deeper than any ocean on Earth. It is hidden so far down that we can't see it."
+              },
+              "zh": {
+                "kicker": "海洋",
+                "title": "深深的水",
+                "question": "蓋尼米德上有水嗎？",
+                "text": "有！在厚厚的冰底下，有一片鹹鹹的海。它非常深，比地球任何一片海都深。它藏得太深了，我們看不到。"
+              }
+            }
+          ],
+          "facts": [
+            {
+              "icon": "🚀",
+              "en": {
+                "title": "A visitor is coming",
+                "text": "A spacecraft named JUICE is flying to Ganymede. It will go around and around it and take lots of pictures."
+              },
+              "zh": {
+                "title": "訪客要來了",
+                "text": "一艘叫 JUICE 的太空船正飛往蓋尼米德。它會繞著它一圈又一圈，拍很多照片。"
+              }
+            },
+            {
+              "icon": "🧊",
+              "en": {
+                "title": "Half ice, half rock",
+                "text": "Ganymede is made of ice and rock. It has a rock ball in the middle and lots of ice on the outside."
+              },
+              "zh": {
+                "title": "一半冰一半石頭",
+                "text": "蓋尼米德是冰和石頭做的。中間是一顆石頭球，外面是很多很多的冰。"
+              }
+            },
+            {
+              "icon": "📅",
+              "en": {
+                "title": "One week around",
+                "text": "Ganymede goes around Jupiter once every seven days. That is one week!"
+              },
+              "zh": {
+                "title": "繞一圈一星期",
+                "text": "蓋尼米德每七天繞木星一圈。剛好是一個星期！"
+              }
+            },
+            {
+              "icon": "🎯",
+              "en": {
+                "title": "A giant bright splash",
+                "text": "Ganymede has a big crater with bright lines going out from it. From far away it looks like a splash of white paint."
+              },
+              "zh": {
+                "title": "巨大的白色水花",
+                "text": "蓋尼米德有一個大坑洞，周圍有亮亮的線往外散開。從遠處看，像潑出來的白色油漆。"
+              }
+            },
+            {
+              "icon": "💨",
+              "en": {
+                "title": "A little bit of air",
+                "text": "Ganymede has a tiny bit of air made of oxygen. But it is far too thin to breathe."
+              },
+              "zh": {
+                "title": "一點點空氣",
+                "text": "蓋尼米德有一點點氧氣做的空氣。但實在太稀薄了，沒辦法呼吸。"
+              }
+            },
+            {
+              "icon": "🔭",
+              "en": {
+                "title": "Found by Galileo",
+                "text": "Galileo found Ganymede with his telescope. It is named after a boy from an old Greek story."
+              },
+              "zh": {
+                "title": "伽利略發現的",
+                "text": "伽利略用望遠鏡發現了蓋尼米德。它的名字來自古希臘故事裡的一個男孩。"
+              }
+            }
+          ]
         }
       },
       {
@@ -1290,6 +1797,175 @@ var PLANET_CONTENT = {
           "name": "卡利斯多",
           "subtitle": "隕石坑衛星",
           "text": "卡利斯多的表面布滿了幾十億年來太空岩石撞出來的坑洞。它是我們見過最古老、傷痕最多的表面之一！"
+        },
+        "detail": {
+          "subtitle": {
+            "en": "The Crater Moon",
+            "zh": "隕石坑衛星"
+          },
+          "camDist": 11,
+          "rotY": -1,
+          "moons": [],
+          "hotspots": [
+            {
+              "lat": 10,
+              "lon": -70,
+              "color": "#e0d8cc",
+              "icon": "🕳️",
+              "en": {
+                "kicker": "Craters",
+                "title": "Holes Everywhere",
+                "question": "Why is Callisto so bumpy?",
+                "text": "Callisto has more holes than any other place we know! Space rocks have been crashing into it for billions of years. Nothing ever smooths them out, so every hole stays forever."
+              },
+              "zh": {
+                "kicker": "隕石坑",
+                "title": "到處都是洞",
+                "question": "為什麼卡利斯多這麼坑坑洞洞？",
+                "text": "卡利斯多的洞比我們知道的任何地方都多！幾十億年來，太空石頭一直撞它。沒有東西會把洞抹平，所以每一個洞都永遠留著。"
+              }
+            },
+            {
+              "lat": 15,
+              "lon": 50,
+              "color": "#ffe3a8",
+              "icon": "🎯",
+              "en": {
+                "kicker": "Giant Ring",
+                "title": "The Big Bullseye",
+                "question": "What is that big ring?",
+                "text": "A giant space rock hit Callisto long ago. It made rings around the crash spot, like when you drop a stone in water. The rings are as wide as a whole country!"
+              },
+              "zh": {
+                "kicker": "大圓環",
+                "title": "大大的靶心",
+                "question": "那個大圓環是什麼？",
+                "text": "很久以前，一顆巨大的太空石頭撞上卡利斯多。撞擊的地方出現了一圈一圈的環，就像把石頭丟進水裡一樣。這些環跟一整個國家一樣寬！"
+              }
+            },
+            {
+              "lat": -30,
+              "lon": 120,
+              "color": "#8a7f74",
+              "icon": "👴",
+              "en": {
+                "kicker": "Old",
+                "title": "The Oldest Surface",
+                "question": "How old is Callisto?",
+                "text": "The ground on Callisto is one of the oldest anywhere. It has looked almost the same for billions of years. It is like a very, very old photo that never changes."
+              },
+              "zh": {
+                "kicker": "古老",
+                "title": "最古老的表面",
+                "question": "卡利斯多有多老？",
+                "text": "卡利斯多的地面是所有地方裡最老的之一。它幾十億年來幾乎都長一樣。就像一張非常非常老的照片，永遠不會變。"
+              }
+            },
+            {
+              "lat": -55,
+              "lon": -20,
+              "color": "#5ec8ff",
+              "icon": "🌊",
+              "en": {
+                "kicker": "Ocean?",
+                "title": "Maybe an Ocean",
+                "question": "Is there water on Callisto?",
+                "text": "Maybe! Scientists think there could be a salty ocean deep, deep under the ice. It would be very far down. Nobody has seen it yet."
+              },
+              "zh": {
+                "kicker": "海洋？",
+                "title": "也許有海",
+                "question": "卡利斯多上有水嗎？",
+                "text": "說不定有！科學家認為，在很深很深的冰底下，可能有一片鹹鹹的海。它會在非常深的地方。還沒有人看過。"
+              }
+            },
+            {
+              "lat": 50,
+              "lon": 170,
+              "color": "#c9b8ff",
+              "icon": "😴",
+              "en": {
+                "kicker": "Quiet",
+                "title": "Far from Jupiter",
+                "question": "Why is Callisto so calm?",
+                "text": "Callisto is the farthest of Jupiter's four big moons. Jupiter does not squeeze it much. So it has no volcanoes and no cracks. It is a quiet, sleepy moon."
+              },
+              "zh": {
+                "kicker": "安靜",
+                "title": "離木星很遠",
+                "question": "為什麼卡利斯多這麼安靜？",
+                "text": "卡利斯多是木星四顆大衛星裡離木星最遠的。木星不太擠得到它。所以它沒有火山，也沒有裂痕。它是一顆安安靜靜、愛睡覺的衛星。"
+              }
+            }
+          ],
+          "facts": [
+            {
+              "icon": "📏",
+              "en": {
+                "title": "Almost as big as Mercury",
+                "text": "Callisto is very big! It is almost as big as the planet Mercury."
+              },
+              "zh": {
+                "title": "跟水星差不多大",
+                "text": "卡利斯多很大！它幾乎跟水星這顆行星一樣大。"
+              }
+            },
+            {
+              "icon": "🏕️",
+              "en": {
+                "title": "A good place to camp",
+                "text": "Some people think Callisto could be a good place for astronauts to build a base one day. It is far from Jupiter, so it is safer."
+              },
+              "zh": {
+                "title": "露營的好地方",
+                "text": "有些人認為，有一天卡利斯多可能是太空人蓋基地的好地方。它離木星遠，比較安全。"
+              }
+            },
+            {
+              "icon": "📅",
+              "en": {
+                "title": "A long trip around",
+                "text": "Callisto takes more than two weeks to go around Jupiter once."
+              },
+              "zh": {
+                "title": "繞一圈好久",
+                "text": "卡利斯多繞木星一圈要兩個多星期。"
+              }
+            },
+            {
+              "icon": "🌗",
+              "en": {
+                "title": "Always the same face",
+                "text": "Like our Moon, Callisto always shows the same side to Jupiter."
+              },
+              "zh": {
+                "title": "永遠同一面",
+                "text": "跟我們的月球一樣，卡利斯多永遠用同一面對著木星。"
+              }
+            },
+            {
+              "icon": "🧊",
+              "en": {
+                "title": "Ice and rock, all mixed up",
+                "text": "Inside Callisto, ice and rock are all mixed together, like a frozen mud pie."
+              },
+              "zh": {
+                "title": "冰和石頭混在一起",
+                "text": "卡利斯多裡面，冰和石頭全部混在一起，像一塊結冰的泥巴派。"
+              }
+            },
+            {
+              "icon": "🔭",
+              "en": {
+                "title": "Found by Galileo",
+                "text": "Galileo found Callisto with his telescope. It is named after a girl from an old Greek story."
+              },
+              "zh": {
+                "title": "伽利略發現的",
+                "text": "伽利略用望遠鏡發現了卡利斯多。它的名字來自古希臘故事裡的一個女孩。"
+              }
+            }
+          ]
         }
       }
     ],
@@ -1509,6 +2185,175 @@ var PLANET_CONTENT = {
           "name": "泰坦",
           "subtitle": "有空氣的衛星",
           "text": "泰坦比水星還大，是唯一有濃厚大氣的衛星。它有河流和湖泊，但裡面裝的是液態甲烷，不是水。它的橘色天空充滿了霧霾。"
+        },
+        "detail": {
+          "subtitle": {
+            "en": "The Moon with Air",
+            "zh": "有空氣的衛星"
+          },
+          "camDist": 11,
+          "rotY": -1,
+          "moons": [],
+          "hotspots": [
+            {
+              "lat": 30,
+              "lon": -60,
+              "color": "#ffb347",
+              "icon": "🍊",
+              "en": {
+                "kicker": "Sky",
+                "title": "The Orange Sky",
+                "question": "Why is Titan orange?",
+                "text": "Titan is wrapped in thick orange air. It is like a fog that never goes away. You cannot see the ground from space! Spacecraft had to use special cameras to peek through."
+              },
+              "zh": {
+                "kicker": "天空",
+                "title": "橘色的天空",
+                "question": "泰坦為什麼是橘色的？",
+                "text": "泰坦被厚厚的橘色空氣包住。那像一層永遠不會散的霧。從太空看不到地面！太空船要用特別的相機才能看穿它。"
+              }
+            },
+            {
+              "lat": 75,
+              "lon": 0,
+              "color": "#5ec8ff",
+              "icon": "🏞️",
+              "en": {
+                "kicker": "Lakes",
+                "title": "Lakes That Are Not Water",
+                "question": "Are there lakes on Titan?",
+                "text": "Yes! Titan has lakes and rivers near its top. But they are not water. They are made of a cold liquid called methane. On Earth, methane is a gas!"
+              },
+              "zh": {
+                "kicker": "湖泊",
+                "title": "不是水的湖",
+                "question": "泰坦上有湖嗎？",
+                "text": "有！泰坦的上面有湖和河。但那不是水。它們是一種叫甲烷的冰冷液體。在地球上，甲烷是氣體！"
+              }
+            },
+            {
+              "lat": -10,
+              "lon": 80,
+              "color": "#c9b8ff",
+              "icon": "🌧️",
+              "en": {
+                "kicker": "Rain",
+                "title": "It Rains on Titan",
+                "question": "Does it rain on Titan?",
+                "text": "Yes! Clouds make rain, just like on Earth. But the rain is methane, not water. The raindrops fall very, very slowly, because Titan's pull is weak and its air is thick."
+              },
+              "zh": {
+                "kicker": "雨",
+                "title": "泰坦會下雨",
+                "question": "泰坦會下雨嗎？",
+                "text": "會！雲會下雨，就像地球一樣。但雨是甲烷，不是水。雨滴掉得非常非常慢，因為泰坦的拉力很弱，空氣又很厚。"
+              }
+            },
+            {
+              "lat": -5,
+              "lon": -150,
+              "color": "#ffd166",
+              "icon": "🏜️",
+              "en": {
+                "kicker": "Dunes",
+                "title": "Dark Sand Hills",
+                "question": "What are the dark parts?",
+                "text": "The dark parts are huge fields of sand hills. The sand is not like beach sand. It is made of dark, sticky stuff that falls out of the sky!"
+              },
+              "zh": {
+                "kicker": "沙丘",
+                "title": "黑黑的沙丘",
+                "question": "暗暗的地方是什麼？",
+                "text": "暗暗的地方是一大片一大片的沙丘。那些沙不像海邊的沙。它是從天上掉下來、黑黑黏黏的東西做的！"
+              }
+            },
+            {
+              "lat": -15,
+              "lon": -170,
+              "color": "#7dffd8",
+              "icon": "🪂",
+              "en": {
+                "kicker": "Landing",
+                "title": "A Spacecraft Landed Here",
+                "question": "Has anything landed on Titan?",
+                "text": "Yes! A little spacecraft named Huygens floated down with a parachute and landed on Titan. It sent back pictures of round rocks on orange ground. It is the farthest landing ever!"
+              },
+              "zh": {
+                "kicker": "降落",
+                "title": "太空船降落在這裡",
+                "question": "有東西降落在泰坦上嗎？",
+                "text": "有！一艘叫惠更斯號的小太空船，用降落傘飄下來，降落在泰坦上。它傳回照片，橘色的地面上有圓圓的石頭。那是人類降落過最遠的地方！"
+              }
+            }
+          ],
+          "facts": [
+            {
+              "icon": "📏",
+              "en": {
+                "title": "Bigger than Mercury",
+                "text": "Titan is very big. It is bigger than the planet Mercury! It is the second biggest moon of all."
+              },
+              "zh": {
+                "title": "比水星大",
+                "text": "泰坦很大。它比水星這顆行星還大！它是所有衛星裡第二大的。"
+              }
+            },
+            {
+              "icon": "💨",
+              "en": {
+                "title": "The only moon with thick air",
+                "text": "Titan is the only moon with thick air. The air is even thicker than on Earth!"
+              },
+              "zh": {
+                "title": "唯一有厚空氣的衛星",
+                "text": "泰坦是唯一有厚空氣的衛星。它的空氣甚至比地球的還厚！"
+              }
+            },
+            {
+              "icon": "🐦",
+              "en": {
+                "title": "You could fly",
+                "text": "On Titan, the air is thick and the pull is weak. If you had wings on your arms, you could flap and fly!"
+              },
+              "zh": {
+                "title": "你可以飛",
+                "text": "在泰坦上，空氣很厚，拉力很弱。如果你的手臂有翅膀，拍一拍就能飛起來！"
+              }
+            },
+            {
+              "icon": "🌡️",
+              "en": {
+                "title": "Super cold",
+                "text": "Titan is very, very cold. Much colder than any freezer. That is why methane is a liquid there."
+              },
+              "zh": {
+                "title": "超級冷",
+                "text": "泰坦非常非常冷。比任何冰箱都冷很多。所以甲烷在那裡才會是液體。"
+              }
+            },
+            {
+              "icon": "🌊",
+              "en": {
+                "title": "An ocean under the ground",
+                "text": "Deep under Titan's ground, there might be a hidden ocean of salty water."
+              },
+              "zh": {
+                "title": "地底下的海",
+                "text": "在泰坦的地面深處，可能藏著一片鹹鹹的海。"
+              }
+            },
+            {
+              "icon": "🚁",
+              "en": {
+                "title": "A helicopter is coming",
+                "text": "A flying robot named Dragonfly will go to Titan. It will fly from place to place like a helicopter!"
+              },
+              "zh": {
+                "title": "直升機要來了",
+                "text": "一台叫「蜻蜓號」的飛行機器人會去泰坦。它會像直升機一樣，飛來飛去！"
+              }
+            }
+          ]
         }
       },
       {
@@ -1527,6 +2372,175 @@ var PLANET_CONTENT = {
           "name": "恩克拉多斯",
           "subtitle": "噴泉衛星",
           "text": "小小的恩克拉多斯會從南極附近的裂縫，把巨大的水柱噴到太空中！在它明亮的冰殼底下有一片鹹鹹的海洋，是尋找生命最棒的地方之一。"
+        },
+        "detail": {
+          "subtitle": {
+            "en": "The Fountain Moon",
+            "zh": "噴泉衛星"
+          },
+          "camDist": 11,
+          "rotY": -1,
+          "moons": [],
+          "hotspots": [
+            {
+              "lat": -80,
+              "lon": 0,
+              "color": "#eaf2ff",
+              "icon": "⛲",
+              "en": {
+                "kicker": "Fountains",
+                "title": "Water Fountains",
+                "question": "What comes out of Enceladus?",
+                "text": "Water! At the bottom of Enceladus, big fountains shoot water and ice high into space. More than a hundred of them! They never stop."
+              },
+              "zh": {
+                "kicker": "噴泉",
+                "title": "水的噴泉",
+                "question": "恩克拉多斯會噴出什麼？",
+                "text": "水！在恩克拉多斯的下面，大大的噴泉把水和冰噴到很高的太空中。有一百多道！它們從來不會停。"
+              }
+            },
+            {
+              "lat": -70,
+              "lon": 120,
+              "color": "#5ec8ff",
+              "icon": "🐯",
+              "en": {
+                "kicker": "Tiger Stripes",
+                "title": "The Tiger Stripes",
+                "question": "What are the blue lines?",
+                "text": "The four long blue lines are called tiger stripes. They are big cracks in the ice. The water fountains come out of these cracks. They are warmer than the rest of the moon."
+              },
+              "zh": {
+                "kicker": "虎紋",
+                "title": "老虎的條紋",
+                "question": "那些藍色的線是什麼？",
+                "text": "那四條長長的藍線叫做「虎紋」。它們是冰上的大裂縫。水的噴泉就是從這些裂縫噴出來的。它們比衛星其他地方溫暖。"
+              }
+            },
+            {
+              "lat": 0,
+              "lon": 60,
+              "color": "#9ad1ff",
+              "icon": "🌊",
+              "en": {
+                "kicker": "Ocean",
+                "title": "A Warm Ocean",
+                "question": "Where does the water come from?",
+                "text": "Under the ice, there is a salty ocean! It goes all the way around the moon. The bottom of the ocean is warm. That is where the fountain water comes from."
+              },
+              "zh": {
+                "kicker": "海洋",
+                "title": "溫暖的海",
+                "question": "水是從哪裡來的？",
+                "text": "冰的底下有一片鹹鹹的海！它包住整個衛星。海的底部是溫暖的。噴泉的水就是從那裡來的。"
+              }
+            },
+            {
+              "lat": 40,
+              "lon": -60,
+              "color": "#ffffff",
+              "icon": "✨",
+              "en": {
+                "kicker": "Shiny",
+                "title": "The Whitest Moon",
+                "question": "Why is Enceladus so white?",
+                "text": "Enceladus is the shiniest thing in the solar system! It is covered in fresh, clean ice. The fountains keep raining new snow on it, so it stays bright white."
+              },
+              "zh": {
+                "kicker": "亮亮的",
+                "title": "最白的衛星",
+                "question": "恩克拉多斯為什麼這麼白？",
+                "text": "恩克拉多斯是太陽系裡最亮的東西！它蓋著新鮮、乾淨的冰。噴泉一直在它上面下新的雪，所以它一直亮白亮白的。"
+              }
+            },
+            {
+              "lat": 20,
+              "lon": 170,
+              "color": "#7dffd8",
+              "icon": "🐟",
+              "en": {
+                "kicker": "Life?",
+                "title": "A Good Place to Look",
+                "question": "Could something live there?",
+                "text": "Maybe! The ocean is warm and salty, and it has food that tiny creatures could eat. Scientists think it is one of the best places to look for life."
+              },
+              "zh": {
+                "kicker": "生命？",
+                "title": "值得去找找看的地方",
+                "question": "會不會有東西住在那裡？",
+                "text": "說不定喔！那片海溫暖又鹹，還有小生物可以吃的東西。科學家認為，那是尋找生命最棒的地方之一。"
+              }
+            }
+          ],
+          "facts": [
+            {
+              "icon": "📏",
+              "en": {
+                "title": "A small moon",
+                "text": "Enceladus is small. You could drive across it in a few hours. It is much smaller than our Moon."
+              },
+              "zh": {
+                "title": "小小的衛星",
+                "text": "恩克拉多斯很小。開車幾個小時就能穿過它。它比我們的月球小很多。"
+              }
+            },
+            {
+              "icon": "💍",
+              "en": {
+                "title": "It makes a ring",
+                "text": "The water from the fountains flies into space and makes one of Saturn's rings!"
+              },
+              "zh": {
+                "title": "它做出了一圈環",
+                "text": "噴泉噴出來的水飛到太空中，變成了土星的其中一圈環！"
+              }
+            },
+            {
+              "icon": "🚀",
+              "en": {
+                "title": "A spacecraft tasted it",
+                "text": "A spacecraft named Cassini flew right through the fountains. It tasted the water and found salt and other good stuff!"
+              },
+              "zh": {
+                "title": "太空船嚐過它",
+                "text": "一艘叫卡西尼號的太空船直接穿過噴泉。它嚐了嚐那些水，發現裡面有鹽和其他好東西！"
+              }
+            },
+            {
+              "icon": "❄️",
+              "en": {
+                "title": "Snow every day",
+                "text": "Snow from the fountains falls back down on Enceladus all the time. But very, very slowly."
+              },
+              "zh": {
+                "title": "每天都下雪",
+                "text": "噴泉的雪一直落回恩克拉多斯上。但是非常非常慢。"
+              }
+            },
+            {
+              "icon": "📅",
+              "en": {
+                "title": "A fast trip",
+                "text": "Enceladus goes around Saturn in a little more than one day."
+              },
+              "zh": {
+                "title": "跑得很快",
+                "text": "恩克拉多斯繞土星一圈只要一天多一點。"
+              }
+            },
+            {
+              "icon": "🤏",
+              "en": {
+                "title": "Saturn squeezes it",
+                "text": "Saturn pulls on Enceladus and squeezes it. The squeezing makes heat inside, and the heat keeps the ocean from freezing."
+              },
+              "zh": {
+                "title": "土星在擠它",
+                "text": "土星拉著恩克拉多斯、擠壓它。擠壓會在裡面產生熱，熱讓海不會結冰。"
+              }
+            }
+          ]
         }
       }
     ],
@@ -1898,6 +2912,175 @@ var PLANET_CONTENT = {
           "name": "崔頓",
           "subtitle": "倒著走的衛星",
           "text": "崔頓是倒著繞海王星轉的，所以科學家認為它原本是一顆流浪的矮行星，被海王星抓住了。它有會噴出氮氣的冰火山，也是我們知道最冷的地方之一，零下 235 度！"
+        },
+        "detail": {
+          "subtitle": {
+            "en": "The Backwards Moon",
+            "zh": "倒著走的衛星"
+          },
+          "camDist": 11,
+          "rotY": -1,
+          "moons": [],
+          "hotspots": [
+            {
+              "lat": -40,
+              "lon": -30,
+              "color": "#ffb3cc",
+              "icon": "🍈",
+              "en": {
+                "kicker": "Pink Ice",
+                "title": "The Cantaloupe Land",
+                "question": "Why does it look like a melon?",
+                "text": "Part of Triton is bumpy, like the skin of a cantaloupe melon! The bumps are made of ice that slowly moved and folded. And the ice is a little bit pink!"
+              },
+              "zh": {
+                "kicker": "粉紅色的冰",
+                "title": "哈密瓜地",
+                "question": "為什麼它看起來像哈密瓜？",
+                "text": "崔頓有一部分凹凸不平，像哈密瓜的皮！這些凸起是冰慢慢移動、摺起來做成的。而且這些冰還有一點點粉紅色！"
+              }
+            },
+            {
+              "lat": -60,
+              "lon": 60,
+              "color": "#c9b8ff",
+              "icon": "🌋",
+              "en": {
+                "kicker": "Ice Volcanoes",
+                "title": "Volcanoes of Ice",
+                "question": "Are there volcanoes on Triton?",
+                "text": "Yes, but they are ice volcanoes! They do not shoot lava. They shoot cold gas and dark dust high into the sky. The dust falls down and makes dark streaks."
+              },
+              "zh": {
+                "kicker": "冰火山",
+                "title": "冰做的火山",
+                "question": "崔頓上有火山嗎？",
+                "text": "有，但是是冰火山！它們不噴岩漿。它們把冰冷的氣體和黑色的灰塵噴到高高的天空。灰塵落下來，留下黑黑的條紋。"
+              }
+            },
+            {
+              "lat": 20,
+              "lon": 120,
+              "color": "#9ad1ff",
+              "icon": "🔄",
+              "en": {
+                "kicker": "Backwards",
+                "title": "Going the Wrong Way",
+                "question": "Why is Triton special?",
+                "text": "Triton goes around Neptune backwards! Every other big moon goes the same way its planet spins. Triton is the only one that goes the other way."
+              },
+              "zh": {
+                "kicker": "倒著走",
+                "title": "走錯方向",
+                "question": "崔頓特別在哪裡？",
+                "text": "崔頓是倒著繞海王星的！其他所有的大衛星都跟著行星轉的方向走。只有崔頓往另一個方向走。"
+              }
+            },
+            {
+              "lat": 50,
+              "lon": -120,
+              "color": "#7dffd8",
+              "icon": "🎣",
+              "en": {
+                "kicker": "Caught",
+                "title": "Neptune Caught It",
+                "question": "Where did Triton come from?",
+                "text": "Scientists think Triton was not born next to Neptune. It was a little icy world far away, wandering by. Neptune's pull caught it, and it has been stuck there ever since!"
+              },
+              "zh": {
+                "kicker": "被抓住",
+                "title": "被海王星抓住了",
+                "question": "崔頓是從哪裡來的？",
+                "text": "科學家認為崔頓不是在海王星旁邊出生的。它本來是很遠很遠的一顆小冰球，剛好經過。海王星的拉力抓住了它，從此它就一直待在那裡！"
+              }
+            },
+            {
+              "lat": 0,
+              "lon": -160,
+              "color": "#eaf2ff",
+              "icon": "🥶",
+              "en": {
+                "kicker": "Cold",
+                "title": "One of the Coldest Places",
+                "question": "How cold is Triton?",
+                "text": "Triton is one of the coldest places we know! It is so cold that the air freezes and falls down as frost. Even the ground is made of frozen gas."
+              },
+              "zh": {
+                "kicker": "冷",
+                "title": "最冷的地方之一",
+                "question": "崔頓有多冷？",
+                "text": "崔頓是我們知道最冷的地方之一！冷到空氣都會結冰，變成霜掉下來。連地面都是結冰的氣體做的。"
+              }
+            }
+          ],
+          "facts": [
+            {
+              "icon": "🚀",
+              "en": {
+                "title": "Only one visit",
+                "text": "Only one spacecraft, Voyager 2, has ever seen Triton up close. It flew past a long time ago and took the only pictures we have."
+              },
+              "zh": {
+                "title": "只來過一次",
+                "text": "只有一艘太空船「航海家二號」近距離看過崔頓。它很久以前飛過去，拍下了我們唯一的照片。"
+              }
+            },
+            {
+              "icon": "📏",
+              "en": {
+                "title": "Bigger than Pluto",
+                "text": "Triton is a bit bigger than Pluto. Scientists think Triton and Pluto might be cousins!"
+              },
+              "zh": {
+                "title": "比冥王星大",
+                "text": "崔頓比冥王星大一點。科學家認為崔頓和冥王星可能是表兄弟！"
+              }
+            },
+            {
+              "icon": "🐌",
+              "en": {
+                "title": "Getting closer",
+                "text": "Triton is slowly, slowly moving closer to Neptune. A very, very long time from now, it might break into pieces and make a ring!"
+              },
+              "zh": {
+                "title": "越來越近",
+                "text": "崔頓正在慢慢慢慢靠近海王星。很久很久以後，它可能會碎掉，變成一圈環！"
+              }
+            },
+            {
+              "icon": "💨",
+              "en": {
+                "title": "A tiny bit of air",
+                "text": "Triton has a very thin air, with a few clouds in it. It is too thin to breathe."
+              },
+              "zh": {
+                "title": "一點點空氣",
+                "text": "崔頓有一點點很薄的空氣，裡面還有幾朵雲。太薄了，沒辦法呼吸。"
+              }
+            },
+            {
+              "icon": "🌗",
+              "en": {
+                "title": "Half unknown",
+                "text": "We have only seen half of Triton. The other half was dark when the spacecraft flew by. Nobody knows what it looks like!"
+              },
+              "zh": {
+                "title": "一半是謎",
+                "text": "我們只看過崔頓的一半。太空船飛過的時候，另一半是黑的。沒有人知道它長什麼樣子！"
+              }
+            },
+            {
+              "icon": "🔭",
+              "en": {
+                "title": "Found very quickly",
+                "text": "Triton was found just seventeen days after Neptune was found. A man saw it with his telescope!"
+              },
+              "zh": {
+                "title": "很快就被發現",
+                "text": "海王星被發現後，才過了十七天，崔頓就被發現了。一個人用望遠鏡看到了它！"
+              }
+            }
+          ]
         }
       }
     ],

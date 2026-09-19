@@ -193,7 +193,8 @@
     overview: { el: document.getElementById('labels-layer'), list: [] },
     beyond: { el: makeLabelLayer(), list: [] },
     galaxy: { el: makeLabelLayer(), list: [] },
-    galaxies: { el: makeLabelLayer(), list: [] }
+    galaxies: { el: makeLabelLayer(), list: [] },
+    detail: { el: makeLabelLayer(), list: [] }
   };
   function makeLabelLayer() {
     var el = document.createElement('div');
@@ -1434,6 +1435,8 @@
       }
     });
     detailScene.remove(tiltGroup);
+    labelLayers.detail.el.innerHTML = '';
+    labelLayers.detail.list = [];
     tiltGroup = null; planetGroup = null; cloudsMesh = null; shimmerMesh = null;
     hotspotSprites = []; moonObjs = []; sunGlows = [];
   }
@@ -1501,6 +1504,12 @@
       mesh.position.set(m.dist, 0, 0);
       mesh.userData.moon = m;
       pivot.add(mesh);
+      if (m.detail) {
+        // moons with their own page get a golden "click to explore" label
+        (function (moon) {
+          addLabel('detail', mesh, { en: moon.en.name, zh: moon.zh.name }, 'hero', function () { switchView('detail', moonCfg(moon, cfg)); }, moon);
+        })(m);
+      }
       var guide = new THREE.Mesh(new THREE.RingGeometry(m.dist - 0.02, m.dist + 0.02, 96), new THREE.MeshBasicMaterial({ color: 0x3b5773, transparent: true, opacity: 0.2, side: THREE.DoubleSide }));
       guide.rotation.x = -Math.PI / 2;
       tiltGroup.add(guide);
@@ -1745,6 +1754,7 @@
       } else if (view === 'detail') {
         currentPlanet = cfg;
         buildDetail(cfg);
+        labelLayers.detail.el.style.display = 'block';
       } else {
         var vc = VIEW_CAM[view];
         camDist = vc.dist; camDistMin = vc.min; camDistMax = vc.max;
@@ -1818,6 +1828,7 @@
         var facing = s.userData.normal.clone().applyQuaternion(worldQuat).dot(camDir);
         s.material.opacity = Math.max(0.08, Math.min(1, (facing + 0.15) * 1.6)) * (seen ? 0.4 : 1);
       });
+      updateLabelList(labelLayers.detail.list, detailCamera);
       renderer.render(detailScene, detailCamera);
     } else if (currentView === 'beyond') {
       if (idle) beyondGroup.rotation.y += delta * 0.03;
