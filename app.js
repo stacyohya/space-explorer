@@ -1773,11 +1773,18 @@
   // ------------------------------------------------------------------
   // Labels + animation loop
   // ------------------------------------------------------------------
-  function updateLabelList(list, camera) {
+  function updateLabelList(list, camera, occluderRadius) {
     var w = canvas.clientWidth || window.innerWidth, h = canvas.clientHeight || window.innerHeight;
     var worldPos = new THREE.Vector3();
     list.forEach(function (p) {
       p.obj.getWorldPosition(worldPos);
+      // hide labels of objects that pass behind the central body (sphere of occluderRadius at the origin)
+      if (occluderRadius) {
+        var toCam = camera.position.clone().sub(worldPos), len = toCam.length();
+        toCam.divideScalar(len);
+        var tClosest = -worldPos.dot(toCam);
+        if (tClosest > 0 && tClosest < len && worldPos.clone().addScaledVector(toCam, tClosest).length() < occluderRadius) { p.label.style.display = 'none'; return; }
+      }
       var proj = worldPos.clone().project(camera);
       var x = (proj.x * 0.5 + 0.5) * w, y = (-proj.y * 0.5 + 0.5) * h;
       if (proj.z > 1 || x < -50 || x > w + 50 || y < -50 || y > h + 50) { p.label.style.display = 'none'; }
@@ -1828,7 +1835,7 @@
         var facing = s.userData.normal.clone().applyQuaternion(worldQuat).dot(camDir);
         s.material.opacity = Math.max(0.08, Math.min(1, (facing + 0.15) * 1.6)) * (seen ? 0.4 : 1);
       });
-      updateLabelList(labelLayers.detail.list, detailCamera);
+      updateLabelList(labelLayers.detail.list, detailCamera, DETAIL_RADIUS * 1.02);
       renderer.render(detailScene, detailCamera);
     } else if (currentView === 'beyond') {
       if (idle) beyondGroup.rotation.y += delta * 0.03;
