@@ -1754,6 +1754,12 @@
   var introFilm = document.getElementById('intro-film');
   var introVideo = document.getElementById('intro-video');
   var introCredits = document.getElementById('intro-credits');
+  var introBar = document.getElementById('intro-bar');
+  var introRange = document.getElementById('intro-range');
+  var introTicks = document.getElementById('intro-ticks');
+  var introPauseIcon = document.getElementById('intro-pause');
+  var INTRO_TOTAL = 164;
+  INTRO.paused = false; INTRO.scrubbing = false;
   // Where each stop lives inside film/intro.mp4 (seconds)
   var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 164] };
   function introSeg() { var s = FAMILY.stops[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
@@ -1775,11 +1781,11 @@
   }
   // iOS sometimes leaves the video paused after the first seek: nudge it whenever it becomes playable.
   ['canplay', 'canplaythrough', 'loadeddata'].forEach(function (ev) {
-    introVideo.addEventListener(ev, function () { if (INTRO.active && !INTRO.holding && introVideo.paused) { var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); } });
+    introVideo.addEventListener(ev, function () { if (INTRO.active && !INTRO.holding && !INTRO.paused && introVideo.paused) { var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); } });
   });
   introVideo.addEventListener('timeupdate', function () {
     var seg = introSeg(); if (!INTRO.active || !seg) return;
-    if (introVideo.currentTime >= seg[1] - 0.15 && !introVideo.paused) { INTRO.holding = true; introVideo.pause(); }   // hold the last frame while narration finishes
+    if (!INTRO.paused && introVideo.currentTime >= seg[1] - 0.15 && !introVideo.paused) { INTRO.holding = true; introVideo.pause(); }   // hold the last frame while narration finishes
   });
   function primeIntroVideo() {
     if (!introVideo.getAttribute('src')) { introVideo.setAttribute('src', 'film/intro.mp4?v=' + (window.APP_BUILD || '1')); introVideo.load(); }
@@ -1831,7 +1837,7 @@
     INTRO.active = true; INTRO.stop = -1;
     document.body.classList.add('intro');
     primeIntroVideo();
-    introFilm.hidden = false; introCredits.hidden = true;
+    introFilm.hidden = false; introCredits.hidden = true; introBar.hidden = false; introPauseIcon.hidden = true; INTRO.paused = false;
     seekAndPlay(0);
     mode = 'intro'; controls.enabled = false;
     introSkip.hidden = false; introCaption.hidden = false;
@@ -1839,16 +1845,17 @@
     whenPlaying(function () { introLineEl.classList.remove('show'); playIntroStop(0); }, 12000);
   }
 
-  function playIntroStop(i) {
+  function playIntroStop(i, atTime) {
     clearTimeout(INTRO.timer);
     if (i >= FAMILY.stops.length) { endIntro(); return; }
     INTRO.stop = i; INTRO.line = -1; INTRO.t = 0; INTRO.cam = null;
     var seg = INTRO_SEGMENTS[FAMILY.stops[i].key];
-    var near = Math.abs(introVideo.currentTime - seg[0]) < 4;   // already at the cross-dissolve: let it play through, no black dip
+    var target = atTime !== undefined ? atTime : seg[0];
+    var near = atTime === undefined && Math.abs(introVideo.currentTime - seg[0]) < 4;   // already at the cross-dissolve: let it play through, no black dip
     if (!near) introVideo.classList.add('dip');
     INTRO.timer = setTimeout(function () {
       if (near) { INTRO.holding = false; var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); }
-      else seekAndPlay(seg[0]);
+      else seekAndPlay(target);
       introVideo.classList.remove('dip');
       if (i === FAMILY.stops.length - 1) introCredits.hidden = false;
       renderIntroCaption();
@@ -1859,11 +1866,14 @@
   function renderIntroCaption() {
     var s = FAMILY.stops[INTRO.stop]; if (!s) return;
     var lines = sentencesOf(s);
-    introLineEl.textContent = INTRO.line >= 0 ? lines[Math.min(INTRO.line, lines.length - 1)] : '';
+    var txt = INTRO.line >= 0 ? lines[Math.min(INTRO.line, lines.length - 1)] : '';
+    if (lang === 'zh') txt = txt.replace(/。$/, '');
+    introLineEl.textContent = txt;
   }
 
   function playIntroLine(j) {
     clearTimeout(INTRO.timer);
+    if (INTRO.paused) return;
     var s = FAMILY.stops[INTRO.stop], lines = sentencesOf(s);
     if (j >= lines.length) {
       if (INTRO.stop === FAMILY.stops.length - 1) {                   // last stop → ending shot of our solar system, then land
@@ -1883,15 +1893,76 @@
     if (!INTRO.holding && introVideo.paused) { var pp = introVideo.play(); if (pp && pp.catch) pp.catch(function () {}); }
   }
 
-  function introLineDone() {
+  function pauseIntro() {
+    if (!INTRO.active || INTRO.paused) return;
+    INTRO.paused = true;
+    clearTimeout(INTRO.timer);
+    introVideo.pause();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if (clipAudio) { clipAudio.pause(); clipAudio = null; }
+    introPauseIcon.hidden = false;
+  }
+  function resumeIntro() {
+    if (!INTRO.active || !INTRO.paused) return;
+    INTRO.paused = false;
+    introPauseIcon.hidden = true;
+    if (!INTRO.holding) { var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); }
+    if (INTRO.stop >= FAMILY.stops.length) {            // was in the ending shot
+      INTRO.timer = setTimeout(function () { playIntroStop(FAMILY.stops.length); }, Math.max(300, (INTRO_SEGMENTS.end[1] - introVideo.currentTime) * 1000 - 400));
+      return;
+    }
+    if (INTRO.line >= 0) playIntroLine(INTRO.line);       // re-read the current sentence
+  }
+  introFilm.addEventListener('click', function (e) {
+    if (!INTRO.active || e.target.closest('#intro-bar')) return;
+    if (INTRO.paused) resumeIntro(); else pauseIntro();
+  });
+
+  // --- progress bar with the seven stops as ticks; dragging scrubs the film
+  function introStopAt(time) {
+    var keys = FAMILY.stops.map(function (s) { return s.key; });
+    for (var k = keys.length - 1; k >= 0; k--) if (time >= INTRO_SEGMENTS[keys[k]][0]) return k;
+    return 0;
+  }
+  function updateIntroBar() {
+    if (INTRO.scrubbing || !INTRO.active) return;
+    introRange.value = Math.round(introVideo.currentTime * 10) / 10;
+  }
+  introVideo.addEventListener('timeupdate', updateIntroBar);
+  introTicks.innerHTML = FAMILY.stops.map(function (s) {
+    var seg = INTRO_SEGMENTS[s.key];
+    return '<span style="left:' + (seg[0] / INTRO_TOTAL * 100) + '%" title="' + s.en.title + '"></span>';
+  }).join('');
+  introRange.max = INTRO_TOTAL;
+  introRange.addEventListener('pointerdown', function () { INTRO.scrubbing = true; });
+  introRange.addEventListener('input', function () { INTRO.scrubbing = true; });
+  function scrubTo(t) {
+    INTRO.scrubbing = false;
     if (!INTRO.active) return;
+    clearTimeout(INTRO.timer);
+    stopAllSpeech();
+    INTRO.paused = false; introPauseIcon.hidden = true; introCredits.hidden = true;
+    if (t >= INTRO_SEGMENTS.end[0]) {
+      introLineEl.classList.remove('show');
+      INTRO.stop = FAMILY.stops.length;
+      seekAndPlay(t);
+      INTRO.timer = setTimeout(function () { playIntroStop(FAMILY.stops.length); }, Math.max(300, (INTRO_SEGMENTS.end[1] - t) * 1000 - 400));
+      return;
+    }
+    playIntroStop(introStopAt(t), t);
+  }
+  introRange.addEventListener('change', function () { scrubTo(+introRange.value); });
+  introRange.addEventListener('pointerup', function () { scrubTo(+introRange.value); });
+
+  function introLineDone() {
+    if (!INTRO.active || INTRO.paused) return;
     clearTimeout(INTRO.timer);
     INTRO.timer = setTimeout(function () { playIntroLine(INTRO.line + 1); }, 180);
   }
 
   function finishIntroUI() {
     document.body.classList.remove('intro');
-    introVideo.pause(); introFilm.hidden = true; introVideo.classList.remove('dip'); introCredits.hidden = true;
+    introVideo.pause(); introFilm.hidden = true; introVideo.classList.remove('dip'); introCredits.hidden = true; introBar.hidden = true; introPauseIcon.hidden = true; INTRO.paused = false;
     introCaption.hidden = true; introSkip.hidden = true; introGate.hidden = true;
     introLineEl.classList.remove('show');
   }
