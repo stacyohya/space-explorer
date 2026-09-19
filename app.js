@@ -2021,7 +2021,7 @@
     introLineEl.classList.remove('show');
   }
 
-  function endIntro(silent) {
+  function endIntro(silent, stayHere) {
     clearTimeout(INTRO.timer);
     if (location.hash === '#/intro') replaceRoute('#/solar');
     INTRO.active = false; INTRO.stop = -1; INTRO.cam = null;
@@ -2032,6 +2032,11 @@
       labelLayers.overview.el.style.display = 'block';
       showChipsFor('overview');
       mode = 'overview';
+      applyLanguage();
+    } else if (stayHere) {                                  // history took us back: restore the page the film was started from
+      if (labelLayers[currentView]) labelLayers[currentView].el.style.display = 'block';
+      showChipsFor(currentView);
+      mode = currentView;
       applyLanguage();
     } else {
       mode = 'overview';   // let switchView run; it restores overview state
@@ -2264,18 +2269,20 @@
     var r = parseRoute(hash);
     if (!r) { replaceRoute('#/solar'); r = { view: 'overview' }; }
     if (r.view === 'intro') { if (!INTRO.active) { if (currentView !== 'overview') switchView('overview', null, { push: false }); showIntroGate(); } return; }
-    if (INTRO.active) { endIntro(true); }
+    if (INTRO.active) { endIntro(true, true); }
     switchView(r.view, r.cfg, { push: false, card: r.card });
   }
 
+  var ignoreNextPop = false;
   window.addEventListener('popstate', function () {
+    if (ignoreNextPop) { ignoreNextPop = false; return; }
     // Back with a card or the checklist open just closes it (cards are not history entries).
     if ((currentCard || listPanel.classList.contains('show')) && !INTRO.active) {
-      var here = routeFor(currentView, currentPlanet);
       var target = parseRoute(location.hash);
       if (!target || target.view !== currentView || (target.view === 'detail' && target.cfg !== currentPlanet)) {
         closeCard(); closeList();
-        pushRoute(here);
+        ignoreNextPop = true;
+        history.go(1);
         return;
       }
     }
