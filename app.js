@@ -1758,10 +1758,10 @@
   var introRange = document.getElementById('intro-range');
   var introTicks = document.getElementById('intro-ticks');
   var introPauseIcon = document.getElementById('intro-pause');
-  var INTRO_TOTAL = 162;
+  var INTRO_TOTAL = 161;
   INTRO.paused = false; INTRO.scrubbing = false;
   // Where each stop lives inside film/intro.mp4 (seconds)
-  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 162] };
+  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 161] };
   function introSeg() { var s = FAMILY.stops[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
   function sentencesOf(stop) {
     var out = [];
@@ -1831,7 +1831,13 @@
     setTimeout(fin, timeoutMs);
   }
 
+  function unlockSpeech() {
+    if (!('speechSynthesis' in window)) return;
+    try { var u = new SpeechSynthesisUtterance(' '); u.volume = 0; u.rate = 2; window.speechSynthesis.speak(u); } catch (e) { /* ignore */ }
+  }
+
   function startIntro() {
+    unlockSpeech();
     markIntroSeen();
     closeCard(); closeList(); stopAutoPlay(); stopAllSpeech();
     INTRO.active = true; INTRO.stop = -1;

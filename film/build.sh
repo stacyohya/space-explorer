@@ -1,6 +1,6 @@
 #!/bin/sh
 # Rebuilds intro.mp4 (1920x1080, 30 fps, ~158 s) from the raw clips in src/.
-# Segment timeline (1 s cross-dissolves): 01a 0-13 | 01b 12-25 | 02 24-48 | 03a 47-55.6 | 03b 54.6-71 | 04 70-94 | 05 93-117 | 06 116-138 | 07a 137-149 | 07b 148-158 | 08 (our solar system, rendered by ending.html) 157-162
+# Segment timeline (1 s cross-dissolves): 01a 0-13 | 01b 12-25 | 02 24-48 | 03a 47-55.6 | 03b 54.6-71 | 04 70-94 | 05 93-117 | 06 116-138 | 07a 137-149 | 07b 148-158 | 08 (our solar system, rendered by ending.html) 157-161
 set -e
 cd "$(dirname "$0")"; mkdir -p seg
 STD="scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps=30,format=yuv420p"
@@ -27,5 +27,5 @@ ffmpeg -loglevel error -y -i seg/01a.mp4 -i seg/01b.mp4 -i seg/02.mp4 -i seg/03a
 [v6][8]xfade=transition=fade:duration=1:offset=137[v7];
 [v7][9]xfade=transition=fade:duration=1:offset=148[v8];
 [v8][10]xfade=transition=fade:duration=1:offset=157[v9];
-[v9]fade=t=in:st=0:d=1,fade=t=out:st=160.5:d=1.5,format=yuv420p[out]" -map "[out]" -c:v libx264 -preset medium -crf 24 -movflags +faststart intro.mp4
+[v9]fade=t=in:st=0:d=1,fade=t=out:st=159.5:d=1.5,format=yuv420p[out]" -map "[out]" -c:v libx264 -preset medium -crf 24 -movflags +faststart intro.mp4
 echo "intro.mp4 $(du -h intro.mp4 | cut -f1) $(ffprobe -v error -show_entries format=duration:stream=width,height -of csv=p=0 intro.mp4 | tr '\n' ' ')"
