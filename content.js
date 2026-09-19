@@ -4305,7 +4305,7 @@ var FAMILY_CONTENT = {
       "key": "galaxy",
       "icon": "🌌",
       "scene": "galaxies",
-      "link": "galaxy",
+      "link": "galaxy:sun",
       "en": {
         "title": "Galaxy",
         "def": "A galaxy is a giant family of billions of stars.",
@@ -4329,7 +4329,7 @@ var FAMILY_CONTENT = {
       "key": "nebula",
       "icon": "🌸",
       "scene": "galaxy",
-      "link": "galaxy",
+      "link": "galaxy:orion",
       "en": {
         "title": "Nebula",
         "def": "A nebula is a cloud of gas and dust where stars are born.",
@@ -4428,7 +4428,7 @@ var FAMILY_CONTENT = {
       "icon": "🌙",
       "scene": "detail",
       "planet": "earth",
-      "link": "detail:earth",
+      "link": "detail:earth:moon",
       "en": {
         "title": "Moon",
         "def": "A moon goes around a planet.",
@@ -4453,7 +4453,7 @@ var FAMILY_CONTENT = {
       "icon": "🪨",
       "scene": "overview",
       "focus": "comet",
-      "link": "overview:comet",
+      "link": "overview:belt",
       "en": {
         "title": "Asteroids & Comets",
         "def": "Asteroids and comets are small rocks and snowballs. They are too small and light to become round balls.",

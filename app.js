@@ -569,9 +569,28 @@
   }
 
   // "view", "detail:<planet>", "overview:dwarf", "overview:<feature key>"
+  // "galaxy:orion" / "beyond:<icon>" open that hotspot's card on arrival; "detail:earth:moon" opens the moon card.
   function goLink(target) {
-    var parts = String(target).split(':'), view = parts[0], arg = parts[1];
-    if (view === 'detail') { var pc = PLANETS.find(function (p) { return p.key === arg; }); if (pc) switchView('detail', pc); return; }
+    var parts = String(target).split(':'), view = parts[0], arg = parts[1], extra = parts[2];
+    if (view === 'detail') {
+      var pc = PLANETS.find(function (p) { return p.key === arg; }); if (!pc) return;
+      switchView('detail', pc);
+      if (extra) setTimeout(function () {
+        if (mode !== 'detail') return;
+        var mn = pc.detail.moons.find(function (m) { return m.key === extra; });
+        if (mn) openCard('moon', mn, pc.detail.moons.indexOf(mn));
+      }, 540);
+      return;
+    }
+    if ((view === 'galaxy' || view === 'beyond' || view === 'galaxies' || view === 'family') && arg) {
+      switchView(view);
+      setTimeout(function () {
+        if (mode !== view) return;
+        var d = activeBody().detail, hs = (d.hotspots || []).find(function (h) { return h.key === arg; });
+        if (hs) openCard('hotspot', hs);
+      }, 540);
+      return;
+    }
     if (view === 'overview' && arg) {
       switchView('overview');
       setTimeout(function () {
