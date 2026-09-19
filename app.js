@@ -1822,7 +1822,7 @@
     mode = 'intro';
   }
   introGateStart.addEventListener('click', function () { introGate.hidden = true; startIntro(); });
-  introSkip.addEventListener('click', function () { if (INTRO.active) endIntro(); else { introGate.hidden = true; markIntroSeen(); finishIntroUI(); if (location.hash === '#/intro') replaceRoute('#/solar'); mode = 'overview'; } });
+  introSkip.addEventListener('click', function () { if (INTRO.active) endIntro(true, true); else { introGate.hidden = true; markIntroSeen(); finishIntroUI(); if (location.hash === '#/intro') replaceRoute('#/solar'); mode = 'overview'; } });
 
   var INTRO_CAMS = {
     galaxy:  { view: 'galaxies', from: 95, to: 58 },
