@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Solar System" />
 <link rel="apple-touch-icon" href="icon-180.png" />
 <link rel="icon" href="icon-180.png" />
-<link rel="manifest" href="manifest.json?v=202609192248" />
+<link rel="manifest" href="manifest.json?v=202609192305" />
 <title>Solar System Explorer</title>
 <style>
   :root{
@@ -330,8 +330,8 @@
   #intro-gate .langs button.active{background:var(--cyan); color:#04202a;}
   #intro-film{position:fixed; inset:0; z-index:61; background:#000; transition:opacity .4s ease;}
   #intro-film[hidden]{display:none;}
-  #intro-film.dip{opacity:0;}
-  #intro-video{width:100%; height:100%; object-fit:cover; display:block; background:#000;}
+  #intro-video{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:min(100%, 1920px); height:min(100%, 1080px); object-fit:contain; display:block; background:#000; transition:opacity .35s ease;}
+  #intro-video.dip{opacity:0;}
   #intro-credits{position:absolute; top:calc(14px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); color:rgba(255,255,255,.55); font-size:11px; letter-spacing:.03em; text-align:center; white-space:nowrap;}
   #intro-credits[hidden]{display:none;}
   #intro-skip{
@@ -341,20 +341,20 @@
   #intro-skip[hidden]{display:none;}
   #intro-gate:not([hidden]) ~ #intro-skip{top:auto; bottom:calc(28px + env(safe-area-inset-bottom)); right:auto; left:50%; transform:translateX(-50%); background:transparent; border-color:transparent; color:var(--muted);}
   #intro-caption{
-    position:fixed; left:50%; bottom:calc(28px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:62;
-    width:min(760px, calc(100vw - 32px)); background:var(--panel); border:1px solid var(--border); border-radius:18px;
-    padding:16px 22px 14px; text-align:center; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 12px 40px rgba(0,0,0,.5);
+    position:fixed; left:50%; bottom:calc(56px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:62;
+    width:min(1100px, calc(100vw - 48px)); text-align:center; pointer-events:none;
   }
   #intro-caption[hidden]{display:none;}
-  #intro-stop{font-size:15px; font-weight:700; color:var(--amber); letter-spacing:.04em; margin-bottom:6px;}
-  #intro-line{font-size:19px; line-height:1.5; min-height:58px; opacity:0; transition:opacity .35s ease;}
+  #intro-stop, #intro-dots{display:none;}
+  #intro-line{font-size:30px; line-height:1.45; font-weight:500; color:#fff; opacity:0; transition:opacity .25s ease;
+    text-shadow:0 0 4px rgba(0,0,0,.95), 0 2px 6px rgba(0,0,0,.95), 0 0 14px rgba(0,0,0,.7);}
   #intro-line.show{opacity:1;}
   #intro-dots{display:flex; gap:6px; justify-content:center; margin-top:10px;}
   #intro-dots span{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.18);}
   #intro-dots span.done{background:rgba(251,191,36,.55);}
   #intro-dots span.now{background:var(--amber); box-shadow:0 0 8px rgba(251,191,36,.8);}
   body.intro #crumbs, body.intro #title-bar, body.intro #lang-toggle, body.intro #list-btn, body.intro #feature-bar, body.intro #facts-btn, body.intro #hint, body.intro #card-panel, body.intro #list-panel{display:none !important;}
-  @media (max-width:700px){ #intro-line{font-size:16px; min-height:72px;} #intro-gate h2{font-size:22px;} }
+  @media (max-width:700px){ #intro-line{font-size:18px;} #intro-gate h2{font-size:22px;} }
 
   /* ---------- Fade transition ---------- */
   #fade{position:fixed; inset:0; background:#000; z-index:90; opacity:0; pointer-events:none; transition:opacity .45s ease;}
@@ -433,12 +433,12 @@
 
   <div id="fade"></div>
 
-  <script>window.APP_BUILD = '202609192248';</script>
+  <script>window.APP_BUILD = '202609192305';</script>
   <script src="https://unpkg.com/three@0.144.0/build/three.min.js"></script>
   <script src="https://unpkg.com/three@0.144.0/examples/js/controls/OrbitControls.js"></script>
   <script>if (location.protocol === 'file:') document.write('<script src="textures-data.js"><\/script>');</script>
-  <script src="content.js?v=202609192248"></script>
-  <script src="audio/manifest.js?v=202609192248"></script>
-  <script src="app.js?v=202609192248"></script>
+  <script src="content.js?v=202609192305"></script>
+  <script src="audio/manifest.js?v=202609192305"></script>
+  <script src="app.js?v=202609192305"></script>
 </body>
 </html>

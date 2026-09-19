@@ -4258,79 +4258,212 @@ var GALAXIES_CONTENT = {
 
 /* The Cosmic Family — intro film stops + the reference ladder (bilingual) */
 var FAMILY_CONTENT = {
-  name: { en: 'The Cosmic Family', zh: '宇宙的家族' },
-  subtitle: { en: 'What Is What in Space', zh: '宇宙裡的東西怎麼分' },
-  chip: { en: '🔭 Cosmic family', zh: '🔭 宇宙的家族' },
-  ui: {
-    start: { en: '▶ Start exploring', zh: '▶ 開始探索' },
-    skip: { en: 'Skip ▶▶', zh: '略過 ▶▶' },
-    replay: { en: '🎬 Watch the intro again', zh: '🎬 再看一次開場' },
-    goSee: { en: 'Go and see →', zh: '點我去看 →' },
-    welcome: { en: 'Welcome to the solar system!', zh: '歡迎來到太陽系！' }
+  "name": {
+    "en": "The Cosmic Family",
+    "zh": "宇宙的家族"
   },
-  stops: [
-    { key: 'galaxy', icon: '🌌', scene: 'galaxies', link: 'galaxy',
-      en: { title: 'Galaxy', def: 'A galaxy is a giant family of billions of stars.',
-        lines: ['There are many, many galaxies in space. Each galaxy is a big family. Billions and billions of stars live together in it.',
-                'Our galaxy is called the Milky Way. It looks like a big spinning pinwheel.',
-                'A galaxy is the biggest home in space. Now let\'s fly inside and see what is in there.'] },
-      zh: { title: '星系', def: '星系是好幾千億顆星星住在一起的大家族。',
-        lines: ['宇宙裡有好多好多星系。每一個星系，都是好幾千億顆星星住在一起的大家族。',
-                '我們住的星系叫銀河系，它長得像一個會轉的大風車。',
-                '星系是宇宙裡最大的家。接下來，我們要飛進去看看裡面有什麼。'] } },
-    { key: 'nebula', icon: '🌸', scene: 'galaxy', link: 'galaxy',
-      en: { title: 'Nebula', def: 'A nebula is a cloud of gas and dust where stars are born.',
-        lines: ['Inside a galaxy, there are colorful clouds. They are called nebulas. A nebula is made of gas and dust.',
-                'A nebula is a star nursery. The gas squishes together, gets hotter and hotter, and then it lights up. A star is born!',
-                'So first comes the nebula, and then comes the star.'] },
-      zh: { title: '星雲', def: '星雲是氣體和塵埃做的雲，星星在裡面誕生。',
-        lines: ['星系裡面，有一團一團彩色的雲，叫做星雲。它是氣體和塵埃做的。',
-                '星雲是星星的育嬰房。氣體慢慢擠在一起，越擠越熱，最後亮起來，一顆星星就誕生了。',
-                '所以，先有星雲，才有星星。'] } },
-    { key: 'star', icon: '☀️', scene: 'detail', planet: 'sun', link: 'detail:sun',
-      en: { title: 'Star', def: 'A star makes its own light and heat. The Sun is a star.',
-        lines: ['When a star is born, it makes its own light and its own heat. The Sun is a star!',
-                'A star does not go around anything. It stays in the middle, and other things go around it.',
-                'How do you know it is a star? Remember: if it makes its own light, it is a star.'] },
-      zh: { title: '恆星', def: '恆星自己會發光發熱，太陽就是一顆恆星。',
-        lines: ['星星誕生以後，會自己發光、自己發熱。這樣的星星叫做恆星。太陽就是一顆恆星。',
-                '恆星不用繞著別人轉，它待在中間，別的東西繞著它轉。',
-                '怎麼分辨恆星？記住：自己會發光的，就是恆星。'] } },
-    { key: 'planet', icon: '🪐', scene: 'overview', link: 'overview',
-      en: { title: 'Planet', def: 'A planet is a big round ball that goes around a star.',
-        lines: ['A big round ball that goes around a star is called a planet. Earth and Jupiter are planets.',
-                'A planet does not make its own light. We can see it because the Sun shines on it.',
-                'A planet is made from leftover rocks and dust that rolled into a big ball. It is big enough to sweep its path clean.'] },
-      zh: { title: '行星', def: '行星是繞著恆星轉的大圓球。',
-        lines: ['繞著恆星轉的大圓球，叫做行星。地球、木星，都是行星。',
-                '行星自己不會發光。我們看得到它，是因為太陽的光照在它身上。',
-                '行星是從星星剩下來的碎石和塵埃，慢慢滾成一顆大球的。它夠大，所以把自己的軌道掃得乾乾淨淨。'] } },
-    { key: 'dwarf', icon: '🥚', scene: 'overview', focus: 'pluto', link: 'overview:dwarf',
-      en: { title: 'Dwarf Planet', def: 'A dwarf planet is round and goes around a star, but it is small, with many rock neighbors.',
-        lines: ['Pluto is round too, and it goes around the Sun too. But it is very small.',
-                'It has lots of rock friends next to its path, and it cannot sweep them away. A ball like this is called a dwarf planet.',
-                'How to tell: it goes around a star and it is round, but it is small with too many neighbors. That is a dwarf planet.'] },
-      zh: { title: '矮行星', def: '矮行星也繞恆星、也圓，但太小，旁邊有很多石頭鄰居。',
-        lines: ['冥王星也是圓的，也繞著太陽轉。可是它太小了。',
-                '它的軌道旁邊還有好多石頭朋友，它掃不乾淨。這樣的圓球，叫做矮行星。',
-                '分辨的方法：一樣繞著恆星、一樣圓，但太小、鄰居太多的，就是矮行星。'] } },
-    { key: 'moon', icon: '🌙', scene: 'detail', planet: 'earth', link: 'detail:earth',
-      en: { title: 'Moon', def: 'A moon goes around a planet.',
-        lines: ['Some balls do not go around a star. They go around a planet. A ball like this is called a moon.',
-                'The Moon goes around Earth, so the Moon is the moon of Earth. Jupiter has more than ninety moons!',
-                'How to tell: look at what it goes around. If it goes around a planet, it is a moon.'] },
-      zh: { title: '衛星', def: '衛星是繞著行星轉的球。',
-        lines: ['有些圓球不繞著恆星轉，而是繞著行星轉。這樣的球叫做衛星。',
-                '月球繞著地球轉，所以月球是地球的衛星。木星有超過九十顆衛星！',
-                '分辨的方法：看它繞著誰。繞行星的，就是衛星。'] } },
-    { key: 'small', icon: '☄️', scene: 'overview', focus: 'comet', link: 'overview:comet',
-      en: { title: 'Small Things', def: 'Asteroids and comets are small, and not even round.',
-        lines: ['The solar system has lots of small things too. Asteroids are rocks that are not round. Comets are snowballs that grow a tail.',
-                'They are so small that they cannot even become round.',
-                'Now you know! Stars make light. Planets go around stars. Moons go around planets. Dwarf planets are small. And small things are not even round. Welcome to the solar system!'] },
-      zh: { title: '小東西', def: '小行星和彗星都很小，連圓都不圓。',
-        lines: ['太陽系裡還有很多小東西：小行星是不圓的石頭，彗星是會長尾巴的雪球。',
-                '它們太小了，連圓都圓不起來。',
-                '現在你知道了：恆星會發光，行星繞恆星，衛星繞行星，矮行星太小，小東西連圓都不圓。歡迎來到太陽系！'] } }
+  "subtitle": {
+    "en": "What Is What in Space",
+    "zh": "宇宙裡的東西怎麼分"
+  },
+  "chip": {
+    "en": "🔭 Cosmic family",
+    "zh": "🔭 宇宙的家族"
+  },
+  "ui": {
+    "start": {
+      "en": "▶ Start exploring",
+      "zh": "▶ 開始探索"
+    },
+    "skip": {
+      "en": "Skip ▶▶",
+      "zh": "略過 ▶▶"
+    },
+    "replay": {
+      "en": "🎬 Watch the intro again",
+      "zh": "🎬 再看一次開場"
+    },
+    "goSee": {
+      "en": "Go and see →",
+      "zh": "點我去看 →"
+    },
+    "welcome": {
+      "en": "Welcome to the solar system!",
+      "zh": "歡迎來到太陽系！"
+    }
+  },
+  "stops": [
+    {
+      "key": "galaxy",
+      "icon": "🌌",
+      "scene": "galaxies",
+      "link": "galaxy",
+      "en": {
+        "title": "Galaxy",
+        "def": "A galaxy is a giant family of billions of stars.",
+        "lines": [
+          "Look at all these little lights. Every single one is a galaxy, far, far away.",
+          "A galaxy is a giant family of billions of stars. This is what our own galaxy looks like. It is called the Milky Way.",
+          "See the spinning arms? Our Sun lives on one of those arms. Now let's fly inside."
+        ]
+      },
+      "zh": {
+        "title": "星系",
+        "def": "星系是好幾千億顆星星住在一起的大家族。",
+        "lines": [
+          "看，這些一點一點的光，每一個都是一個星系，離我們好遠好遠。",
+          "星系是好幾千億顆星星住在一起的大家族。這就是我們住的星系，它叫做銀河系。",
+          "看到那些旋轉的手臂了嗎？我們的太陽就住在其中一條手臂上。現在，我們飛進去看看。"
+        ]
+      }
+    },
+    {
+      "key": "nebula",
+      "icon": "🌸",
+      "scene": "galaxy",
+      "link": "galaxy",
+      "en": {
+        "title": "Nebula",
+        "def": "A nebula is a cloud of gas and dust where stars are born.",
+        "lines": [
+          "We are flying into a nebula. It is a giant cloud of gas and dust, glowing pink and green.",
+          "Look at the tiny sparkles. Those are baby stars! A nebula is a star nursery. The gas squishes together, gets hot, and lights up.",
+          "So first comes the cloud, and then comes the star."
+        ]
+      },
+      "zh": {
+        "title": "星雲",
+        "def": "星雲是氣體和塵埃做的雲，星星在裡面誕生。",
+        "lines": [
+          "我們正飛進一團星雲。它是一大團氣體和塵埃做的雲，發著粉紅色和綠色的光。",
+          "看那些小小的亮點，那是剛出生的小星星！星雲是星星的育嬰房。氣體擠在一起，變熱，然後亮起來。",
+          "所以，先有雲，才有星星。"
+        ]
+      }
+    },
+    {
+      "key": "star",
+      "icon": "☀️",
+      "scene": "detail",
+      "planet": "sun",
+      "link": "detail:sun",
+      "en": {
+        "title": "Star",
+        "def": "A star makes its own light and heat. The Sun is a star.",
+        "lines": [
+          "This is our Sun, filmed by a spacecraft with a special camera. It is a star: it makes its own light and its own heat.",
+          "Watch the bright flash! That is a solar flare, a giant burst of light from the Sun.",
+          "A star stays in the middle, and everything else goes around it. If it makes its own light, it is a star."
+        ]
+      },
+      "zh": {
+        "title": "恆星",
+        "def": "恆星自己會發光發熱，太陽就是一顆恆星。",
+        "lines": [
+          "這是我們的太陽，太空船用特別的相機拍的。它是一顆恆星：自己會發光、自己會發熱。",
+          "看那道亮亮的閃光！那是太陽閃焰，太陽噴出來的一大團光。",
+          "恆星待在中間，別的東西都繞著它轉。自己會發光的，就是恆星。"
+        ]
+      }
+    },
+    {
+      "key": "planet",
+      "icon": "🪐",
+      "scene": "overview",
+      "link": "overview",
+      "en": {
+        "title": "Planet",
+        "def": "A planet is a big round ball that goes around a star.",
+        "lines": [
+          "This is Jupiter, the biggest planet. A planet is a big round ball that goes around a star.",
+          "See the stripes and the big red spot? Jupiter does not make its own light. We can see it because the Sun shines on it.",
+          "Earth is a planet too. A planet is big enough to sweep its path around the Sun clean."
+        ]
+      },
+      "zh": {
+        "title": "行星",
+        "def": "行星是繞著恆星轉的大圓球。",
+        "lines": [
+          "這是木星，最大的行星。行星是繞著恆星轉的大圓球。",
+          "看到條紋和那個大紅斑了嗎？木星自己不會發光，我們看得到它，是因為太陽的光照在它身上。",
+          "地球也是行星。行星夠大，可以把自己繞太陽的路掃得乾乾淨淨。"
+        ]
+      }
+    },
+    {
+      "key": "dwarf",
+      "icon": "🥚",
+      "scene": "overview",
+      "focus": "pluto",
+      "link": "overview:dwarf",
+      "en": {
+        "title": "Dwarf Planet",
+        "def": "A dwarf planet is round and goes around a star, but it is small, with many rock neighbors.",
+        "lines": [
+          "We are flying over Pluto. Look at the icy mountains and the smooth frozen plains.",
+          "Pluto is round, and it goes around the Sun. But it is very small, and it has lots of rock friends next to its path.",
+          "A small round ball like this is called a dwarf planet."
+        ]
+      },
+      "zh": {
+        "title": "矮行星",
+        "def": "矮行星也繞恆星、也圓，但太小，旁邊有很多石頭鄰居。",
+        "lines": [
+          "我們正飛過冥王星。看那些冰做的山，還有平平的冰原。",
+          "冥王星是圓的，也繞著太陽轉。可是它很小，路旁邊還有好多石頭朋友。",
+          "像這樣小小的圓球，叫做矮行星。"
+        ]
+      }
+    },
+    {
+      "key": "moon",
+      "icon": "🌙",
+      "scene": "detail",
+      "planet": "earth",
+      "link": "detail:earth",
+      "en": {
+        "title": "Moon",
+        "def": "A moon goes around a planet.",
+        "lines": [
+          "This is the Moon. Watch it change from a thin slice to a full circle.",
+          "The Moon does not go around the Sun. It goes around Earth. A ball that goes around a planet is called a moon.",
+          "Jupiter has more than ninety moons! Look at what it goes around: if it goes around a planet, it is a moon."
+        ]
+      },
+      "zh": {
+        "title": "衛星",
+        "def": "衛星是繞著行星轉的球。",
+        "lines": [
+          "這是月球。看它從細細的一彎，慢慢變成圓圓的一顆。",
+          "月球不是繞著太陽轉，它繞著地球轉。繞著行星轉的球，叫做衛星。",
+          "木星有超過九十顆衛星！看它繞著誰：繞行星的，就是衛星。"
+        ]
+      }
+    },
+    {
+      "key": "small",
+      "icon": "🪨",
+      "scene": "overview",
+      "focus": "comet",
+      "link": "overview:comet",
+      "en": {
+        "title": "Asteroids & Comets",
+        "def": "Asteroids and comets are small rocks and snowballs. They are too small to be round.",
+        "lines": [
+          "This lumpy rock is an asteroid. Millions of them go around the Sun between Mars and Jupiter.",
+          "And this is a comet, a snowball from far away. When it comes near the Sun, it grows a long glowing tail.",
+          "They are too small to become round. Now you know: stars make light, planets go around stars, moons go around planets. Welcome to the solar system!"
+        ]
+      },
+      "zh": {
+        "title": "小行星與彗星",
+        "def": "小行星和彗星是小石頭和小雪球，太小了，圓不起來。",
+        "lines": [
+          "這顆凹凸不平的石頭是小行星。火星和木星之間，有幾百萬顆這樣的石頭繞著太陽轉。",
+          "這是彗星，從很遠的地方來的雪球。靠近太陽的時候，它會長出一條長長的、發光的尾巴。",
+          "它們太小了，圓不起來。現在你知道了：恆星會發光，行星繞恆星，衛星繞行星。歡迎來到太陽系！"
+        ]
+      }
+    }
   ]
 };

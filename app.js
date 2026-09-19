@@ -483,7 +483,7 @@
     stopAllSpeech();
     var utter = new SpeechSynthesisUtterance(text);
     utter.lang = lang === 'zh' ? 'zh-TW' : 'en-US';
-    utter.rate = lang === 'zh' ? 0.95 : 0.92;
+    utter.rate = INTRO.active ? (lang === 'zh' ? 1.08 : 1.02) : (lang === 'zh' ? 0.95 : 0.92);
     utter.pitch = 1.08;
     var voice = pickVoice();
     if (voice) utter.voice = voice;
@@ -1755,7 +1755,7 @@
   var introVideo = document.getElementById('intro-video');
   var introCredits = document.getElementById('intro-credits');
   // Where each stop lives inside film/intro.mp4 (seconds)
-  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 152] };
+  var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 158] };
   function introSeg() { var s = FAMILY.stops[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
   introVideo.addEventListener('timeupdate', function () {
     var seg = introSeg(); if (!INTRO.active || !seg) return;
@@ -1818,11 +1818,11 @@
     if (i >= FAMILY.stops.length) { endIntro(); return; }
     INTRO.stop = i; INTRO.line = -1; INTRO.t = 0; INTRO.cam = null;
     var seg = INTRO_SEGMENTS[FAMILY.stops[i].key];
-    introFilm.classList.add('dip');
+    introVideo.classList.add('dip');
     INTRO.timer = setTimeout(function () {
       try { introVideo.currentTime = seg[0]; } catch (e) { /* not ready yet */ }
       var p = introVideo.play(); if (p && p.catch) p.catch(function () {});
-      introFilm.classList.remove('dip');
+      introVideo.classList.remove('dip');
       if (i === FAMILY.stops.length - 1) introCredits.hidden = false;
       renderIntroCaption();
       playIntroLine(0);
@@ -1831,16 +1831,14 @@
 
   function renderIntroCaption() {
     var s = FAMILY.stops[INTRO.stop]; if (!s) return;
-    introStopEl.textContent = s.icon + ' ' + s[lang].title;
     var lines = s[lang].lines;
     introLineEl.textContent = INTRO.line >= 0 ? lines[Math.min(INTRO.line, lines.length - 1)] : '';
-    Array.prototype.forEach.call(introDots.children, function (d, k) { d.className = k < INTRO.stop ? 'done' : (k === INTRO.stop ? 'now' : ''); });
   }
 
   function playIntroLine(j) {
     clearTimeout(INTRO.timer);
     var s = FAMILY.stops[INTRO.stop], lines = s[lang].lines;
-    if (j >= lines.length) { INTRO.timer = setTimeout(function () { playIntroStop(INTRO.stop + 1); }, 700); return; }
+    if (j >= lines.length) { INTRO.timer = setTimeout(function () { playIntroStop(INTRO.stop + 1); }, 350); return; }
     INTRO.line = j;
     introLineEl.classList.remove('show'); void introLineEl.offsetWidth;
     renderIntroCaption(); introLineEl.classList.add('show');
@@ -1851,12 +1849,12 @@
   function introLineDone() {
     if (!INTRO.active) return;
     clearTimeout(INTRO.timer);
-    INTRO.timer = setTimeout(function () { playIntroLine(INTRO.line + 1); }, 650);
+    INTRO.timer = setTimeout(function () { playIntroLine(INTRO.line + 1); }, 300);
   }
 
   function finishIntroUI() {
     document.body.classList.remove('intro');
-    introVideo.pause(); introFilm.hidden = true; introFilm.classList.remove('dip'); introCredits.hidden = true;
+    introVideo.pause(); introFilm.hidden = true; introVideo.classList.remove('dip'); introCredits.hidden = true;
     introCaption.hidden = true; introSkip.hidden = true; introGate.hidden = true;
     introLineEl.classList.remove('show');
   }
