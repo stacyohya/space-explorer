@@ -1568,7 +1568,7 @@
       galaxyGroup.add(sp); nebulae.push(sp);
     });
     GALAXY.hotspots.forEach(function (h) {
-      var p = h.pos === 'sun' ? sunPos.clone().add(new THREE.Vector3(0, 2.4, 0))
+      var p = h.pos === 'sun' ? sunPos.clone().add(new THREE.Vector3(0, 5.5, 0))
             : h.pos === 'arm' ? armPos.clone().add(new THREE.Vector3(0, 1.8, 0))
             : nebulaSpots[h.pos] ? nebulaSpots[h.pos][0].clone().add(new THREE.Vector3(0, nebulaSpots[h.pos][2] * 0.45, 0))
             : h.pos === 'starlife' ? nebulaSpots.ring[0].clone().lerp(nebulaSpots.crab[0], 0.5).add(new THREE.Vector3(0, 3.5, 0))
@@ -1607,7 +1607,7 @@
     addLabel('galaxies', ellip, GALAXIES.labels.elliptical, 'feature');
     addLabel('galaxies', irr, GALAXIES.labels.irregular, 'feature');
 
-    var anchors = { milky: [milky, [0, 3.5, 0]], andromeda: [andromeda.group, [0, 4.5, 0]], elliptical: [ellip, [0, 4.5, 0]], irregular: [irr, [0, 3, 0]], magellanic: [lmc, [0, 2.2, 0]], between: [galaxiesGroup, [3, 9, -6]] };
+    var anchors = { milky: [milky, [0, 6, 0]], andromeda: [andromeda.group, [0, 4.5, 0]], elliptical: [ellip, [0, 4.5, 0]], irregular: [irr, [0, 3, 0]], magellanic: [lmc, [0, 2.2, 0]], between: [galaxiesGroup, [3, 9, -6]] };
     GALAXIES.hotspots.forEach(function (h) {
       var sprite = hotspotSprite(h, h.color, galaxiesHotspots, 2.0);
       if (typeof h.pos === 'string') { var a = anchors[h.pos]; sprite.position.set(a[1][0], a[1][1], a[1][2]); a[0].add(sprite); }
