@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Solar System" />
 <link rel="apple-touch-icon" href="icon-180.png" />
 <link rel="icon" href="icon-180.png" />
-<link rel="manifest" href="manifest.json?v=202609191236" />
+<link rel="manifest" href="manifest.json?v=202609191246" />
 <title>Solar System Explorer</title>
 <style>
   :root{
@@ -176,6 +176,14 @@
     box-shadow:0 20px 60px rgba(0,0,0,.55);
   }
   #card-panel.show{opacity:1; transform:translateY(-50%) translateX(0); pointer-events:auto;}
+  /* cards with an animation get more room on tablets and desktops */
+  @media (min-width: 900px){
+    #card-panel.wide{width:min(600px, calc(100vw - 44px)); padding:24px 26px 22px;}
+    #card-panel.wide h2{font-size:21px;}
+    #card-panel.wide .question{font-size:15px;}
+    #card-panel.wide p.body{font-size:16px; line-height:1.6;}
+    #card-panel.wide #card-canvas{margin-bottom:14px;}
+  }
   #card-panel .close{
     position:absolute; top:12px; right:14px; background:none; border:none; color:var(--muted);
     font-size:18px; cursor:pointer; line-height:1;
@@ -297,7 +305,7 @@
 
   <div id="card-panel">
     <button class="close" id="card-close">✕</button>
-    <canvas id="card-canvas" width="320" height="150" hidden></canvas>
+    <canvas id="card-canvas" width="960" height="450" hidden></canvas>
     <span class="icon" id="card-icon">🔴</span>
     <p class="kicker" id="card-kicker">Great Red Spot</p>
     <h2 id="card-title">The Great Red Spot</h2>
@@ -318,8 +326,8 @@
   <script src="https://unpkg.com/three@0.144.0/build/three.min.js"></script>
   <script src="https://unpkg.com/three@0.144.0/examples/js/controls/OrbitControls.js"></script>
   <script>if (location.protocol === 'file:') document.write('<script src="textures-data.js"><\/script>');</script>
-  <script src="content.js?v=202609191236"></script>
-  <script src="audio/manifest.js?v=202609191236"></script>
-  <script src="app.js?v=202609191236"></script>
+  <script src="content.js?v=202609191246"></script>
+  <script src="audio/manifest.js?v=202609191246"></script>
+  <script src="app.js?v=202609191246"></script>
 </body>
 </html>

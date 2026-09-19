@@ -474,6 +474,7 @@
     stopIllustration();
     var illo = ((c.kind === 'feature' || c.kind === 'hotspot') && c.item.illustration) ? c.item.illustration : null;
     cardCanvas.hidden = !illo;
+    cardPanel.classList.toggle('wide', !!illo);
     if (illo && CARD_ILLUSTRATIONS[illo]) illustrationStop = CARD_ILLUSTRATIONS[illo](cardCanvas, lang);
     cardIcon.textContent = icon;
     cardKicker.textContent = kicker;
@@ -536,7 +537,8 @@
   var CARD_ILLUSTRATIONS = {
     starlife: function (canvas, lg) {
       var ctx = canvas.getContext('2d');
-      var W = canvas.width, H = canvas.height;
+      var W = 320, H = 150, S = canvas.width / W;
+      ctx.setTransform(S, 0, 0, S, 0, 0);
       var raf = 0, start = performance.now();
       var L = lg === 'zh'
         ? { nebula: '星雲：氣體和塵埃', collapse: '重力把它們拉在一起', born: '星星誕生了！', shine: '安穩地發光幾十億年', sun: '像太陽的星星', heavy: '很重的星星（20 倍太陽以上）', giant: '紅巨星', supergiant: '紅超巨星', pn: '行星狀星雲', sn: '超新星爆炸！', wd: '白矮星', ns: '中子星', bh: '…或黑洞', again: '氣體變成新的星雲 ↻' }
@@ -639,7 +641,8 @@
     },
     meteor: function (canvas, lg) {
       var ctx = canvas.getContext('2d');
-      var W = canvas.width, H = canvas.height;
+      var W = 320, H = 150, S = canvas.width / W;
+      ctx.setTransform(S, 0, 0, S, 0, 0);
       var raf = 0, start = performance.now();
       var labels = lg === 'zh'
         ? { rock: '小石頭', atm: '大氣層', burn: '燃燒發光', shower: '流星雨：都從同一點飛出來', ground: '地球' }
