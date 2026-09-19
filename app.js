@@ -1757,9 +1757,29 @@
   // Where each stop lives inside film/intro.mp4 (seconds)
   var INTRO_SEGMENTS = { galaxy: [0, 24], nebula: [24, 47], star: [47, 70], planet: [70, 93], dwarf: [93, 116], moon: [116, 137], small: [137, 157], end: [157, 169] };
   function introSeg() { var s = FAMILY.stops[INTRO.stop]; return s ? INTRO_SEGMENTS[s.key] : null; }
+  function sentencesOf(stop) {
+    var out = [];
+    stop[lang].lines.forEach(function (line) {
+      line.split(/(?<=[。！？])|(?<=[.!?])\s+/).forEach(function (s) { s = s.trim(); if (s) out.push(s); });
+    });
+    return out;
+  }
+  INTRO.holding = false;
+  function seekAndPlay(t) {
+    INTRO.holding = false;
+    var go = function () {
+      try { if (Math.abs(introVideo.currentTime - t) > 0.4) introVideo.currentTime = t; } catch (e) { /* not seekable yet */ }
+      var p = introVideo.play(); if (p && p.catch) p.catch(function () {});
+    };
+    if (introVideo.readyState >= 1) go(); else introVideo.addEventListener('loadedmetadata', go, { once: true });
+  }
+  // iOS sometimes leaves the video paused after the first seek: nudge it whenever it becomes playable.
+  ['canplay', 'canplaythrough', 'loadeddata'].forEach(function (ev) {
+    introVideo.addEventListener(ev, function () { if (INTRO.active && !INTRO.holding && introVideo.paused) { var p = introVideo.play(); if (p && p.catch) p.catch(function () {}); } });
+  });
   introVideo.addEventListener('timeupdate', function () {
     var seg = introSeg(); if (!INTRO.active || !seg) return;
-    if (introVideo.currentTime >= seg[1] - 0.15 && !introVideo.paused) introVideo.pause();   // hold the last frame while narration finishes
+    if (introVideo.currentTime >= seg[1] - 0.15 && !introVideo.paused) { INTRO.holding = true; introVideo.pause(); }   // hold the last frame while narration finishes
   });
   function primeIntroVideo() {
     if (!introVideo.getAttribute('src')) { introVideo.setAttribute('src', 'film/intro.mp4?v=' + (window.APP_BUILD || '1')); introVideo.load(); }
@@ -1804,8 +1824,7 @@
     document.body.classList.add('intro');
     primeIntroVideo();
     introFilm.hidden = false; introCredits.hidden = true;
-    introVideo.currentTime = 0;
-    var p = introVideo.play(); if (p && p.catch) p.catch(function () { /* autoplay blocked: captions still run */ });
+    seekAndPlay(0);
     mode = 'intro'; controls.enabled = false;
     introSkip.hidden = false; introCaption.hidden = false;
     playIntroStop(0);
@@ -1818,8 +1837,7 @@
     var seg = INTRO_SEGMENTS[FAMILY.stops[i].key];
     introVideo.classList.add('dip');
     INTRO.timer = setTimeout(function () {
-      try { introVideo.currentTime = seg[0]; } catch (e) { /* not ready yet */ }
-      var p = introVideo.play(); if (p && p.catch) p.catch(function () {});
+      seekAndPlay(seg[0]);
       introVideo.classList.remove('dip');
       if (i === FAMILY.stops.length - 1) introCredits.hidden = false;
       renderIntroCaption();
@@ -1829,18 +1847,17 @@
 
   function renderIntroCaption() {
     var s = FAMILY.stops[INTRO.stop]; if (!s) return;
-    var lines = s[lang].lines;
+    var lines = sentencesOf(s);
     introLineEl.textContent = INTRO.line >= 0 ? lines[Math.min(INTRO.line, lines.length - 1)] : '';
   }
 
   function playIntroLine(j) {
     clearTimeout(INTRO.timer);
-    var s = FAMILY.stops[INTRO.stop], lines = s[lang].lines;
+    var s = FAMILY.stops[INTRO.stop], lines = sentencesOf(s);
     if (j >= lines.length) {
       if (INTRO.stop === FAMILY.stops.length - 1) {                   // last stop → ending shot of our solar system, then land
         introLineEl.classList.remove('show');
-        try { introVideo.currentTime = INTRO_SEGMENTS.end[0]; } catch (e) {}
-        var p = introVideo.play(); if (p && p.catch) p.catch(function () {});
+        seekAndPlay(INTRO_SEGMENTS.end[0]);
         INTRO.stop = FAMILY.stops.length;                                  // no more captions / holds
         INTRO.timer = setTimeout(function () { playIntroStop(FAMILY.stops.length); }, (INTRO_SEGMENTS.end[1] - INTRO_SEGMENTS.end[0]) * 1000 - 400);
         return;
@@ -1851,13 +1868,14 @@
     introLineEl.classList.remove('show'); void introLineEl.offsetWidth;
     renderIntroCaption(); introLineEl.classList.add('show');
     speak(lines[j], true);
-    INTRO.timer = setTimeout(introLineDone, 16000);           // safety net if speech never reports the end
+    INTRO.timer = setTimeout(introLineDone, 9000);            // safety net if speech never reports the end
+    if (!INTRO.holding && introVideo.paused) { var pp = introVideo.play(); if (pp && pp.catch) pp.catch(function () {}); }
   }
 
   function introLineDone() {
     if (!INTRO.active) return;
     clearTimeout(INTRO.timer);
-    INTRO.timer = setTimeout(function () { playIntroLine(INTRO.line + 1); }, 300);
+    INTRO.timer = setTimeout(function () { playIntroLine(INTRO.line + 1); }, 180);
   }
 
   function finishIntroUI() {
