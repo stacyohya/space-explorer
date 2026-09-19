@@ -1817,6 +1817,14 @@
     small:   { view: 'overview', follow: 'comet', offset: [0, 9, 16] }
   };
 
+  function whenPlaying(cb, timeoutMs) {
+    var done = false;
+    var fin = function () { if (done) return; done = true; introVideo.removeEventListener('playing', fin); cb(); };
+    if (introVideo.readyState >= 3 && !introVideo.paused) { fin(); return; }
+    introVideo.addEventListener('playing', fin);
+    setTimeout(fin, timeoutMs);
+  }
+
   function startIntro() {
     markIntroSeen();
     closeCard(); closeList(); stopAutoPlay(); stopAllSpeech();
@@ -1827,7 +1835,8 @@
     seekAndPlay(0);
     mode = 'intro'; controls.enabled = false;
     introSkip.hidden = false; introCaption.hidden = false;
-    playIntroStop(0);
+    introLineEl.textContent = FAMILY.ui.loading[lang]; introLineEl.classList.add('show');
+    whenPlaying(function () { introLineEl.classList.remove('show'); playIntroStop(0); }, 12000);
   }
 
   function playIntroStop(i) {

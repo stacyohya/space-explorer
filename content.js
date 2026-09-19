@@ -4290,6 +4290,10 @@ var FAMILY_CONTENT = {
     "welcome": {
       "en": "Welcome to the solar system!",
       "zh": "歡迎來到太陽系！"
+    },
+    "loading": {
+      "en": "Loading…",
+      "zh": "載入中…"
     }
   },
   "stops": [
